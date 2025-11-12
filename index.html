@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clinic | Home</title>
+  <meta name="description" content="International clinic providing world-class care, transplants, and advanced procedures." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main>
+    <section class="hero" id="hero">
+      <video autoplay muted loop playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 0.8;">
+        <source data-edit="hero_video" src="./assets/background_kidney_video.mp4" type="video/mp4">
+      </video>
+      <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(224,247,250,0.7), rgba(224,247,250,0.85)); z-index: 2;"></div>
+      <div class="hero-content" style="position: relative; z-index: 20;">
+        <h1 id="home-title">World-Class Care for International Patients</h1>
+        <p id="home-subtitle">Advanced kidney transplants, minimally invasive procedures, and compassionate care.</p>
+        <div class="hero-cta">
+          <a class="btn primary" data-edit="hero_cta_primary" data-edit-link="hero_cta_primary_link" href="./contact.html">Book an Appointment</a>
+          <a class="btn" data-edit="hero_cta_secondary" data-edit-link="hero_cta_secondary_link" href="./about.html">Learn More</a>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Transplant Program Highlights Section -->
+    <section class="transplant-highlights" style="background: #E0F7FA; padding: 80px 0 40px 0; margin-top: 20px; position: relative; overflow: hidden;">
+      <!-- Animated kidney background -->
+      <div style="position: absolute; top: 10%; left: 5%; width: 300px; height: 300px; background: url('https://img.icons8.com/fluency/96/kidney.png') center/contain no-repeat; opacity: 0.03; animation: float 20s infinite ease-in-out;"></div>
+      <div style="position: absolute; bottom: 10%; right: 5%; width: 250px; height: 250px; background: url('https://img.icons8.com/fluency/96/medical-heart.png') center/contain no-repeat; opacity: 0.03; animation: float 25s infinite ease-in-out reverse;"></div>
+      
+      <div class="container" style="position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <!-- Hero Header -->
+        <div style="text-align: center; margin-bottom: 80px;">
+          <div style="display: inline-block; padding: 8px 20px; background: rgba(191, 78, 78, 0.1); border: 1px solid rgba(191, 78, 78, 0.3); border-radius: 50px; margin-bottom: 20px;">
+            <span data-edit="transplant_badge" style="color: #BF4E4E; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">WORLD-CLASS TRANSPLANT PROGRAM</span>
+          </div>
+          <h2 data-edit="transplant_heading" style="font-size: 3rem; font-weight: 800; color: #1a2a44; margin: 20px 0; letter-spacing: -1px; line-height: 1.2;">
+            Excellence in Kidney Transplantation
+          </h2>
+          <p data-edit="transplant_description" style="font-size: 1.3rem; color: #4a6572; max-width: 700px; margin: 20px auto 0; line-height: 1.6;">
+            Performing <span style="color: #BF4E4E; font-weight: 700;">70-80 transplants annually</span> with internationally recognized expertise
+          </p>
+        </div>
+
+        <!-- Statistics Banner -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 35px; margin-bottom: 80px; perspective: 1000px;">
+          <div class="stat-card" style="text-align: center; background: linear-gradient(145deg, #ffffff 0%, rgba(224,247,250,0.6) 100%); padding: 50px 30px; border-radius: 30px; border: 3px solid transparent; background-clip: padding-box; position: relative; overflow: hidden; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; box-shadow: 0 20px 60px -15px rgba(0,188,212,0.4), 0 0 0 1px rgba(255,255,255,0.1) inset;">
+            <div style="position: absolute; inset: 0; border-radius: 30px; padding: 3px; background: linear-gradient(135deg, rgba(0,188,212,0.6), rgba(191,78,78,0.6), rgba(0,188,212,0.6)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;"></div>
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(0,188,212,0.1) 0%, rgba(191,78,78,0.05) 50%, rgba(0,188,212,0.1) 100%); background-size: 200% 200%; animation: gradientMove 8s ease infinite; pointer-events: none;"></div>
+            <div style="position: relative; z-index: 1;">
+              <div data-edit="stat_value_0" style="font-size: 4rem; font-weight: 900; background: linear-gradient(135deg, #00BCD4 0%, #BF4E4E 50%, #8B2E2E 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 15px; filter: drop-shadow(0 4px 12px rgba(0,188,212,0.3)); transform: translateZ(40px);">70-80</div>
+              <div data-edit="stat_label_0" style="color: #1a2a44; font-size: 1.05rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; transform: translateZ(20px);">Annual Transplants</div>
+            </div>
+          </div>
+          <div class="stat-card" style="text-align: center; background: linear-gradient(145deg, #ffffff 0%, rgba(224,247,250,0.6) 100%); padding: 50px 30px; border-radius: 30px; border: 3px solid transparent; background-clip: padding-box; position: relative; overflow: hidden; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; box-shadow: 0 20px 60px -15px rgba(0,188,212,0.4), 0 0 0 1px rgba(255,255,255,0.1) inset;">
+            <div style="position: absolute; inset: 0; border-radius: 30px; padding: 3px; background: linear-gradient(135deg, rgba(0,188,212,0.6), rgba(191,78,78,0.6), rgba(0,188,212,0.6)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;"></div>
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(0,188,212,0.1) 0%, rgba(191,78,78,0.05) 50%, rgba(0,188,212,0.1) 100%); background-size: 200% 200%; animation: gradientMove 8s ease infinite 0.3s; pointer-events: none;"></div>
+            <div style="position: relative; z-index: 1;">
+              <div data-edit="stat_value_1" style="font-size: 4rem; font-weight: 900; background: linear-gradient(135deg, #00BCD4 0%, #BF4E4E 50%, #8B2E2E 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 15px; filter: drop-shadow(0 4px 12px rgba(0,188,212,0.3)); transform: translateZ(40px);">24/7</div>
+              <div data-edit="stat_label_1" style="color: #1a2a44; font-size: 1.05rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; transform: translateZ(20px);">Expert Care</div>
+            </div>
+          </div>
+          <div class="stat-card" style="text-align: center; background: linear-gradient(145deg, #ffffff 0%, rgba(224,247,250,0.6) 100%); padding: 50px 30px; border-radius: 30px; border: 3px solid transparent; background-clip: padding-box; position: relative; overflow: hidden; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; box-shadow: 0 20px 60px -15px rgba(0,188,212,0.4), 0 0 0 1px rgba(255,255,255,0.1) inset;">
+            <div style="position: absolute; inset: 0; border-radius: 30px; padding: 3px; background: linear-gradient(135deg, rgba(0,188,212,0.6), rgba(191,78,78,0.6), rgba(0,188,212,0.6)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;"></div>
+            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(0,188,212,0.1) 0%, rgba(191,78,78,0.05) 50%, rgba(0,188,212,0.1) 100%); background-size: 200% 200%; animation: gradientMove 8s ease infinite 0.6s; pointer-events: none;"></div>
+            <div style="position: relative; z-index: 1;">
+              <div data-edit="stat_value_2" style="font-size: 4rem; font-weight: 900; background: linear-gradient(135deg, #00BCD4 0%, #BF4E4E 50%, #8B2E2E 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 15px; filter: drop-shadow(0 4px 12px rgba(0,188,212,0.3)); transform: translateZ(40px);">100%</div>
+              <div data-edit="stat_label_2" style="color: #1a2a44; font-size: 1.05rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; transform: translateZ(20px);">Dedicated Team</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; margin-bottom: 60px;">
+          <!-- Left Column - Image & Key Points -->
+          <div style="display: flex; flex-direction: column; gap: 30px;">
+            <!-- Medical Image Card -->
+            <div class="care-journey-card" style="background: linear-gradient(145deg, #ffffff 0%, rgba(224,247,250,0.7) 100%); border-radius: 32px; padding: 0; border: 4px solid transparent; position: relative; overflow: hidden; box-shadow: 0 30px 80px rgba(0,188,212,0.3); transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d;">
+              <div style="position: absolute; inset: 0; border-radius: 32px; padding: 4px; background: linear-gradient(145deg, rgba(0,188,212,0.8), rgba(191,78,78,0.6)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;"></div>
+              <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(0,188,212,0.05) 0%, rgba(191,78,78,0.03) 100%); pointer-events: none;"></div>
+              <div style="position: relative; overflow: hidden; border-radius: 28px 28px 0 0; box-shadow: 0 15px 50px rgba(0,0,0,0.2);">
+                <img src="https://images.pexels.com/photos/8460157/pexels-photo-8460157.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Kidney Transplant" style="width: 100%; height: 340px; object-fit: cover; transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);" />
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to top, rgba(26,42,68,0.95), transparent); pointer-events: none;"></div>
+                <div style="position: absolute; top: 20px; right: 20px; width: 80px; height: 80px; background: linear-gradient(135deg, rgba(0,188,212,0.9), rgba(0,188,212,0.7)); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 30px rgba(0,188,212,0.5);">
+                  <svg style="width: 40px; height: 40px;" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                </div>
+              </div>
+              <div style="padding: 35px;">
+              <h3 data-edit="care_journey_title" style="color: #1a2a44; font-size: 1.75rem; font-weight: 900; margin-bottom: 25px; letter-spacing: -0.8px; background: linear-gradient(135deg, #1a2a44 0%, #00BCD4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Comprehensive Care Journey</h3>
+              <ul style="list-style: none; padding: 0; margin: 0;">
+                <li style="color: #4a6572; padding: 16px 0; border-bottom: 1px solid rgba(165,216,221,0.3); display: flex; align-items: center; gap: 15px; transition: all 0.3s ease;">
+                  <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #BF4E4E, #8B2E2E); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(191,78,78,0.3);">
+                    <svg style="width: 20px; height: 20px;" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  </div>
+                  <span data-edit="journey_item_0" style="font-weight: 500;">Pre-transplant evaluation & diagnostics</span>
+                </li>
+                <li style="color: #4a6572; padding: 16px 0; border-bottom: 1px solid rgba(165,216,221,0.3); display: flex; align-items: center; gap: 15px; transition: all 0.3s ease;">
+                  <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #BF4E4E, #8B2E2E); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(191,78,78,0.3);">
+                    <svg style="width: 20px; height: 20px;" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  </div>
+                  <span data-edit="journey_item_1" style="font-weight: 500;">Post-transplant care & follow-up</span>
+                </li>
+                <li style="color: #4a6572; padding: 16px 0; display: flex; align-items: center; gap: 15px; transition: all 0.3s ease;">
+                  <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #BF4E4E, #8B2E2E); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(191,78,78,0.3);">
+                    <svg style="width: 20px; height: 20px;" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  </div>
+                  <span data-edit="journey_item_2" style="font-weight: 500;">Personalized treatment plans</span>
+                </li>
+              </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column - Features List -->
+          <div style="display: flex; flex-direction: column; gap: 24px;">
+            <!-- Feature Item -->
+            <div class="transplant-feature" style="background: linear-gradient(145deg, #ffffff 0%, rgba(224,247,250,0.6) 100%); border-radius: 24px; padding: 35px; border: 3px solid transparent; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 45px rgba(0,188,212,0.2); position: relative; overflow: hidden; transform-style: preserve-3d;">
+              <div style="position: absolute; inset: 0; border-radius: 24px; padding: 3px; background: linear-gradient(135deg, rgba(0,188,212,0.5), rgba(191,78,78,0.3)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;"></div>
+              <div style="position: absolute; top: -60px; right: -60px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(0,188,212,0.1) 0%, transparent 70%); pointer-events: none;"></div>
+              <div style="display: flex; align-items: start; gap: 25px; position: relative; z-index: 1;">
+                <div style="width: 85px; height: 85px; background: linear-gradient(135deg, #BF4E4E 0%, #8B2E2E 100%); border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 10px 35px rgba(191,78,78,0.45); position: relative; transition: all 0.4s ease;">
+                  <div style="position: absolute; inset: -3px; background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent); border-radius: 20px; pointer-events: none;"></div>
+                  <div style="position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent); border-radius: 20px; pointer-events: none;"></div>
+                  <svg style="width: 42px; height: 42px;" fill="white" viewBox="0 0 20 20"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/></svg>
+                </div>
+                <div style="flex: 1;">
+                  <h4 data-edit="feature_title_0" style="color: #1a2a44; font-size: 1.3rem; font-weight: 900; margin: 0 0 12px 0; letter-spacing: -0.5px; line-height: 1.3;">Renowned Transplant Surgeons</h4>
+                  <p data-edit="feature_desc_0" style="color: #4a6572; margin: 0; line-height: 1.7; font-size: 1rem; font-weight: 500;">Internationally recognized experts with decades of experience in kidney transplantation</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Feature Item -->
+            <div class="transplant-feature" style="background: linear-gradient(145deg, #ffffff 0%, rgba(224,247,250,0.6) 100%); border-radius: 24px; padding: 35px; border: 3px solid transparent; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 45px rgba(0,188,212,0.2); position: relative; overflow: hidden; transform-style: preserve-3d;">
+              <div style="position: absolute; inset: 0; border-radius: 24px; padding: 3px; background: linear-gradient(135deg, rgba(0,188,212,0.5), rgba(191,78,78,0.3)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;"></div>
+              <div style="position: absolute; top: -60px; right: -60px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(0,188,212,0.1) 0%, transparent 70%); pointer-events: none;"></div>
+              <div style="display: flex; align-items: start; gap: 25px; position: relative; z-index: 1;">
+                <div style="width: 85px; height: 85px; background: linear-gradient(135deg, #BF4E4E 0%, #8B2E2E 100%); border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 10px 35px rgba(191,78,78,0.45); position: relative; transition: all 0.4s ease;">
+                  <div style="position: absolute; inset: -3px; background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent); border-radius: 20px; pointer-events: none;"></div>
+                  <div style="position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent); border-radius: 20px; pointer-events: none;"></div>
+                  <svg style="width: 42px; height: 42px;" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+                </div>
+                <div style="flex: 1;">
+                  <h4 data-edit="feature_title_1" style="color: #1a2a44; font-size: 1.3rem; font-weight: 900; margin: 0 0 12px 0; letter-spacing: -0.5px; line-height: 1.3;">Multidisciplinary Team</h4>
+                  <p data-edit="feature_desc_1" style="color: #4a6572; margin: 0; line-height: 1.7; font-size: 1rem; font-weight: 500;">Nephrologists, cardiologists, pulmonologists, immunologists, and intensive care specialists working together</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Feature Item -->
+            <div class="transplant-feature" style="background: linear-gradient(145deg, #ffffff 0%, rgba(224,247,250,0.6) 100%); border-radius: 24px; padding: 35px; border: 3px solid transparent; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 45px rgba(0,188,212,0.2); position: relative; overflow: hidden; transform-style: preserve-3d;">
+              <div style="position: absolute; inset: 0; border-radius: 24px; padding: 3px; background: linear-gradient(135deg, rgba(0,188,212,0.5), rgba(191,78,78,0.3)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;"></div>
+              <div style="position: absolute; top: -60px; right: -60px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(0,188,212,0.1) 0%, transparent 70%); pointer-events: none;"></div>
+              <div style="display: flex; align-items: start; gap: 25px; position: relative; z-index: 1;">
+                <div style="width: 85px; height: 85px; background: linear-gradient(135deg, #BF4E4E 0%, #8B2E2E 100%); border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 10px 35px rgba(191,78,78,0.45); position: relative; transition: all 0.4s ease;">
+                  <div style="position: absolute; inset: -3px; background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent); border-radius: 20px; pointer-events: none;"></div>
+                  <div style="position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent); border-radius: 20px; pointer-events: none;"></div>
+                  <svg style="width: 42px; height: 42px;" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+                </div>
+                <div style="flex: 1;">
+                  <h4 data-edit="feature_title_2" style="color: #1a2a44; font-size: 1.3rem; font-weight: 900; margin: 0 0 12px 0; letter-spacing: -0.5px; line-height: 1.3;">State-of-Art Facilities</h4>
+                  <p data-edit="feature_desc_2" style="color: #4a6572; margin: 0; line-height: 1.7; font-size: 1rem; font-weight: 500;">Modular operating rooms and ICUs equipped with cutting-edge medical technology</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Feature Item -->
+            <div class="transplant-feature" style="background: linear-gradient(145deg, #ffffff 0%, rgba(224,247,250,0.6) 100%); border-radius: 24px; padding: 35px; border: 3px solid transparent; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 15px 45px rgba(0,188,212,0.2); position: relative; overflow: hidden; transform-style: preserve-3d;">
+              <div style="position: absolute; inset: 0; border-radius: 24px; padding: 3px; background: linear-gradient(135deg, rgba(0,188,212,0.5), rgba(191,78,78,0.3)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;"></div>
+              <div style="position: absolute; top: -60px; right: -60px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(0,188,212,0.1) 0%, transparent 70%); pointer-events: none;"></div>
+              <div style="display: flex; align-items: start; gap: 25px; position: relative; z-index: 1;">
+                <div style="width: 85px; height: 85px; background: linear-gradient(135deg, #BF4E4E 0%, #8B2E2E 100%); border-radius: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 10px 35px rgba(191,78,78,0.45); position: relative; transition: all 0.4s ease;">
+                  <div style="position: absolute; inset: -3px; background: linear-gradient(135deg, rgba(255,255,255,0.3), transparent); border-radius: 20px; pointer-events: none;"></div>
+                  <div style="position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent); border-radius: 20px; pointer-events: none;"></div>
+                  <svg style="width: 42px; height: 42px;" fill="white" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"/></svg>
+                </div>
+                <div style="flex: 1;">
+                  <h4 data-edit="feature_title_3" style="color: #1a2a44; font-size: 1.3rem; font-weight: 900; margin: 0 0 12px 0; letter-spacing: -0.5px; line-height: 1.3;">Latest Therapies & Patient Support</h4>
+                  <p data-edit="feature_desc_3" style="color: #4a6572; margin: 0; line-height: 1.7; font-size: 1rem; font-weight: 500;">Access to cutting-edge immunosuppressives, counseling, nutrition, and physical therapy</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style>
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        @keyframes gradientMove {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 20px 60px -15px rgba(0,188,212,0.4), 0 0 0 1px rgba(255,255,255,0.1) inset; }
+          50% { box-shadow: 0 25px 80px -10px rgba(0,188,212,0.6), 0 0 0 1px rgba(255,255,255,0.3) inset; }
+        }
+        .stat-card {
+          animation: pulse-glow 3s ease-in-out infinite;
+        }
+        .stat-card:hover {
+          transform: translateY(-15px) rotateX(5deg) rotateY(-5deg) scale(1.05);
+          box-shadow: 0 30px 90px -10px rgba(0,188,212,0.7), 0 0 0 2px rgba(0,188,212,0.5) inset, 0 0 40px rgba(0,188,212,0.3);
+          animation: none;
+        }
+        .transplant-feature {
+          cursor: pointer;
+          perspective: 1000px;
+        }
+        .transplant-feature:hover {
+          transform: translateY(-12px) translateX(8px) rotateY(3deg);
+          box-shadow: 0 25px 70px rgba(0,188,212,0.4), 0 0 30px rgba(191,78,78,0.2);
+          border-color: rgba(0,188,212,0.8);
+        }
+        .transplant-feature:hover > div > div > div:first-child {
+          transform: scale(1.15) rotate(12deg);
+          box-shadow: 0 15px 40px rgba(191,78,78,0.6);
+        }
+        .care-journey-card {
+          perspective: 1000px;
+        }
+        .care-journey-card:hover {
+          transform: translateY(-15px) rotateX(3deg);
+          box-shadow: 0 40px 100px rgba(0,188,212,0.5), inset 0 1px 0 rgba(255,255,255,1);
+          border-color: rgba(0,188,212,0.9);
+        }
+        .care-journey-card:hover img {
+          transform: scale(1.12);
+        }
+        @media (max-width: 1024px) {
+          .transplant-highlights > .container > div:nth-child(3) {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      </style>
+    </section>
+
+    <section class="showcase parallax-section" id="home-showcase">
+      <!-- Populated from data/home.json: videos/testimonials -->
+    </section>
+
+    <!-- Facility Video Section -->
+    <section class="facility-video-section" style="background: #E0F7FA; padding: 0 20px 80px 20px; position: relative; overflow: hidden;">
+      <div class="container" style="max-width: 1200px; margin: 0 auto; position: relative; z-index: 2;">
+        <!-- Section Header -->
+        <div style="text-align: center; margin-bottom: 30px;">
+          <div style="display: inline-block; padding: 8px 20px; background: rgba(191, 78, 78, 0.1); border: 1px solid rgba(191, 78, 78, 0.3); border-radius: 50px; margin-bottom: 20px;">
+            <span data-edit="facility_badge" style="color: #BF4E4E; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">OUR FACILITY</span>
+          </div>
+          <h2 data-edit="facility_heading" style="font-size: 2.5rem; font-weight: 700; color: #1a2a44; margin: 20px 0; line-height: 1.2;">
+            Tour Our State-of-the-Art Medical Center
+          </h2>
+          <p data-edit="facility_description" style="font-size: 1.1rem; color: #4a6572; max-width: 700px; margin: 0 auto; line-height: 1.6;">
+            Experience our world-class facilities designed for your comfort and care
+          </p>
+        </div>
+
+        <!-- Video Container -->
+        <div style="max-width: 100%; margin: 0 auto; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 70px rgba(0,188,212,0.35); border: 4px solid #A5D8DD; background: #1a2a44;">
+          <video autoplay muted loop controls style="width: 100%; min-height: 600px; display: block; object-fit: cover;">
+            <source data-edit="facility_video" src="./assets/clinic_video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <!-- Optional Description Below Video -->
+        <div style="text-align: center; margin-top: 40px; max-width: 800px; margin-left: auto; margin-right: auto;">
+          <p data-edit="facility_video_description" style="color: #4a6572; font-size: 1rem; line-height: 1.8;">
+            Take a virtual tour of our cutting-edge medical facility, featuring advanced surgical suites, 
+            comfortable patient rooms, and comprehensive diagnostic centers—all designed to provide 
+            the highest standard of care for our international patients.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section style="background: #E0F7FA; padding: 60px 20px; text-align: center;">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <h2 data-edit="cta_heading" style="font-size: 2rem; font-weight: 700; color: #1a2a44; margin-bottom: 20px;">Ready to Start Your Journey?</h2>
+        <p data-edit="cta_description" style="font-size: 1.1rem; color: #4a6572; margin-bottom: 30px; line-height: 1.6;">
+          Schedule a consultation with our expert medical team today
+        </p>
+        <a data-edit="cta_button" href="./contact.html" data-edit-link="cta_button_link" style="display: inline-block; padding: 18px 50px; background: linear-gradient(135deg, #BF4E4E, #8B3636); color: white; text-decoration: none; border-radius: 50px; font-weight: 700; font-size: 1.1rem; transition: all 0.3s; box-shadow: 0 8px 30px rgba(191, 78, 78, 0.3); border: 2px solid rgba(255,255,255,0.1);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 40px rgba(191, 78, 78, 0.5)'" onmouseout="this.style.transform=''; this.style.boxShadow='0 8px 30px rgba(191, 78, 78, 0.3)'">
+          Schedule Your Consultation →
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="./assets/js/heartbeat-line.js"></script>
+  <script src="./assets/js/layout.js" defer></script>
+  <script src="./assets/js/animation.js" defer></script>
+  <script src="./assets/js/content.js" defer></script>
+</body>
+</html>
+
+
+

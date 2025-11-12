@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON Test</title>
+</head>
+<body>
+  <h1>JSON Loading Test</h1>
+  <div id="results"></div>
+  
+  <script>
+    async function testJSON() {
+      const files = ['doctors', 'services', 'achievements', 'reviews', 'home'];
+      const results = document.getElementById('results');
+      
+      for (const file of files) {
+        try {
+          const response = await fetch(`./data/${file}.json`);
+          if (response.ok) {
+            const data = await response.json();
+            results.innerHTML += `<p>✅ ${file}.json loaded successfully (${Object.keys(data).length} keys)</p>`;
+            console.log(`${file}.json:`, data);
+          } else {
+            results.innerHTML += `<p>❌ ${file}.json failed: ${response.status}</p>`;
+          }
+        } catch (error) {
+          results.innerHTML += `<p>❌ ${file}.json error: ${error.message}</p>`;
+        }
+      }
+    }
+    
+    testJSON();
+  </script>
+</body>
+</html>

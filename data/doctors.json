@@ -1,0 +1,86 @@
+{
+  "doctors": [
+    {
+      "name": "Dr. Ayesha Khan",
+      "title": "Professor",
+      "specialization": "Nephrology & Transplant",
+      "bio": "25+ years leading kidney transplant programs with a focus on living donor transplants and long-term outcomes.",
+      "photoUrl": "https://images.unsplash.com/photo-1550831107-1553da8c8464?q=80&w=640&auto=format&fit=crop",
+      "interviewUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    },
+    {
+      "name": "Dr. Omar Raza",
+      "title": "Consultant",
+      "specialization": "Urology",
+      "bio": "Minimally invasive urologic surgeries, laser stone management, and endourology.",
+      "photoUrl": "https://images.unsplash.com/photo-1550831107-9f8e5f2b4a34?q=80&w=640&auto=format&fit=crop",
+      "interviewUrl": ""
+    },
+    {
+      "name": "Dr. Maria Zuberi",
+      "title": "Associate Professor",
+      "specialization": "Transplant Immunology",
+      "bio": "Expert in immunosuppression protocols and rejection surveillance, optimizing patient safety.",
+      "photoUrl": "https://images.unsplash.com/photo-1550831108-34844c3b3d56?q=80&w=640&auto=format&fit=crop",
+      "interviewUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    },
+    {
+      "name": "Dr. Naveed Haider",
+      "title": "Consultant Surgeon",
+      "specialization": "Transplant Surgery",
+      "bio": "Specializes in complex transplant cases and vascular access surgeries.",
+      "photoUrl": "https://images.unsplash.com/photo-1551601651-2a8555f1a136?q=80&w=640&auto=format&fit=crop",
+      "interviewUrl": ""
+    },
+    {
+      "name": "Dr. Sara Malik",
+      "title": "Senior Registrar",
+      "specialization": "Nephrology",
+      "bio": "Dialysis care, pre-transplant optimization, and patient counseling for international clients.",
+      "photoUrl": "https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=640&auto=format&fit=crop",
+      "interviewUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    },
+    {
+      "name": "Dr. Imran Siddiq",
+      "title": "Consultant Anesthetist",
+      "specialization": "Transplant Anesthesia",
+      "bio": "Perioperative optimization and enhanced recovery protocols for high-risk patients.",
+      "photoUrl": "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=640&auto=format&fit=crop",
+      "interviewUrl": ""
+    },
+    {
+      "name": "Dr. Leena Farooq",
+      "title": "Clinical Psychologist",
+      "specialization": "Patient Support",
+      "bio": "Counseling for transplant recipients and donors, addressing psychosocial needs.",
+      "photoUrl": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=640&auto=format&fit=crop",
+      "interviewUrl": ""
+    },
+    {
+      "name": "Dr. Kamran Yousaf",
+      "title": "Consultant",
+      "specialization": "Interventional Radiology",
+      "bio": "Imaging-guided procedures, biopsies, and vascular access for transplant patients.",
+      "photoUrl": "https://images.unsplash.com/photo-1544971585-efb2230e3b4b?q=80&w=640&auto=format&fit=crop",
+      "interviewUrl": ""
+    },
+    {
+      "name": "Dr. Nadia Rahman",
+      "title": "Dietitian",
+      "specialization": "Renal Nutrition",
+      "bio": "Tailored nutrition plans for pre- and post-transplant care and dialysis patients.",
+      "photoUrl": "https://images.unsplash.com/photo-1550525811-e5869dd03032?q=80&w=640&auto=format&fit=crop",
+      "interviewUrl": ""
+    },
+    {
+      "name": "Dr. Faisal Qureshi",
+      "title": "Coordinator",
+      "specialization": "International Patient Services",
+      "bio": "Coordinates visas, travel logistics, and continuity of care for overseas families.",
+      "photoUrl": "https://images.unsplash.com/photo-1529665253569-6d01c0eaf7b6?q=80&w=640&auto=format&fit=crop",
+      "interviewUrl": ""
+    }
+  ]
+}
+
+

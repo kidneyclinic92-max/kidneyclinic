@@ -1,0 +1,16 @@
+{
+  "features": {
+    "title": "Why Patients Choose Us",
+    "subtitle": "International care, leading experts, and outstanding outcomes.",
+    "items": [
+      { "badge": "Global", "title": "International Patient Desk", "text": "Dedicated coordinators for travel, visas, and stay." },
+      { "badge": "Kidney", "title": "Renowned Transplant Program", "text": "High success rates with living and cadaveric donors." },
+      { "badge": "Minimally Invasive", "title": "Advanced Procedures", "text": "Faster recovery with state-of-the-art techniques." },
+      { "badge": "24/7", "title": "Continuum of Care", "text": "Pre-op to post-op rehabilitation and follow-up." }
+    ]
+  }
+ 
+}
+
+
+

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kidney Transplant Services | Clinic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+  <style>
+    body { background: #000000 !important; color: #ffffff; }
+    .service-hero {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=1600') center/cover;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .service-hero h1 {
+      font-size: 3.5rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+    .service-hero p {
+      font-size: 1.3rem;
+      color: var(--muted);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .service-details {
+      padding: 60px 20px;
+    }
+    .service-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+      align-items: stretch;
+      grid-auto-flow: row;
+    }
+    .service-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 30px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      height: 320px;
+      overflow: hidden;
+    }
+    .service-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 40px rgba(191,78,78,0.4);
+    }
+    .service-item h3 {
+      color: var(--accent);
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+    }
+    .service-item p {
+      color: var(--muted);
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  
+  <main>
+    <section class="service-hero">
+      <div>
+        <h1>Kidney Transplant</h1>
+        <p>Evaluation, donor matching, surgery and lifelong immunosuppression management.</p>
+      </div>
+    </section>
+
+    <section class="service-details">
+      <div class="container">
+        <h2 class="section-title">Our Kidney Transplant Services</h2>
+        <p class="section-sub" style="max-width: 800px; margin: 0 auto 40px;">
+          As a leading transplant center, we offer complete kidney transplant services from evaluation through lifelong care. 
+          Our experienced team has performed thousands of successful transplants with excellent outcomes.
+        </p>
+
+        <div class="service-list">
+          <div class="service-item">
+            <h3>Pre-Transplant Evaluation</h3>
+            <p>Comprehensive medical, surgical, and psychosocial assessment to determine transplant candidacy and optimize patient condition.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Living Donor Assessment</h3>
+            <p>Complete evaluation of potential living donors including medical screening, compatibility testing, and counseling.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Deceased Donor Coordination</h3>
+            <p>Waitlist management, organ allocation coordination, and rapid mobilization when organs become available.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Advanced Surgical Techniques</h3>
+            <p>Minimally invasive and robotic-assisted transplant surgery performed by fellowship-trained transplant surgeons.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Immunosuppression Protocol</h3>
+            <p>Personalized immunosuppression regimens tailored to each patient's risk profile and tolerance.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Rejection Monitoring</h3>
+            <p>Advanced surveillance including protocol biopsies, biomarkers, and rapid intervention for rejection episodes.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Long-term Follow-up Care</h3>
+            <p>Lifelong monitoring and management by dedicated transplant nephrologists ensuring graft longevity.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Complications Management</h3>
+            <p>Expert handling of post-transplant complications including infections, malignancies, and metabolic issues.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>International Patient Coordination</h3>
+            <p>Complete support for international patients including visa assistance, accommodation, interpreters, and travel coordination.</p>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px;">
+          <a href="contact.html" class="btn primary" style="font-size: 1.1rem; padding: 15px 40px;">Start Your Transplant Journey</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="./assets/js/layout.js" defer></script>
+  <script src="./assets/js/animation.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof gsap !== 'undefined') {
+        gsap.from('.service-item', {
+          opacity: 0,
+          y: 50,
+          stagger: 0.1,
+          duration: 0.8,
+          ease: 'power2.out'
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+

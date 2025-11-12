@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel | Clinic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <div id="login-screen" class="login-screen">
+    <div class="login-card">
+      <h1>Admin Login</h1>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+        <button type="submit" class="btn primary">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="admin-panel" class="admin-panel" style="display: none;">
+    <header class="admin-header">
+      <div class="container">
+        <h1>Admin Panel</h1>
+        <nav class="admin-nav">
+          <a href="#dashboard" class="nav-link active">Dashboard</a>
+          <a href="#appointments" class="nav-link">Appointments</a>
+          <a href="#doctors" class="nav-link">Doctors</a>
+          <a href="#services" class="nav-link">Services</a>
+          <a href="#homepage" class="nav-link">Homepage</a>
+          <a href="#achievements" class="nav-link">Medical Tourism</a>
+          <a href="#reviews" class="nav-link">Reviews</a>
+          <a href="#kidney" class="nav-link">Kidney Transplant Dept</a>
+          <button id="logout-btn" class="btn">Logout</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <div class="container">
+        <div id="status-bar" style="margin-bottom: 16px; display: none;
+          padding: 10px; border-radius: 6px; background: #fff3cd; color: #664d03; border: 1px solid #ffecb5;
+        "></div>
+        <!-- Dashboard -->
+        <section id="dashboard" class="admin-section active" style="text-align: center;">
+          <h2>Dashboard</h2>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <h3>Doctors</h3>
+              <span id="doctors-count">-</span>
+            </div>
+            <div class="stat-card">
+              <h3>Services</h3>
+              <span id="services-count">-</span>
+            </div>
+            <div class="stat-card">
+              <h3>Reviews</h3>
+              <span id="reviews-count">-</span>
+            </div>
+          </div>
+          <div class="quick-actions" style="text-align: center;">
+            <h3>Quick Actions</h3>
+            <div class="action-buttons" style="justify-content: center;">
+              <button class="btn primary" onclick="showSection('doctors')">Manage Doctors</button>
+              <button class="btn primary" onclick="showSection('services')">Manage Services</button>
+              <button class="btn primary" onclick="showSection('homepage')">Edit Homepage</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Appointments Management -->
+        <section id="appointments" class="admin-section">
+          <h2>Manage Appointments</h2>
+          <div class="section-controls">
+            <select id="appointment-status-filter" style="padding:8px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);margin-right:10px">
+              <option value="">All Appointments</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="completed">Completed</option>
+            </select>
+            <button class="btn primary" onclick="admin.filterAppointments()">Filter</button>
+          </div>
+          <div id="appointments-list" class="content-list"></div>
+        </section>
+
+        <!-- Doctors Management -->
+        <section id="doctors" class="admin-section">
+          <h2>Manage Doctors</h2>
+          <div class="section-controls">
+            <button class="btn primary" onclick="addDoctor()">Add Doctor</button>
+          </div>
+          <div id="doctors-list" class="content-list"></div>
+        </section>
+
+        <!-- Services Management -->
+        <section id="services" class="admin-section">
+          <h2>Manage Services</h2>
+          <div class="section-controls">
+            <button class="btn primary" onclick="addService()">Add Service</button>
+          </div>
+          <div id="services-list" class="content-list"></div>
+        </section>
+
+        <!-- Homepage Management -->
+        <section id="homepage" class="admin-section">
+          <h2>Edit Homepage</h2>
+          <div id="homepage-editor"></div>
+        </section>
+
+        <!-- Medical Tourism Management -->
+        <section id="achievements" class="admin-section">
+          <h2>Manage Medical Tourism</h2>
+          <div class="section-controls">
+            <button class="btn primary" onclick="addAchievement()">Add Medical Tourism Item</button>
+          </div>
+          <div id="achievements-list" class="content-list"></div>
+        </section>
+
+        <!-- Kidney Department Management -->
+        <section id="kidney" class="admin-section">
+          <h2 style="text-align: center;">Manage Kidney Transplant Department</h2>
+          <div id="kidney-editor"></div>
+        </section>
+
+        <!-- Reviews Management -->
+        <section id="reviews" class="admin-section">
+          <h2>Manage Reviews</h2>
+          <div class="section-controls">
+            <button class="btn primary" onclick="addReview()">Add Review</button>
+          </div>
+          <div id="reviews-list" class="content-list"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal for editing content -->
+  <div id="edit-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">Edit Item</h3>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-form"></form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeModal()">Cancel</button>
+        <button class="btn primary" onclick="saveItem()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

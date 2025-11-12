@@ -1,0 +1,54 @@
+{
+  "services": [
+    { 
+      "name": "Urological Services", 
+      "summary": "Comprehensive urologic care including endoscopic, laparoscopic and stone management.",
+      "image": "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800",
+      "details": [
+        "Diagnostic Procedures",
+        "Minimally Invasive Surgeries",
+        "Kidney Stone Management",
+        "Prostate Health Treatments",
+        "Bladder Control Solutions",
+        "Pediatric Urology",
+        "Infertility Treatments",
+        "Urological Cancer Management",
+        "Female Urology"
+      ]
+    },
+    { 
+      "name": "Nephrology Services", 
+      "summary": "Kidney care across CKD, hypertension, dialysis programs and follow‑up.",
+      "image": "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=800",
+      "details": [
+        "Chronic Kidney Disease Management",
+        "Hypertension & Kidney Health",
+        "Dialysis Programs (Hemodialysis & Peritoneal)",
+        "Kidney Function Testing",
+        "Electrolyte & Fluid Balance Management",
+        "Glomerular Disease Treatment",
+        "Kidney Biopsy & Diagnostics",
+        "Pre-Transplant Evaluation",
+        "Post-Transplant Follow-up Care"
+      ]
+    },
+    { 
+      "name": "Kidney Transplant", 
+      "summary": "Evaluation, donor matching, surgery and lifelong immunosuppression management.",
+      "image": "https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=800",
+      "details": [
+        "Pre-Transplant Evaluation & Counseling",
+        "Living Donor Assessment & Surgery",
+        "Deceased Donor Coordination",
+        "Advanced Surgical Techniques",
+        "Immunosuppression Protocol Management",
+        "Rejection Monitoring & Treatment",
+        "Long-term Follow-up Care",
+        "Transplant Complications Management",
+        "International Patient Coordination"
+      ]
+    }
+  ]
+}
+
+

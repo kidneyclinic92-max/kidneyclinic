@@ -1,0 +1,40 @@
+{
+  "name": "The Kidney Clinic",
+  "nav": [
+    { "label": "Home", "href": "./index.html" },
+    { "label": "Doctors", "href": "./doctors.html" },
+    { "label": "Services", "href": "./services.html" },
+    { "label": "Medical Tourism", "href": "./medical-tourism.html" },
+    { "label": "Kidney Transplant Dept", "href": "./kidney.html" },
+    { "label": "About", "href": "./about.html" },
+    { "label": "Reviews", "href": "./reviews.html" }
+  ],
+  "footerLinks": [
+    { "label": "Privacy", "href": "#" },
+    { "label": "Terms", "href": "#" },
+    { "label": "Contact", "href": "./contact.html" },
+    { "label": "Admin", "href": "./admin/index.html" }
+  ],
+  "contact": {
+    "phone": "+92-300-1234567",
+    "email": "info@kidneyclinic.com",
+    "location": "Islamabad, Pakistan"
+  },
+  "parentCompany": {
+    "name": "The Health Care Associates",
+    "tagline": "A project of The Health Care Associates",
+    "logo": "./assets/healthcare.png",
+    "url": ""
+  },
+  "description": "Empowering patients worldwide with world-class kidney care and innovative transplant solutions. 50+ experts ready to transform your health.",
+  "socialMedia": [
+    { "platform": "Facebook", "url": "https://facebook.com", "icon": "facebook" },
+    { "platform": "Twitter", "url": "https://twitter.com", "icon": "twitter" },
+    { "platform": "Instagram", "url": "https://instagram.com", "icon": "instagram" },
+    { "platform": "LinkedIn", "url": "https://linkedin.com", "icon": "linkedin" },
+    { "platform": "YouTube", "url": "https://youtube.com", "icon": "youtube" }
+  ]
+}
+
+
+

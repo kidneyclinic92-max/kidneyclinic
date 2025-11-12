@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urological Services | Clinic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+  <style>
+    body { background: #000000 !important; color: #ffffff; }
+    .service-hero {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=1600') center/cover;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .service-hero h1 {
+      font-size: 3.5rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+    .service-hero p {
+      font-size: 1.3rem;
+      color: var(--muted);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .service-details {
+      padding: 60px 20px;
+    }
+    .service-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+      align-items: stretch; /* ensure equal card height per row */
+      grid-auto-flow: row;   /* maintain strict grid order */
+    }
+     
+
+   
+    .service-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 30px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex;              /* uniform content orientation */
+      flex-direction: column;
+      justify-content: flex-start;
+      height: 340px;              /* force identical heights for every card */
+      overflow: hidden;           /* keep layout tidy if content is longer */
+    }
+    .service-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 40px rgba(191,78,78,0.4);
+    }
+    .service-item h3 {
+      color: var(--accent);
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+    }
+    .service-item p {
+      color: var(--muted);
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  
+  <main>
+    <section class="service-hero">
+      <div>
+        <h1>Urological Services</h1>
+        <p>Comprehensive urologic care including endoscopic, laparoscopic and stone management.</p>
+      </div>
+    </section>
+
+    <section class="service-details">
+      <div class="container">
+        <h2 class="section-title">Our Urological Services</h2>
+        <p class="section-sub" style="max-width: 800px; margin: 0 auto 40px;">
+          We offer complete urological care with state-of-the-art technology and internationally trained specialists. 
+          Our department handles everything from routine diagnostics to complex surgical interventions.
+        </p>
+
+        <div class="service-list">
+          <div class="service-item">
+            <h3>Diagnostic Procedures</h3>
+            <p>Comprehensive diagnostic workup including cystoscopy, urodynamic studies, imaging, and laboratory analysis to accurately identify urological conditions.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Minimally Invasive Surgeries</h3>
+            <p>Advanced laparoscopic and robotic-assisted procedures offering faster recovery, minimal scarring, and reduced post-operative discomfort.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Kidney Stone Management</h3>
+            <p>Complete stone treatment including ESWL (shock wave lithotripsy), ureteroscopy, PCNL, and preventive metabolic evaluation.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Prostate Health Treatments</h3>
+            <p>Management of BPH, prostatitis, and prostate cancer including TURP, laser ablation, and advanced cancer therapies.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Bladder Control Solutions</h3>
+            <p>Treatment for incontinence, overactive bladder, and neurogenic bladder disorders using medications, behavioral therapy, and surgical options.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Pediatric Urology</h3>
+            <p>Specialized care for children including treatment of congenital anomalies, reflux, enuresis, and hypospadias repair.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Infertility Treatments</h3>
+            <p>Male infertility evaluation and treatment including varicocele repair, sperm retrieval procedures, and hormonal therapy.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Urological Cancer Management</h3>
+            <p>Comprehensive cancer care for kidney, bladder, prostate, and testicular cancers with surgical, medical, and radiation oncology expertise.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Female Urology</h3>
+            <p>Specialized care for female urological conditions including pelvic floor disorders, recurrent UTIs, and urethral disorders.</p>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px;">
+          <a href="contact.html" class="btn primary" style="font-size: 1.1rem; padding: 15px 40px;">Book a Consultation</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="./assets/js/layout.js" defer></script>
+  <script src="./assets/js/animation.js" defer></script>
+  <script>
+    // Animate service items on load
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof gsap !== 'undefined') {
+        gsap.from('.service-item', {
+          opacity: 0,
+          y: 50,
+          stagger: 0.1,
+          duration: 0.8,
+          ease: 'power2.out'
+        });
+      }
+      
+      // Equalize heights per row
+      equalizeRowHeights();
+    });
+
+    // Function to equalize heights in each grid row
+    function equalizeRowHeights() {
+      const items = document.querySelectorAll('.service-item');
+      if (!items.length) return;
+
+      // Group into rows based on top position
+      const rows = {};
+      items.forEach(item => {
+        const top = item.getBoundingClientRect().top;
+        if (!rows[top]) rows[top] = [];
+        rows[top].push(item);
+      });
+
+      // For each row, set max height
+      Object.values(rows).forEach(rowItems => {
+        let maxHeight = 0;
+        rowItems.forEach(item => {
+          item.style.height = 'auto'; // reset
+          maxHeight = Math.max(maxHeight, item.offsetHeight);
+        });
+        rowItems.forEach(item => {
+          item.style.height = `${maxHeight}px`;
+        });
+      });
+    }
+
+    // Recalculate on resize
+    window.addEventListener('resize', equalizeRowHeights);
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nephrology Services | Clinic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+  <style>
+    body { background: #000000 !important; color: #ffffff; }
+    .service-hero {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=1600') center/cover;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .service-hero h1 {
+      font-size: 3.5rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+    }
+    .service-hero p {
+      font-size: 1.3rem;
+      color: var(--muted);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .service-details {
+      padding: 60px 20px;
+    }
+    .service-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+      align-items: stretch;
+      grid-auto-flow: row;
+    }
+    .service-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 30px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      height: 320px;
+      overflow: hidden;
+    }
+    .service-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 40px rgba(191,78,78,0.4);
+    }
+    .service-item h3 {
+      color: var(--accent);
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+    }
+    .service-item p {
+      color: var(--muted);
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  
+  <main>
+    <section class="service-hero">
+      <div>
+        <h1>Nephrology Services</h1>
+        <p>Kidney care across CKD, hypertension, dialysis programs and follow-up.</p>
+      </div>
+    </section>
+
+    <section class="service-details">
+      <div class="container">
+        <h2 class="section-title">Our Nephrology Services</h2>
+        <p class="section-sub" style="max-width: 800px; margin: 0 auto 40px;">
+          Our nephrology department provides comprehensive kidney care from early detection through advanced treatment. 
+          We specialize in managing complex kidney diseases with a multidisciplinary approach.
+        </p>
+
+        <div class="service-list">
+          <div class="service-item">
+            <h3>Chronic Kidney Disease Management</h3>
+            <p>Complete CKD care including stages 1-5 management, progression monitoring, and lifestyle counseling to preserve kidney function.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Hypertension & Kidney Health</h3>
+            <p>Specialized management of hypertension related to kidney disease, including resistant hypertension and renovascular disorders.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Dialysis Programs</h3>
+            <p>State-of-the-art hemodialysis and peritoneal dialysis services with comprehensive training, monitoring, and family support programs.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Kidney Function Testing</h3>
+            <p>Advanced diagnostic capabilities including GFR assessment, proteinuria evaluation, and comprehensive metabolic panels.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Electrolyte & Fluid Balance</h3>
+            <p>Expert management of complex electrolyte disorders, acid-base imbalances, and fluid overload conditions.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Glomerular Disease Treatment</h3>
+            <p>Specialized care for glomerulonephritis, nephrotic syndrome, IgA nephropathy, and other primary kidney diseases.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Kidney Biopsy & Diagnostics</h3>
+            <p>Image-guided kidney biopsies performed by experienced nephrologists with rapid pathology turnaround.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Pre-Transplant Evaluation</h3>
+            <p>Comprehensive assessment for transplant candidacy including medical, surgical, and psychosocial evaluation.</p>
+          </div>
+
+          <div class="service-item">
+            <h3>Post-Transplant Follow-up Care</h3>
+            <p>Long-term monitoring of transplant recipients including immunosuppression management and complication prevention.</p>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px;">
+          <a href="contact.html" class="btn primary" style="font-size: 1.1rem; padding: 15px 40px;">Schedule an Appointment</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="./assets/js/layout.js" defer></script>
+  <script src="./assets/js/animation.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof gsap !== 'undefined') {
+        gsap.from('.service-item', {
+          opacity: 0,
+          y: 50,
+          stagger: 0.1,
+          duration: 0.8,
+          ease: 'power2.out'
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,188 @@
+{
+  "hero": {
+    "badge": "Kidney Transplant Center of Excellence",
+    "title": "Advanced Kidney Transplant & Renal Care",
+    "subtitle": "From early diagnosis to lifelong post-transplant support, our multidisciplinary team delivers compassionate, evidence-based care that restores quality of life.",
+    "backgroundImage": "./assets/transplant.png"
+  },
+  "stats": [
+    {
+      "icon": "🫁",
+      "value": "1,200+",
+      "label": "Successful Kidney Transplants",
+      "description": "Decades of experience with exceptional graft survival outcomes."
+    },
+    {
+      "icon": "⏱️",
+      "value": "24/7",
+      "label": "Transplant ICU Coverage",
+      "description": "Dedicated renal critical care specialists monitor every patient."
+    },
+    {
+      "icon": "🤝",
+      "value": "3:1",
+      "label": "Patient-to-Nurse Ratio",
+      "description": "Personalized attention during recovery and rehabilitation."
+    },
+    {
+      "icon": "🌍",
+      "value": "35+",
+      "label": "Countries Served",
+      "description": "International patients receive concierge support from arrival to follow-up."
+    }
+  ],
+  "procedures": {
+    "title": "Kidney Transplant Procedures & Specialized Therapies",
+    "subtitle": "We tailor every procedure to match the medical, immunological, and lifestyle needs of each patient.",
+    "items": [
+      {
+        "icon": "🫂",
+        "name": "Living Donor Kidney Transplant",
+        "description": "Ideal for patients who have a compatible family member or altruistic donor. Offers the shortest wait time and highest success rates.",
+        "focusPoints": [
+          "Comprehensive donor-recipient compatibility testing",
+          "Minimally invasive donor nephrectomy with rapid recovery",
+          "Immunosuppression optimization personalized for both donor and recipient"
+        ]
+      },
+      {
+        "icon": "🩺",
+        "name": "Deceased Donor Kidney Transplant",
+        "description": "Coordinated via national and international registry partnerships with priority pathways for high-risk renal failure cases.",
+        "focusPoints": [
+          "ABO blood group compatible and ABO-incompatible protocols",
+          "Cold ischemia time management using advanced perfusion systems",
+          "Immediate post-operative dialysis and graft surveillance"
+        ]
+      },
+      {
+        "icon": "🔄",
+        "name": "Paired Kidney Exchange & Swap Programs",
+        "description": "Helps patients with immunological incompatibilities find matching donors through our collaborative pairing network.",
+        "focusPoints": [
+          "Advanced HLA antibody profiling and cross-matching",
+          "National registry linkage accelerating match opportunities",
+          "Legal and ethical counseling for international donor participation"
+        ]
+      },
+      {
+        "icon": "🧬",
+        "name": "Desensitization & High-Risk Transplants",
+        "description": "Enables transplantation for sensitized patients with high antibody titers or positive cross-matches through cutting-edge therapies.",
+        "focusPoints": [
+          "Plasmapheresis, IVIG, and monoclonal antibody therapy",
+          "Immunological surveillance with real-time donor-specific antibody tracking",
+          "Continuous infection prevention and prophylaxis protocols"
+        ]
+      }
+    ],
+    "footnote": "Our transplant board reviews every case to design the safest path to transplantation, aligning medical indications with the patient’s goals."
+  },
+  "journey": {
+    "title": "Your Kidney Transplant Journey",
+    "subtitle": "A transparent, step-by-step pathway that keeps you informed and supported at every milestone.",
+    "steps": [
+      {
+        "title": "1. Referral & Multidisciplinary Evaluation",
+        "description": "Nephrologists, surgeons, cardiologists, and psychologists conduct a full fitness assessment along with lab and imaging workups."
+      },
+      {
+        "title": "2. Donor Matching & Readiness",
+        "description": "We coordinate donor compatibility testing, optimize chronic conditions, and prepare you with nutrition and dialysis support if required."
+      },
+      {
+        "title": "3. Surgery & Critical Care",
+        "description": "Our transplant OR and ICU teams perform the surgery, followed by real-time hemodynamic and graft function monitoring."
+      },
+      {
+        "title": "4. Recovery & Rehabilitation",
+        "description": "Specialized renal physiotherapists, dietitians, and pharmacists build your recovery plan, focusing on strength, nutrition, and medication adherence."
+      },
+      {
+        "title": "5. Lifelong Follow-Up",
+        "description": "Telemedicine check-ins, lab tracking, and adherence coaching ensure sustained graft health and a return to normal life."
+      }
+    ],
+    "note": "Families are invited to every planning session so everyone understands the timeline, expectations, and support resources."
+  },
+  "symptoms": {
+    "title": "When to See a Kidney Specialist",
+    "subtitle": "Early evaluation can preserve kidney function and prevent complications. Listen to your body and act quickly when these signs appear.",
+    "categories": [
+      {
+        "title": "Physical Signals",
+        "items": [
+          "Swelling in ankles, feet, or around the eyes that doesn’t resolve with rest",
+          "Persistent fatigue, weakness, or shortness of breath without exertion",
+          "Sudden weight gain, loss of appetite, or metallic taste in the mouth"
+        ]
+      },
+      {
+        "title": "Urinary Changes",
+        "items": [
+          "Foamy, bubbly, or dark-colored urine indicating protein or blood loss",
+          "Noticeably reduced urine output or increased nighttime urination",
+          "Pain or burning sensations during urination accompanied by fever"
+        ]
+      },
+      {
+        "title": "Systemic Red Flags",
+        "items": [
+          "Uncontrolled blood pressure despite medication",
+          "Family history of polycystic kidney disease or autoimmune disorders",
+          "Diabetes with worsening kidney function markers (creatinine, eGFR)"
+        ]
+      }
+    ],
+    "cta": {
+      "text": "Schedule a renal health screening",
+      "link": "./contact.html"
+    }
+  },
+  "support": {
+    "title": "Beyond Surgery: Support That Sustains You",
+    "pillars": [
+      {
+        "icon": "🍎",
+        "title": "Nutrition & Lifestyle Clinics",
+        "description": "Renal dietitians tailor meal plans and hydration strategies to protect your graft and overall health."
+      },
+      {
+        "icon": "💊",
+        "title": "Medication Management",
+        "description": "Clinical pharmacists monitor immunosuppressant levels, drug interactions, and adherence coaching."
+      },
+      {
+        "icon": "🧠",
+        "title": "Mental Wellness",
+        "description": "Psychologists and peer mentors help you navigate the emotional journey before and after transplant."
+      }
+    ],
+    "resources": [
+      {
+        "title": "Kidney Transplant Preparation Guide",
+        "link": "#",
+        "description": "Download a comprehensive checklist covering labs, logistics, and caregiver planning."
+      },
+      {
+        "title": "Caregiver Training Workshops",
+        "link": "#",
+        "description": "Interactive sessions that teach your support system the essentials of post-transplant care."
+      },
+      {
+        "title": "Telehealth Follow-Up Portal",
+        "link": "#",
+        "description": "Secure virtual visits for lab reviews, medication adjustments, and symptom triage."
+      }
+    ]
+  },
+  "cta": {
+    "heading": "Ready to Discuss Your Transplant Options?",
+    "description": "Our transplant coordinators will review your medical history, answer your questions, and help you chart the safest path to a new kidney.",
+    "buttonText": "Talk to a Transplant Coordinator",
+    "buttonLink": "./contact.html"
+  }
+}
+
+
+

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Service Details | Clinic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+  <style>
+    body { background: #0a1929 !important; color: #e3e8ef; }
+    .service-hero {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(rgba(10,25,41,0.8), rgba(10,25,41,0.9)), var(--hero-bg) center/cover;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .service-hero h1 {
+      font-size: 3.5rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+    .service-hero p {
+      font-size: 1.3rem;
+      color: #94a3b8;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .service-details {
+      padding: 60px 20px;
+    }
+    .service-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      align-items: stretch;
+    }
+    @media (max-width: 1024px) {
+      .service-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      .service-list {
+        grid-template-columns: 1fr;
+      }
+    }
+    .service-item {
+      background: #1e293b;
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 14px;
+      padding: 30px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .service-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 40px rgba(30,58,138,0.6);
+      border-color: rgba(59,130,246,0.5);
+    }
+    .service-item h3 {
+      color: var(--accent);
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+    }
+    .service-item p {
+      color: #cbd5e1;
+      line-height: 1.8;
+    }
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: #94a3b8;
+    }
+    .error {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--accent);
+    }
+    .section-sub {
+      color: #94a3b8 !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="site-header"></div>
+  
+  <main id="main-content">
+    <div class="loading">
+      <h2>Loading service details...</h2>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  
+  <script src="./assets/js/layout.js" defer></script>
+  <script src="./assets/js/animation.js" defer></script>
+  <script>
+    const API_BASE = 'http://localhost:3001';
+    
+    async function loadServiceDetails() {
+      try {
+        // Get service ID from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const serviceId = urlParams.get('id');
+        
+        if (!serviceId) {
+          throw new Error('No service ID provided');
+        }
+        
+        // Fetch service from API
+        const response = await fetch(`${API_BASE}/api/services/${serviceId}`);
+        if (!response.ok) {
+          throw new Error('Service not found');
+        }
+        
+        const service = await response.json();
+        
+        // Update page title
+        document.title = `${service.name} | Clinic`;
+        
+        // Set hero background if image exists
+        if (service.image) {
+          document.documentElement.style.setProperty('--hero-bg', `url(${service.image})`);
+        }
+        
+        // Render service details
+        const mainContent = document.getElementById('main-content');
+        mainContent.innerHTML = `
+          <section class="service-hero">
+            <div>
+              <h1>${service.name}</h1>
+              <p>${service.summary || ''}</p>
+            </div>
+          </section>
+
+          <section class="service-details">
+            <div class="container">
+              <h2 class="section-title">Our ${service.name}</h2>
+              <p class="section-sub" style="max-width: 800px; margin: 0 auto 40px;">
+                We offer comprehensive care with state-of-the-art technology and internationally trained specialists.
+              </p>
+
+              ${service.details && service.details.length > 0 ? `
+                <div class="service-list">
+                  ${service.details.map((detail, idx) => {
+                    const videoUrl = service.detailVideos && service.detailVideos[idx] ? service.detailVideos[idx] : null;
+                    
+                    // Helper functions
+                    const isYouTubeOrVimeo = (url) => {
+                      if (!url) return false;
+                      return url.includes('youtube.com') || url.includes('youtu.be') || url.includes('vimeo.com');
+                    };
+                    
+                    const getYouTubeEmbedUrl = (url) => {
+                      if (url.includes('youtu.be/')) {
+                        const id = url.split('youtu.be/')[1].split('?')[0];
+                        return `https://www.youtube.com/embed/${id}`;
+                      } else if (url.includes('youtube.com/watch?v=')) {
+                        const id = url.split('watch?v=')[1].split('&')[0];
+                        return `https://www.youtube.com/embed/${id}`;
+                      } else if (url.includes('youtube.com/embed/')) {
+                        return url;
+                      }
+                      return url;
+                    };
+                    
+                    const getVimeoEmbedUrl = (url) => {
+                      if (url.includes('vimeo.com/')) {
+                        const id = url.split('vimeo.com/')[1].split('?')[0];
+                        return `https://player.vimeo.com/video/${id}`;
+                      }
+                      return url;
+                    };
+                    
+                    return `
+                    <div class="service-item">
+                      <h3>${detail}</h3>
+                      ${videoUrl ? `
+                        <div style="margin: 20px 0; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,0.3);">
+                          ${isYouTubeOrVimeo(videoUrl) ? (
+                            videoUrl.includes('youtube') ? 
+                              `<iframe src="${getYouTubeEmbedUrl(videoUrl)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;min-height:300px;display:block;"></iframe>` :
+                              `<iframe src="${getVimeoEmbedUrl(videoUrl)}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;min-height:300px;display:block;"></iframe>`
+                          ) : 
+                          `<video controls style="width:100%;min-height:300px;display:block;object-fit:cover;">
+                            <source src="${videoUrl}" type="video/mp4">
+                            Your browser does not support the video tag.
+                          </video>`
+                          }
+                        </div>
+                      ` : ''}
+                      <p>Professional ${detail.toLowerCase()} services with expert care and advanced medical technology.</p>
+                    </div>
+                  `;
+                  }).join('')}
+                </div>
+              ` : `
+                <p style="text-align: center; color: var(--muted);">
+                  Detailed information about this service will be available soon.
+                </p>
+              `}
+
+              <div style="text-align: center; margin-top: 60px;">
+                <a href="contact.html" class="btn primary" style="font-size: 1.1rem; padding: 15px 40px;">Book a Consultation</a>
+              </div>
+            </div>
+          </section>
+        `;
+        
+        // Equalize heights after content is loaded
+        equalizeCardHeights();
+        
+      } catch (error) {
+        console.error('Error loading service:', error);
+        document.getElementById('main-content').innerHTML = `
+          <div class="error">
+            <h2>Service Not Found</h2>
+            <p>${error.message}</p>
+            <a href="services.html" class="btn primary" style="margin-top: 20px; display: inline-block;">Back to Services</a>
+          </div>
+        `;
+      }
+    }
+    
+    // Load service details when page loads
+    document.addEventListener('DOMContentLoaded', loadServiceDetails);
+
+    // Equalize heights function
+    function equalizeCardHeights() {
+      const items = document.querySelectorAll('.service-item');
+      if (items.length === 0) return;
+      
+      // Reset heights
+      items.forEach(item => item.style.height = 'auto');
+      
+      // Find max height
+      let maxHeight = 0;
+      items.forEach(item => {
+        maxHeight = Math.max(maxHeight, item.offsetHeight);
+      });
+      
+      // Set all to max height
+      items.forEach(item => {
+        item.style.height = `${maxHeight}px`;
+      });
+    }
+
+    // Run after full load and on resize
+    window.addEventListener('load', equalizeCardHeights);
+    window.addEventListener('resize', () => setTimeout(equalizeCardHeights, 100));
+  </script>
+</body>
+</html>

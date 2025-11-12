@@ -1,0 +1,88 @@
+{
+  "hero": {
+    "title": "Medical Tourism Excellence",
+    "subtitle": "World-class kidney care for international patients with seamless travel coordination"
+  },
+  "benefits": [
+    {
+      "icon": "🌍",
+      "title": "Global Access",
+      "text": "Access world-class kidney care regardless of your location. Our international patient program brings expert medical treatment to patients from around the globe."
+    },
+    {
+      "icon": "💰",
+      "title": "Cost-Effective Care",
+      "text": "Receive high-quality medical care at competitive prices without compromising on quality or safety standards."
+    },
+    {
+      "icon": "🏆",
+      "title": "Expert Medical Team",
+      "text": "Work with internationally recognized nephrologists and transplant surgeons with decades of experience."
+    },
+    {
+      "icon": "⚡",
+      "title": "Faster Treatment",
+      "text": "Reduced waiting times compared to many countries, allowing you to receive timely care when you need it most."
+    }
+  ],
+  "healthGateways": {
+    "title": "Our Tourism Partner: Health Gateways",
+    "description": "Health Gateways is our trusted medical tourism partner, dedicated to making your healthcare journey seamless and stress-free. They provide comprehensive support services to ensure international patients receive the best possible care and experience throughout their medical journey.",
+    "services": [
+      {
+        "icon": "✈️",
+        "title": "Travel Coordination",
+        "description": "Comprehensive travel arrangements including flights, accommodation, and local transportation. Health Gateways ensures your journey is comfortable and well-organized."
+      },
+      {
+        "icon": "📋",
+        "title": "Visa & Documentation",
+        "description": "Expert assistance with visa applications, medical documentation, and all required paperwork. They handle the complex process so you can focus on your health."
+      },
+      {
+        "icon": "🏥",
+        "title": "Medical Coordination",
+        "description": "Seamless coordination between your home country and our clinic for all medical needs, including pre-travel consultations, medical records transfer, and follow-up care."
+      },
+      {
+        "icon": "💬",
+        "title": "24/7 Support",
+        "description": "Round-the-clock support in multiple languages to assist you throughout your journey, from initial inquiry to post-treatment follow-up."
+      },
+      {
+        "icon": "🏨",
+        "title": "Accommodation Services",
+        "description": "Help with finding comfortable, convenient accommodation near the clinic, ensuring you're close to your medical care when needed."
+      },
+      {
+        "icon": "🌐",
+        "title": "Cultural Assistance",
+        "description": "Support with language barriers, cultural adaptation, and local guidance to make your stay as comfortable and stress-free as possible."
+      }
+    ],
+    "contact": {
+      "email": "info@healthgateways.com",
+      "phone": "+1-800-HEALTH-GW",
+      "website": "https://www.healthgateways.com"
+    }
+  },
+  "process": [
+    {
+      "title": "Initial Consultation",
+      "description": "Contact Health Gateways or our clinic directly. Our team will assess your medical needs and provide a comprehensive treatment plan."
+    },
+    {
+      "title": "Travel Planning",
+      "description": "Health Gateways coordinates all travel arrangements, visa processing, and accommodation to ensure a smooth journey."
+    },
+    {
+      "title": "Medical Treatment",
+      "description": "Receive world-class medical care from our expert team in state-of-the-art facilities with personalized attention."
+    },
+    {
+      "title": "Recovery & Follow-up",
+      "description": "Post-treatment care and recovery support, with continued coordination for follow-up consultations and care."
+    }
+  ]
+}
+
