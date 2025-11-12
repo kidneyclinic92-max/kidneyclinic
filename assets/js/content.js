@@ -3,7 +3,10 @@ async function loadJSON(path){
 }
 
 // API base URL
-const API_BASE = 'http://localhost:3001';
+const DEFAULT_PRODUCTION_API = 'https://kidneyclinic-api.onrender.com'; // update after deploying backend
+const API_BASE = (typeof window !== 'undefined' && window.location && window.location.hostname === 'localhost')
+  ? 'http://localhost:3001'
+  : ((typeof window !== 'undefined' && window.__CONFIG__ && window.__CONFIG__.API_BASE_URL) ? window.__CONFIG__.API_BASE_URL : DEFAULT_PRODUCTION_API);
 
 async function loadFromAPI(endpoint) {
   try {

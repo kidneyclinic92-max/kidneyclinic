@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: kidneyclinic-api
+    env: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: GOOGLE_PLACES_API_KEY
+        sync: false
+      - key: GOOGLE_PLACE_ID
+        value: ChIJyX_92Czt3zgROVbtzjoc42c
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+
+  - type: static
+    name: kidneyclinic-frontend
+    rootDir: .
+    publishDir: .
+    buildCommand: ""
+    envVars:
+      - key: API_BASE_URL
+        value: https://kidneyclinic-api.onrender.com
+
+
