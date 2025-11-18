@@ -317,6 +317,28 @@ async function seedData() {
         console.error('Failed to seed kidney page data:', error.message);
       }
     }
+
+    const podcastCount = await PodcastEpisode.countDocuments();
+    if (podcastCount === 0) {
+      try {
+        const podcastJsonPath = path.resolve(projectRoot, 'data', 'podcasts.json');
+        if (fs.existsSync(podcastJsonPath)) {
+          const podcastData = JSON.parse(fs.readFileSync(podcastJsonPath, 'utf-8'));
+          const episodes = podcastData.episodes || [];
+          if (episodes.length) {
+            await PodcastEpisode.insertMany(episodes.map(ep => ({
+              title: ep.title,
+              description: ep.description,
+              videoUrl: ep.videoUrl,
+              thumbnailUrl: ep.thumbnailUrl
+            })));
+            console.log('Seeded podcast episodes data');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to seed podcast episodes:', error.message);
+      }
+    }
   } catch (error) {
     console.error('Error seeding data:', error);
   }
@@ -340,6 +362,23 @@ const Review = mongoose.model('Review', new mongoose.Schema({
   rating: { type: Number, min: 1, max: 5 },
   text: { type: String },
   videoUrl: { type: String }
+}, { timestamps: true, toJSON }));
+
+const PodcastEpisode = mongoose.model('PodcastEpisode', new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String },
+  videoUrl: { type: String, required: true },
+  thumbnailUrl: { type: String }
+}, { timestamps: true, toJSON }));
+
+const HomepageSlide = mongoose.model('HomepageSlide', new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String },
+  imageUrl: { type: String, default: '' }, // Optional, but required for active slides (validated in API)
+  linkUrl: { type: String, default: '' },
+  linkText: { type: String, default: '' },
+  order: { type: Number, default: 0 },
+  isActive: { type: Boolean, default: true }
 }, { timestamps: true, toJSON }));
 
 const kidneyStatSchema = new mongoose.Schema({
@@ -708,6 +747,123 @@ app.put('/api/reviews/:id', async (req, res) => {
 app.delete('/api/reviews/:id', async (req, res) => {
   await Review.findByIdAndDelete(req.params.id);
   res.json({ ok: true });
+});
+
+// --- Podcasts ---
+app.get('/api/podcasts', async (_req, res) => {
+  const docs = await PodcastEpisode.find();
+  // Sort in memory to avoid Cosmos DB index requirements
+  const episodes = docs.map(doc => doc.toJSON ? doc.toJSON() : doc);
+  episodes.sort((a, b) => {
+    const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+    const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+    return dateB - dateA; // Descending (newest first)
+  });
+  res.json(episodes);
+});
+
+app.post('/api/podcasts', async (req, res) => {
+  try {
+    const { title, description, videoUrl, thumbnailUrl } = req.body;
+    if (!title || !videoUrl) {
+      return res.status(400).json({ error: 'Title and videoUrl are required.' });
+    }
+    const created = await PodcastEpisode.create({
+      title,
+      description,
+      videoUrl,
+      thumbnailUrl
+    });
+    res.status(201).json(created);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.delete('/api/podcasts/:id', async (req, res) => {
+  try {
+    await PodcastEpisode.findByIdAndDelete(req.params.id);
+    res.json({ ok: true });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// --- Homepage Slides ---
+app.get('/api/homepage-slides', async (req, res) => {
+  // If admin query param, return all slides (including inactive)
+  const includeInactive = req.query.admin === 'true';
+  const query = includeInactive ? {} : { isActive: true };
+  const slides = await HomepageSlide.find(query).sort({ order: 1, createdAt: -1 });
+  res.json(slides);
+});
+
+app.post('/api/homepage-slides', async (req, res) => {
+  try {
+    const { title, description, imageUrl, linkUrl, linkText, order, isActive } = req.body;
+    if (!title) {
+      return res.status(400).json({ error: 'Title is required.' });
+    }
+    // Allow empty imageUrl during creation, but require it when updating (handled in PUT)
+    const created = await HomepageSlide.create({
+      title,
+      description: description || '',
+      imageUrl: imageUrl || '',
+      linkUrl: linkUrl || '',
+      linkText: linkText || '',
+      order: order || 0,
+      isActive: isActive !== undefined ? isActive : true
+    });
+    res.status(201).json(created);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.put('/api/homepage-slides/:id', async (req, res) => {
+  try {
+    const { title, imageUrl, isActive } = req.body;
+    console.log('PUT /api/homepage-slides/:id - Received data:', req.body); // Debug log
+    
+    // Validate required fields when updating
+    if (title !== undefined && !title) {
+      return res.status(400).json({ error: 'Title cannot be empty.' });
+    }
+    
+    // Get current slide to check if it's being activated
+    const currentSlide = await HomepageSlide.findById(req.params.id);
+    if (!currentSlide) {
+      return res.status(404).json({ error: 'Slide not found' });
+    }
+    
+    // Only require imageUrl if the slide is being set to active (or is already active)
+    const willBeActive = isActive !== undefined ? isActive : currentSlide.isActive;
+    const newImageUrl = imageUrl !== undefined ? imageUrl : currentSlide.imageUrl;
+    
+    if (willBeActive && !newImageUrl) {
+      return res.status(400).json({ error: 'Image URL is required for active slides.' });
+    }
+    
+    // Update with all provided fields
+    const updateData = { ...req.body };
+    delete updateData.id; // Remove id if present in body
+    
+    const updated = await HomepageSlide.findByIdAndUpdate(req.params.id, updateData, { new: true, runValidators: true });
+    console.log('PUT /api/homepage-slides/:id - Updated slide:', updated); // Debug log
+    res.json(updated);
+  } catch (error) {
+    console.error('PUT /api/homepage-slides/:id - Error:', error); // Debug log
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.delete('/api/homepage-slides/:id', async (req, res) => {
+  try {
+    await HomepageSlide.findByIdAndDelete(req.params.id);
+    res.json({ ok: true });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
 });
 
 // --- Home (single row JSON-ish) ---

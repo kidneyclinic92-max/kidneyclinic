@@ -128,6 +128,152 @@ async function populateHome(){
         </div>
       </div>`;
   }
+  
+  // Load and render homepage slideshow
+  await populateHomepageSlideshow();
+}
+
+async function populateHomepageSlideshow() {
+  const slideshowContainer = document.getElementById('homepage-slideshow');
+  if (!slideshowContainer) return;
+
+  let slides = [];
+  try {
+    slides = await loadFromAPI('/api/homepage-slides');
+    if (!slides || slides.length === 0) {
+      slideshowContainer.style.display = 'none';
+      return;
+    }
+  } catch (error) {
+    console.error('Failed to load homepage slides:', error);
+    slideshowContainer.style.display = 'none';
+    return;
+  }
+
+  if (slides.length === 0) {
+    slideshowContainer.style.display = 'none';
+    return;
+  }
+
+  let currentSlide = 0;
+  const slideInterval = 5000; // 5 seconds per slide
+
+  const renderSlideshow = () => {
+    slideshowContainer.innerHTML = `
+      <div style="max-width: 1200px; margin: 0 auto; width: 100%;">
+        <div style="text-align: center; margin-bottom: 40px;">
+          
+          <h2 style="font-size: clamp(2rem, 4vw, 2.8rem); font-weight: 800; color: #1a2a44; margin: 20px 0; letter-spacing: -0.5px; line-height: 1.2;">
+            Exciting News & Updates
+          </h2>
+          <p style="font-size: 1.1rem; color: #4a6572; max-width: 1000px; margin: 0 auto; line-height: 1.6;">
+            Stay informed with our latest announcements, achievements, and important information
+          </p>
+        </div>
+        <div class="slideshow-wrapper">
+          <div class="slideshow-container">
+          ${slides.map((slide, index) => `
+            <div class="slide ${index === 0 ? 'active' : ''}" data-slide-index="${index}">
+              <div class="slide-background" style="background-image: url('${slide.imageUrl}');"></div>
+              <div class="slide-overlay"></div>
+              <div class="slide-content">
+                <div style="max-width: 1000px; margin: 0 auto; padding: 0 20px;">
+                  ${slide.description ? `<p class="slide-description">${slide.description}</p>` : ''}
+                  ${slide.linkUrl && slide.linkText ? `
+                    <a href="${slide.linkUrl}" class="slide-cta-btn">${slide.linkText}</a>
+                  ` : ''}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        ${slides.length > 1 ? `
+          <div class="slideshow-controls">
+            <button class="slide-nav-btn prev" aria-label="Previous slide">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M15 18l-6-6 6-6"/>
+              </svg>
+            </button>
+            <button class="slide-nav-btn next" aria-label="Next slide">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+            </button>
+          </div>
+          <div class="slideshow-indicators">
+            ${slides.map((_, index) => `
+              <button class="indicator ${index === 0 ? 'active' : ''}" data-slide-index="${index}" aria-label="Go to slide ${index + 1}"></button>
+            `).join('')}
+          </div>
+        ` : ''}
+        </div>
+      </div>
+    `;
+
+    // Add event listeners
+    if (slides.length > 1) {
+      const prevBtn = slideshowContainer.querySelector('.prev');
+      const nextBtn = slideshowContainer.querySelector('.next');
+      const indicators = slideshowContainer.querySelectorAll('.indicator');
+      const slideElements = slideshowContainer.querySelectorAll('.slide');
+
+      const goToSlide = (index) => {
+        slideElements.forEach((slide, i) => {
+          slide.classList.toggle('active', i === index);
+        });
+        indicators.forEach((indicator, i) => {
+          indicator.classList.toggle('active', i === index);
+        });
+        currentSlide = index;
+      };
+
+      const nextSlide = () => {
+        goToSlide((currentSlide + 1) % slides.length);
+      };
+
+      const prevSlide = () => {
+        goToSlide((currentSlide - 1 + slides.length) % slides.length);
+      };
+
+      nextBtn?.addEventListener('click', nextSlide);
+      prevBtn?.addEventListener('click', prevSlide);
+
+      indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => goToSlide(index));
+      });
+
+      // Auto-advance slides
+      let autoSlideInterval = setInterval(nextSlide, slideInterval);
+
+      // Pause on hover
+      slideshowContainer.addEventListener('mouseenter', () => {
+        clearInterval(autoSlideInterval);
+      });
+
+      slideshowContainer.addEventListener('mouseleave', () => {
+        autoSlideInterval = setInterval(nextSlide, slideInterval);
+      });
+
+      // Touch/swipe support
+      let touchStartX = 0;
+      let touchEndX = 0;
+
+      slideshowContainer.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      });
+
+      slideshowContainer.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        if (touchStartX - touchEndX > 50) {
+          nextSlide();
+        } else if (touchEndX - touchStartX > 50) {
+          prevSlide();
+        }
+      });
+    }
+  };
+
+  renderSlideshow();
 }
 
 async function populateDoctors(){
@@ -225,7 +371,7 @@ async function populateServices(){
     }
   }
 
-  mount.innerHTML=`<div class="container">
+  mount.innerHTML=`<div class="container" style="padding-top: 60px;">
     <h1 class="section-title">Our Services</h1>
     <p class="section-sub">Overview of procedures and specialties.</p>
     <div class="cards">
@@ -488,7 +634,7 @@ async function populateKidney(){
         <div style="display:flex;justify-content:center;gap:18px;flex-wrap:wrap;">
           <a href="./contact.html" class="btn primary" style="padding:16px 36px;font-size:1.05rem;">Refer a Patient</a>
           <a href="#kidney-symptoms" class="btn" style="padding:16px 32px;border-color:rgba(255,255,255,0.45);color:#ffffff;">Check Symptoms</a>
-        </div>
+    </div>
       </div>
       <div style="position:absolute;inset:0;background:radial-gradient(circle at 20% 20%, rgba(0,188,212,0.25), transparent 55%),radial-gradient(circle at 80% 30%, rgba(191,78,78,0.25), transparent 50%);mix-blend-mode:screen;z-index:1;"></div>
     </section>
@@ -656,103 +802,103 @@ async function populateAbout(){
   const data=await loadJSON('./data/about.json');
   mount.innerHTML=`
     <!-- Hero Section -->
-    <section style="background: linear-gradient(135deg, #1a2a44 0%, #0d3d4d 100%); color: #ffffff; padding: 120px 20px 100px; text-align: center; position: relative; overflow: hidden;">
+    <section style="background: linear-gradient(135deg, #1a2a44 0%, #0d3d4d 100%); color: #ffffff; padding: clamp(80px, 15vw, 120px) 20px clamp(60px, 12vw, 100px); text-align: center; position: relative; overflow: hidden;">
       <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('https://images.pexels.com/photos/8460157/pexels-photo-8460157.jpeg?auto=compress&cs=tinysrgb&w=1200') center/cover; opacity: 0.12; filter: blur(3px);"></div>
       <div class="container" style="position: relative; z-index: 2; max-width: 1000px; margin: 0 auto;">
-        <h1 style="font-size: 4rem; font-weight: 800; margin-bottom: 24px; letter-spacing: -2px; line-height: 1.1; text-align: center;">About The Kidney Clinic</h1>
-        <p style="font-size: 1.5rem; color: #b0c4de; line-height: 1.8; max-width: 900px; margin: 0 auto; font-weight: 400; text-align: center;">Empowering patients worldwide with world-class kidney care and innovative transplant solutions since our establishment.</p>
+        <h1 style="font-size: clamp(2rem, 8vw, 4rem); font-weight: 800; margin-bottom: 24px; letter-spacing: -2px; line-height: 1.1; text-align: center;">About The Kidney Clinic</h1>
+        <p style="font-size: clamp(1rem, 3vw, 1.5rem); color: #b0c4de; line-height: 1.8; max-width: 900px; margin: 0 auto; font-weight: 400; text-align: center;">Empowering patients worldwide with world-class kidney care and innovative transplant solutions since our establishment.</p>
       </div>
     </section>
 
     <!-- Our Impact Section -->
-    <section style="padding: 100px 20px; background: #ffffff;">
+    <section style="padding: clamp(60px, 12vw, 100px) 20px; background: #ffffff;">
       <div class="container" style="max-width: 1200px; margin: 0 auto;">
-        <h2 style="color: #1a2a44; font-size: 2.8rem; margin-bottom: 60px; text-align: center; font-weight: 700;">Our Impact</h2>
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; justify-items: center;">
-          <div style="background: linear-gradient(145deg, #F0F9FF, #ffffff); border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; text-align: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1);" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
+        <h2 style="color: #1a2a44; font-size: clamp(1.75rem, 6vw, 2.8rem); margin-bottom: 60px; text-align: center; font-weight: 700;">Our Impact</h2>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; align-items: start;" class="about-impact-grid">
+          <div class="about-impact-card" style="background: linear-gradient(145deg, #F0F9FF, #ffffff); border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; text-align: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1);" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
             <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #00BCD4, #0097A7); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(0,188,212,0.3);">
               <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
             </div>
-            <div style="font-size: 3rem; font-weight: 800; color: #1a2a44; margin-bottom: 10px;">50+</div>
-            <div style="color: #4a6572; font-size: 1.1rem; font-weight: 600;">Expert Specialists</div>
+            <div style="font-size: clamp(2rem, 8vw, 3rem); font-weight: 800; color: #1a2a44; margin-bottom: 10px;">50+</div>
+            <div style="color: #4a6572; font-size: clamp(0.95rem, 2.5vw, 1.1rem); font-weight: 600;">Expert Specialists</div>
           </div>
           
-          <div style="background: linear-gradient(145deg, #F0F9FF, #ffffff); border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; text-align: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1);" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
+          <div class="about-impact-card" style="background: linear-gradient(145deg, #F0F9FF, #ffffff); border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; text-align: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1);" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
             <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #BF4E4E, #8B3636); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(191,78,78,0.3);">
               <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
             </div>
-            <div style="font-size: 3rem; font-weight: 800; color: #1a2a44; margin-bottom: 10px;">500+</div>
-            <div style="color: #4a6572; font-size: 1.1rem; font-weight: 600;">Successful Transplants</div>
+            <div style="font-size: clamp(2rem, 8vw, 3rem); font-weight: 800; color: #1a2a44; margin-bottom: 10px;">500+</div>
+            <div style="color: #4a6572; font-size: clamp(0.95rem, 2.5vw, 1.1rem); font-weight: 600;">Successful Transplants</div>
           </div>
           
-          <div style="background: linear-gradient(145deg, #F0F9FF, #ffffff); border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; text-align: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1);" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
+          <div class="about-impact-card" style="background: linear-gradient(145deg, #F0F9FF, #ffffff); border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; text-align: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1);" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
             <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #00BCD4, #0097A7); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(0,188,212,0.3);">
               <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
             </div>
-            <div style="font-size: 3rem; font-weight: 800; color: #1a2a44; margin-bottom: 10px;">98%</div>
-            <div style="color: #4a6572; font-size: 1.1rem; font-weight: 600;">Success Rate</div>
+            <div style="font-size: clamp(2rem, 8vw, 3rem); font-weight: 800; color: #1a2a44; margin-bottom: 10px;">98%</div>
+            <div style="color: #4a6572; font-size: clamp(0.95rem, 2.5vw, 1.1rem); font-weight: 600;">Success Rate</div>
           </div>
           
-          <div style="background: linear-gradient(145deg, #F0F9FF, #ffffff); border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; text-align: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1);" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
+          <div class="about-impact-card" style="background: linear-gradient(145deg, #F0F9FF, #ffffff); border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; text-align: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1);" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
             <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #BF4E4E, #8B3636); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(191,78,78,0.3);">
               <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/></svg>
             </div>
-            <div style="font-size: 3rem; font-weight: 800; color: #1a2a44; margin-bottom: 10px;">30+</div>
-            <div style="color: #4a6572; font-size: 1.1rem; font-weight: 600;">Countries Served</div>
+            <div style="font-size: clamp(2rem, 8vw, 3rem); font-weight: 800; color: #1a2a44; margin-bottom: 10px;">30+</div>
+            <div style="color: #4a6572; font-size: clamp(0.95rem, 2.5vw, 1.1rem); font-weight: 600;">Countries Served</div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- Our Values Section -->
-    <section style="padding: 100px 20px; background: #E0F7FA;">
+    <section style="padding: clamp(60px, 12vw, 100px) 20px; background: #E0F7FA;">
       <div class="container" style="max-width: 1200px; margin: 0 auto;">
-        <h2 style="color: #1a2a44; font-size: 2.8rem; margin-bottom: 60px; text-align: center; font-weight: 700;">Our Values</h2>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; justify-items: center;">
+        <h2 style="color: #1a2a44; font-size: clamp(1.75rem, 6vw, 2.8rem); margin-bottom: 60px; text-align: center; font-weight: 700;">Our Values</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; justify-items: center;" class="about-values-grid">
           <div style="background: #ffffff; border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1); text-align: center; max-width: 500px;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
             <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #00BCD4, #0097A7); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(0,188,212,0.3);">
               <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
             </div>
-            <h3 style="color: #1a2a44; font-size: 1.5rem; margin-bottom: 15px; font-weight: 700;">Innovation First</h3>
-            <p style="color: #4a6572; line-height: 1.8; font-size: 1rem; text-align: center;">We stay at the forefront of medical technology, constantly exploring new treatments and procedures to provide the best possible care for our patients.</p>
+            <h3 style="color: #1a2a44; font-size: clamp(1.2rem, 4vw, 1.5rem); margin-bottom: 15px; font-weight: 700;">Innovation First</h3>
+            <p style="color: #4a6572; line-height: 1.8; font-size: clamp(0.95rem, 2.5vw, 1rem); text-align: center;">We stay at the forefront of medical technology, constantly exploring new treatments and procedures to provide the best possible care for our patients.</p>
           </div>
           
           <div style="background: #ffffff; border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1); text-align: center; max-width: 500px;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
             <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #BF4E4E, #8B3636); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(191,78,78,0.3);">
               <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
             </div>
-            <h3 style="color: #1a2a44; font-size: 1.5rem; margin-bottom: 15px; font-weight: 700;">Patient Success</h3>
-            <p style="color: #4a6572; line-height: 1.8; font-size: 1rem; text-align: center;">Your health and recovery are our success. We build lasting relationships based on trust, exceptional care, and outstanding medical outcomes.</p>
+            <h3 style="color: #1a2a44; font-size: clamp(1.2rem, 4vw, 1.5rem); margin-bottom: 15px; font-weight: 700;">Patient Success</h3>
+            <p style="color: #4a6572; line-height: 1.8; font-size: clamp(0.95rem, 2.5vw, 1rem); text-align: center;">Your health and recovery are our success. We build lasting relationships based on trust, exceptional care, and outstanding medical outcomes.</p>
           </div>
           
           <div style="background: #ffffff; border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1); text-align: center; max-width: 500px;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
             <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #00BCD4, #0097A7); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(0,188,212,0.3);">
               <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
             </div>
-            <h3 style="color: #1a2a44; font-size: 1.5rem; margin-bottom: 15px; font-weight: 700;">Safety & Reliability</h3>
-            <p style="color: #4a6572; line-height: 1.8; font-size: 1rem; text-align: center;">Medical-grade safety protocols and 99.9% operational reliability ensure that every patient receives the highest standard of care and support.</p>
+            <h3 style="color: #1a2a44; font-size: clamp(1.2rem, 4vw, 1.5rem); margin-bottom: 15px; font-weight: 700;">Safety & Reliability</h3>
+            <p style="color: #4a6572; line-height: 1.8; font-size: clamp(0.95rem, 2.5vw, 1rem); text-align: center;">Medical-grade safety protocols and 99.9% operational reliability ensure that every patient receives the highest standard of care and support.</p>
           </div>
           
           <div style="background: #ffffff; border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1); text-align: center; max-width: 500px;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
             <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #BF4E4E, #8B3636); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(191,78,78,0.3);">
               <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
             </div>
-            <h3 style="color: #1a2a44; font-size: 1.5rem; margin-bottom: 15px; font-weight: 700;">Expert Team</h3>
-            <p style="color: #4a6572; line-height: 1.8; font-size: 1rem; text-align: center;">50+ certified specialists with deep expertise in nephrology, transplantation, and critical care, dedicated to your well-being.</p>
+            <h3 style="color: #1a2a44; font-size: clamp(1.2rem, 4vw, 1.5rem); margin-bottom: 15px; font-weight: 700;">Expert Team</h3>
+            <p style="color: #4a6572; line-height: 1.8; font-size: clamp(0.95rem, 2.5vw, 1rem); text-align: center;">50+ certified specialists with deep expertise in nephrology, transplantation, and critical care, dedicated to your well-being.</p>
           </div>
         </div>
       </div>
     </section>
     
     <!-- Location Section -->
-    <section style="padding: 100px 20px; background: #ffffff;">
+    <section style="padding: clamp(60px, 12vw, 100px) 20px; background: #ffffff;">
       <div class="container" style="max-width: 1000px; margin: 0 auto;">
         <div style="text-align: center; margin-bottom: 50px;">
-          <h2 style="color: #1a2a44; font-size: 2.8rem; margin-bottom: 20px; font-weight: 700;">📍 Our Location</h2>
-          <p style="color: #4a6572; font-size: 1.2rem; max-width: 700px; margin: 0 auto;">Visit us at our state-of-the-art facility</p>
+          <h2 style="color: #1a2a44; font-size: clamp(1.75rem, 6vw, 2.8rem); margin-bottom: 20px; font-weight: 700;">📍 Our Location</h2>
+          <p style="color: #4a6572; font-size: clamp(1rem, 3vw, 1.2rem); max-width: 700px; margin: 0 auto;">Visit us at our state-of-the-art facility</p>
         </div>
         <div style="background: #F0F9FF; padding: 40px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,188,212,0.2); border: 2px solid #A5D8DD;">
-          <div style="width: 100%; height: 350px; border-radius: 16px; overflow: hidden; border: 2px solid rgba(191, 78, 78, 0.2); margin-bottom: 25px;">
+          <div style="width: 100%; height: clamp(200px, 50vw, 350px); border-radius: 16px; overflow: hidden; border: 2px solid rgba(191, 78, 78, 0.2); margin-bottom: 25px;">
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3614.2451271923155!2d73.106847!3d33.573121799999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfed2cd8fd7fc9%3A0x67e31c3aceed5639!2sThe%20Kidney%20Clinic!5e1!3m2!1sen!2s!4v1761664752414!5m2!1sen!2s" 
               style="width: 100%; height: 100%; border: none;" 
               allowfullscreen="" 
@@ -910,8 +1056,8 @@ async function populateReviews(){
   if (!combinedReviews.length) {
     mount.innerHTML = `
       <div class="container">
-        <h1 class="section-title" style="text-align: center;">Patient Reviews</h1>
-        <p class="section-sub" style="text-align: center;">What our patients say.</p>
+    <h1 class="section-title" style="text-align: center;">Patient Reviews</h1>
+    <p class="section-sub" style="text-align: center;">What our patients say.</p>
         <div style="text-align:center;padding:40px;border:1px solid var(--border);border-radius:16px;background:#F0F9FF;max-width:720px;margin:0 auto;">
           <p style="margin:0;font-size:1.05rem;color:#4a6572;">Reviews will appear here once they are available.</p>
         </div>
@@ -951,10 +1097,10 @@ async function populateReviews(){
         videoHTML = `
           <div style="margin: 15px 0; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,0.1);">
             ${isYouTubeOrVimeo(videoUrl) ? (
-              videoUrl.includes('youtube') ?
+              videoUrl.includes('youtube') ? 
                 `<iframe src="${getYouTubeEmbedUrl(videoUrl)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;aspect-ratio:16/9;border-radius:12px;display:block;"></iframe>` :
                 `<iframe src="${getVimeoEmbedUrl(videoUrl)}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="width:100%;aspect-ratio:16/9;border-radius:12px;display:block;"></iframe>`
-            ) :
+            ) : 
             `<video controls style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;display:block;">
               <source src="${videoUrl}" type="video/mp4">
               Your browser does not support the video tag.
@@ -977,7 +1123,7 @@ async function populateReviews(){
           ${sourceBadge}
         </div>
         <p class="review-text">"${escapeHTML(review.text || '')}"</p>
-        ${videoHTML}
+          ${videoHTML}
       </article>
     `;
   }).join('');
@@ -992,6 +1138,94 @@ async function populateReviews(){
   </div>`
 }
 
+async function populatePodcast(){
+  const mount=document.getElementById('podcast');
+  if(!mount) return;
+
+  const isYouTubeOrVimeo = (url='') => /youtu\.?be|vimeo/.test(url);
+  const getYouTubeEmbedUrl = (url) => {
+    if (url.includes('youtu.be/')) {
+      const id = url.split('youtu.be/')[1].split('?')[0];
+      return `https://www.youtube.com/embed/${id}`;
+    } else if (url.includes('watch?v=')) {
+      const id = url.split('watch?v=')[1].split('&')[0];
+      return `https://www.youtube.com/embed/${id}`;
+    }
+    return url;
+  };
+  const getVimeoEmbedUrl = (url) => {
+    if (url.includes('vimeo.com/')) {
+      const id = url.split('vimeo.com/')[1].split('?')[0];
+      return `https://player.vimeo.com/video/${id}`;
+    }
+    return url;
+  };
+
+  let episodes=[];
+  try{
+    episodes = await loadFromAPI('/api/podcasts');
+  }catch(error){
+    console.error('Failed to load podcasts from API:', error);
+    try{
+      const fallback = await loadJSON('./data/podcasts.json');
+      episodes = fallback.episodes || [];
+    }catch(_){
+      episodes=[];
+    }
+  }
+
+  if(!episodes || episodes.length===0){
+    mount.innerHTML=`
+      <div class="container podcast-coming-soon">
+        <div class="podcast-card">
+          <div class="badge">Podcast</div>
+          <h1>Kidney Clinic Podcast</h1>
+          <p>Our podcast series featuring transplant stories, medical breakthroughs, and expert conversations is on the way.</p>
+          <div class="podcast-placeholder">
+            <div class="wave"></div>
+            <div class="wave"></div>
+            <div class="wave"></div>
+          </div>
+          <div class="coming-soon-tag">Coming Soon</div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const cards = episodes.map(ep => {
+    const embed = ep.videoUrl ? (
+      isYouTubeOrVimeo(ep.videoUrl)
+        ? (ep.videoUrl.includes('vimeo') 
+            ? `<iframe src="${getVimeoEmbedUrl(ep.videoUrl)}" title="${ep.title}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`
+            : `<iframe src="${getYouTubeEmbedUrl(ep.videoUrl)}" title="${ep.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+          )
+        : `<video controls preload="metadata"><source src="${ep.videoUrl}" type="video/mp4">Your browser does not support the video tag.</video>`
+    ) : '';
+
+    return `
+      <article class="podcast-episode">
+        <div class="podcast-embed">${embed}</div>
+        <h3>${ep.title}</h3>
+        <p>${ep.description || 'Episode summary coming soon.'}</p>
+      </article>
+    `;
+  }).join('');
+
+  mount.innerHTML=`
+    <div class="container podcast-library">
+      <div class="podcast-header">
+        <span class="badge">Podcast</span>
+        <h1>Kidney Clinic Podcast</h1>
+        <p>Conversations with surgeons, transplant coordinators, and patients highlighting breakthroughs in renal care.</p>
+      </div>
+      <div class="podcast-grid">
+        ${cards}
+      </div>
+    </div>
+  `;
+}
+
 (async function init(){
   await Promise.all([
     populateHome(),
@@ -1001,7 +1235,8 @@ async function populateReviews(){
     populateKidney(),
     populateAbout(),
     populateContact(),
-    populateReviews()
+    populateReviews(),
+    populatePodcast()
   ]);
 })();
 

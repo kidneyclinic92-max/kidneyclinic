@@ -44,7 +44,7 @@ async function buildFooter(cfg){
   const contact = cfg.contact || {};
   const socialMedia = cfg.socialMedia || [];
   const navLinks = cfg.nav || [];
-  const quickLinkExclusions = new Set(['Home', 'Medical Tourism', 'Kidney Transplant Dept', 'Reviews']);
+  const quickLinkExclusions = new Set(['Home', 'Medical Tourism', 'Kidney Transplant Dept', 'Reviews', 'Podcast']);
   const filteredNavLinks = navLinks.filter(nav => !quickLinkExclusions.has(nav.label));
   const description = cfg.description || 'Empowering patients worldwide with world-class kidney care and innovative transplant solutions.';
   

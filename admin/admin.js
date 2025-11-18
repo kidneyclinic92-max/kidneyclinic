@@ -112,7 +112,7 @@ class AdminPanel {
   async loadAllData() {
     try {
       const api = this.getApiBase();
-      const [doctors, services, achievements, reviews, home, appointments, medicalTourism, kidney] = await Promise.all([
+      const [doctors, services, achievements, reviews, home, appointments, medicalTourism, kidney, podcasts, homepageSlides] = await Promise.all([
         this.loadJSON(`${api}/api/doctors`),
         this.loadJSON(`${api}/api/services`),
         this.loadJSON(`${api}/api/achievements`),
@@ -120,10 +120,12 @@ class AdminPanel {
         this.loadJSON(`${api}/api/home`),
         this.loadJSON(`${api}/api/appointments`),
         this.loadJSON(`${api}/api/medical-tourism`),
-        this.loadJSON(`${api}/api/kidney`)
+        this.loadJSON(`${api}/api/kidney`),
+        this.loadJSON(`${api}/api/podcasts`),
+        this.loadJSON(`${api}/api/homepage-slides?admin=true`)
       ]);
 
-      this.currentData = { doctors, services, achievements, reviews, home, appointments, medicalTourism, kidney };
+      this.currentData = { doctors, services, achievements, reviews, home, appointments, medicalTourism, kidney, podcasts, homepageSlides };
 
       this.updateDashboard();
       console.log('Data loaded:', this.currentData);
@@ -131,7 +133,7 @@ class AdminPanel {
     } catch (error) {
       console.error('Error loading data:', error);
       // Fallback to empty data structure
-      this.currentData = { doctors: [], services: [], achievements: [], reviews: [], home: {}, appointments: [], medicalTourism: {}, kidney: {} };
+      this.currentData = { doctors: [], services: [], achievements: [], reviews: [], home: {}, appointments: [], medicalTourism: {}, kidney: {}, podcasts: [], homepageSlides: [] };
       this.setStatus('Failed to load data from API. Check that the server is running at ' + this.getApiBase());
     }
   }
@@ -146,6 +148,17 @@ class AdminPanel {
 
   getApiBase() {
     return localStorage.getItem('api_base') || 'http://localhost:3001';
+  }
+
+  async checkApiConnection() {
+    const api = this.getApiBase();
+    try {
+      const response = await fetch(`${api}/health`, { method: 'GET' });
+      return response.ok;
+    } catch (error) {
+      console.warn('API health check failed:', error);
+      return false;
+    }
   }
 
   setStatus(message) {
@@ -181,6 +194,9 @@ class AdminPanel {
         break;
       case 'reviews':
         this.renderReviews();
+        break;
+      case 'podcasts':
+        this.renderPodcasts();
         break;
       case 'kidney':
         this.renderKidney();
@@ -1213,6 +1229,138 @@ class AdminPanel {
     `).join('');
   }
 
+  renderPodcasts() {
+    const container = document.getElementById('podcasts-editor');
+    if (!container) return;
+
+    const episodes = (this.currentData.podcasts || []).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    const episodesList = episodes.length ? episodes.map(ep => `
+      <div class="content-item">
+        <div class="content-item-info">
+          <h4>${ep.title}</h4>
+          <p>${ep.description || 'No description provided yet.'}</p>
+          <small style="display:block;color:var(--muted);margin-top:6px;">
+            Added ${ep.createdAt ? new Date(ep.createdAt).toLocaleDateString() : 'recently'}
+          </small>
+          ${ep.videoUrl ? `<a href="${ep.videoUrl}" target="_blank" rel="noopener" style="color:var(--accent);font-weight:600;">View Video ↗</a>` : ''}
+        </div>
+        <div class="content-item-actions">
+          <button class="btn btn-small btn-danger" onclick="admin.deletePodcastEpisode('${ep.id}')">Delete</button>
+        </div>
+      </div>
+    `).join('') : `<p style="color:var(--muted);">No podcast episodes published yet. When you add one, it will appear here and on the public podcast page.</p>`;
+
+    container.innerHTML = `
+      <div style="max-width:900px;margin:0 auto;">
+        <div style="background:var(--card);padding:24px;border-radius:12px;border:1px solid var(--border);box-shadow:0 10px 30px rgba(0,0,0,0.05);">
+          <h3 style="margin-top:0;">Upload Podcast Episode</h3>
+          <p style="color:var(--muted);">Upload MP4/webm files or paste links to YouTube/Vimeo/Azure-hosted episodes.</p>
+          <form id="podcast-upload-form" style="display:grid;gap:16px;margin-top:18px;">
+            <div class="form-group">
+              <label>Episode Title</label>
+              <input type="text" name="title" required placeholder="Episode title" />
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea name="description" rows="3" placeholder="Brief summary"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Upload Video File (optional)</label>
+              <input type="file" name="videoFile" id="podcast-video-file" accept="video/mp4,video/webm,video/*" />
+              <small style="color:var(--muted);display:block;margin-top:6px;">If you upload a file it will be stored via Azure storage.</small>
+            </div>
+            <div class="form-group">
+              <label>Or paste an existing video URL</label>
+              <input type="url" name="videoUrl" id="podcast-video-url" placeholder="https://youtube.com/watch?v=..." />
+              <small style="color:var(--muted);display:block;margin-top:6px;">Use this if the episode already lives on YouTube, Vimeo, etc.</small>
+            </div>
+            <button type="submit" class="btn primary">Publish Episode</button>
+          </form>
+        </div>
+
+        <div style="margin-top:30px;">
+          <h3>Published Episodes</h3>
+          ${episodesList}
+        </div>
+      </div>
+    `;
+
+    const form = document.getElementById('podcast-upload-form');
+    if (form) {
+      form.addEventListener('submit', (e) => this.savePodcastEpisode(e));
+    }
+  }
+
+  async savePodcastEpisode(event) {
+    event.preventDefault();
+    const form = event.target;
+    const title = form.title.value.trim();
+    const description = form.description.value.trim();
+    const fileInput = form.querySelector('#podcast-video-file');
+    const urlInput = form.querySelector('#podcast-video-url');
+    const manualUrl = urlInput?.value.trim();
+
+    if (!title) {
+      alert('Please provide an episode title.');
+      return;
+    }
+
+    let videoUrl = manualUrl || '';
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      const uploadedUrl = await this.uploadImage(fileInput.files[0]);
+      if (!uploadedUrl) {
+        alert('Failed to upload video file.');
+        return;
+      }
+      videoUrl = uploadedUrl;
+    }
+
+    if (!videoUrl) {
+      alert('Please upload a video file or provide a hosted video URL.');
+      return;
+    }
+
+    try {
+      const api = this.getApiBase();
+      const response = await fetch(`${api}/api/podcasts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, description, videoUrl })
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || 'Failed to save episode');
+      }
+
+      alert('Podcast episode published!');
+      form.reset();
+      await this.loadAllData();
+      this.renderPodcasts();
+    } catch (error) {
+      console.error('Podcast save failed:', error);
+      alert('Failed to publish episode. Please try again.');
+    }
+  }
+
+  async deletePodcastEpisode(id) {
+    if (!confirm('Delete this episode?')) return;
+    try {
+      const api = this.getApiBase();
+      const response = await fetch(`${api}/api/podcasts/${id}`, { method: 'DELETE' });
+      if (!response.ok) {
+        throw new Error('Failed to delete episode');
+      }
+      alert('Episode removed.');
+      await this.loadAllData();
+      this.renderPodcasts();
+    } catch (error) {
+      console.error('Delete podcast failed:', error);
+      alert('Could not delete the episode.');
+    }
+  }
+
   renderAppointments() {
     const container = document.getElementById('appointments-list');
     let appointments = this.currentData.appointments || [];
@@ -1444,6 +1592,63 @@ class AdminPanel {
               <input type="text" id="cta-button-link" value="${get('cta_button_link', './contact.html')}" />
             </div>
           </div>
+        </div>
+
+        <h3 style="color: #1a2a44; margin-bottom: 20px; font-weight: 700; margin-top: 40px;">Latest Updates Slideshow</h3>
+        <div style="background: var(--card); padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid var(--border);">
+          <p style="color: var(--muted); margin-bottom: 20px; font-size: 0.9rem;">Manage slides for the homepage slideshow. Slides will appear between the hero section and transplant highlights.</p>
+          <div id="homepage-slides-list" style="border: 2px dashed var(--border); padding: 15px; border-radius: 8px; background: rgba(0,188,212,0.05); margin-bottom: 15px; min-height: 100px;">
+            ${(this.currentData.homepageSlides || []).length > 0 ? (this.currentData.homepageSlides || []).map((slide, idx) => `
+              <div class="slide-row" data-slide-id="${slide.id}" style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 6px; margin-bottom: 15px; border: 1px solid var(--border);">
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 15px; align-items: start;">
+                  <div style="flex: 1;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                      <div>
+                        <label style="font-size: 0.85rem; color: var(--text); display: block; margin-bottom: 5px;">Title *</label>
+                        <input type="text" name="slide-title-${idx}" value="${slide.title || ''}" placeholder="Slide Title" style="width: 100%;" />
+                      </div>
+                      <div>
+                        <label style="font-size: 0.85rem; color: var(--text); display: block; margin-bottom: 5px;">Image URL *</label>
+                        <input type="url" name="slide-image-${idx}" value="${slide.imageUrl || ''}" placeholder="https://example.com/image.jpg" style="width: 100%; margin-bottom: 8px;" />
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                          <input type="file" name="slide-file-${idx}" accept="image/*" style="font-size: 0.85rem; flex: 1;" onchange="admin.handleImageUpload(${idx}, this)" />
+                          <button type="button" onclick="document.querySelector('input[name=\\'slide-file-${idx}\\']').click()" class="btn btn-small" style="padding: 6px 12px; font-size: 0.85rem;">Upload</button>
+                        </div>
+                        ${slide.imageUrl ? `<div class="image-preview-container" style="margin-top: 8px;"><img src="${slide.imageUrl}" alt="Preview" style="max-width: 200px; max-height: 100px; border-radius: 4px; border: 1px solid var(--border); object-fit: contain;" /></div>` : ''}
+                        <div id="upload-status-${idx}" style="font-size: 0.75rem; color: var(--muted); margin-top: 4px;"></div>
+                      </div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                      <label style="font-size: 0.85rem; color: var(--text); display: block; margin-bottom: 5px;">Description</label>
+                      <textarea name="slide-desc-${idx}" rows="2" placeholder="Slide description..." style="width: 100%;">${slide.description || ''}</textarea>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                      <div>
+                        <label style="font-size: 0.85rem; color: var(--text); display: block; margin-bottom: 5px;">Link URL</label>
+                        <input type="url" name="slide-link-${idx}" value="${slide.linkUrl || ''}" placeholder="https://example.com" style="width: 100%;" />
+                      </div>
+                      <div>
+                        <label style="font-size: 0.85rem; color: var(--text); display: block; margin-bottom: 5px;">Link Text</label>
+                        <input type="text" name="slide-link-text-${idx}" value="${slide.linkText || ''}" placeholder="Learn More" style="width: 100%;" />
+                      </div>
+                      <div>
+                        <label style="font-size: 0.85rem; color: var(--text); display: block; margin-bottom: 5px;">Order</label>
+                        <input type="number" name="slide-order-${idx}" value="${slide.order || 0}" placeholder="0" style="width: 100%;" />
+                      </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                      <label style="font-size: 0.85rem; color: var(--text); display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="slide-active-${idx}" ${slide.isActive !== false ? 'checked' : ''} />
+                        <span>Active (visible on homepage)</span>
+                      </label>
+                    </div>
+                  </div>
+                  <button type="button" onclick="admin.deleteHomepageSlide('${slide.id}')" class="btn btn-small btn-danger" style="padding: 8px 16px; margin-top: 22px;">Delete</button>
+                </div>
+              </div>
+            `).join('') : '<p style="color: var(--muted); text-align: center; padding: 15px;">No slides added. Click "Add New Slide" to add one.</p>'}
+          </div>
+          <button type="button" onclick="admin.addHomepageSlide()" class="btn" style="width: 100%;">+ Add New Slide</button>
         </div>
 
         <button class="btn primary" onclick="admin.saveHomepage()" style="width: 100%; padding: 15px; font-size: 1.1rem; margin-top: 20px;">Save All Homepage Changes</button>
@@ -2308,6 +2513,19 @@ class AdminPanel {
     };
     
     try {
+      // Check API connection before saving
+      const isConnected = await this.checkApiConnection();
+      if (!isConnected) {
+        const useDefault = confirm(`Cannot connect to API at ${api}. The server may not be running.\n\nWould you like to try with the default URL (http://localhost:3001)?`);
+        if (useDefault) {
+          localStorage.setItem('api_base', 'http://localhost:3001');
+          // Retry with default URL
+          return this.saveHomepage();
+        } else {
+          throw new Error(`Cannot connect to server at ${api}. Please ensure the server is running.`);
+        }
+      }
+      
       const response = await fetch(`${api}/api/home`, { 
         method: 'PUT', 
         headers: { 'Content-Type': 'application/json' }, 
@@ -2315,11 +2533,229 @@ class AdminPanel {
       });
       if (!response.ok) throw new Error('Failed to save');
     await this.loadAllData();
+      // Save slides
+      await this.saveHomepageSlides();
+      
+      // Reload all data to get updated slides
+      await this.loadAllData();
       this.renderHomepage();
       alert('Homepage saved successfully!');
     } catch (error) {
       console.error('Error saving homepage:', error);
-      alert('Failed to save homepage. Please check the console for details.');
+      alert(`Failed to save homepage: ${error.message || 'Please check the console for details.'}`);
+    }
+  }
+
+  async saveHomepageSlides() {
+    const api = this.getApiBase();
+    const slidesList = document.getElementById('homepage-slides-list');
+    if (!slidesList) return;
+
+    const slideRows = slidesList.querySelectorAll('.slide-row');
+    const slides = Array.from(slideRows).map((row, idx) => {
+      const slideId = row.getAttribute('data-slide-id');
+      const titleInput = row.querySelector(`input[name="slide-title-${idx}"]`);
+      const descInput = row.querySelector(`textarea[name="slide-desc-${idx}"]`);
+      const imageInput = row.querySelector(`input[name="slide-image-${idx}"]`);
+      const linkInput = row.querySelector(`input[name="slide-link-${idx}"]`);
+      const linkTextInput = row.querySelector(`input[name="slide-link-text-${idx}"]`);
+      const orderInput = row.querySelector(`input[name="slide-order-${idx}"]`);
+      const activeInput = row.querySelector(`input[name="slide-active-${idx}"]`);
+      
+      return {
+        id: slideId,
+        title: titleInput?.value || '',
+        description: descInput?.value || '',
+        imageUrl: imageInput?.value || '',
+        linkUrl: linkInput?.value || '',
+        linkText: linkTextInput?.value || '',
+        order: parseInt(orderInput?.value || '0', 10),
+        isActive: activeInput?.checked !== false
+      };
+    });
+    
+    console.log('Saving slides:', slides); // Debug log
+
+    // Update existing slides and create new ones
+    for (const slide of slides) {
+      try {
+        if (slide.id && slide.id !== 'undefined' && slide.id !== 'null') {
+          // Update existing slide - don't send id in body
+          const { id, ...updateData } = slide;
+          const updateResponse = await fetch(`${api}/api/homepage-slides/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updateData)
+          });
+          if (!updateResponse.ok) {
+            const errorData = await updateResponse.json().catch(() => ({ error: 'Unknown error' }));
+            console.error(`Error updating slide ${slide.id}: ${errorData.error}`);
+            throw new Error(`Failed to update slide: ${errorData.error || 'Unknown error'}`);
+          }
+        } else if (slide.title) {
+          // Create new slide if it has title (imageUrl can be added later)
+          const createResponse = await fetch(`${api}/api/homepage-slides`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: slide.title,
+              description: slide.description,
+              imageUrl: slide.imageUrl,
+              linkUrl: slide.linkUrl,
+              linkText: slide.linkText,
+              order: slide.order,
+              isActive: slide.isActive
+            })
+          });
+          if (!createResponse.ok) {
+            const errorData = await createResponse.json().catch(() => ({ error: 'Unknown error' }));
+            const errorMsg = errorData.error || `Failed with status ${createResponse.status}`;
+            console.error(`Error creating slide: ${errorMsg}`);
+            throw new Error(`Failed to create slide: ${errorMsg}`);
+          }
+        }
+      } catch (error) {
+        console.error(`Error saving slide:`, error);
+        let errorMessage = error.message;
+        if (error.message === 'Failed to fetch') {
+          errorMessage = 'Network error: Could not connect to server. Please check if the server is running at ' + api;
+        }
+        throw new Error(errorMessage); // Re-throw with improved message
+      }
+    }
+  }
+
+  async addHomepageSlide() {
+    const api = this.getApiBase();
+    try {
+      const newSlide = {
+        title: 'New Slide',
+        description: '',
+        imageUrl: '',
+        linkUrl: '',
+        linkText: '',
+        order: (this.currentData.homepageSlides || []).length,
+        isActive: true
+      };
+
+      const response = await fetch(`${api}/api/homepage-slides`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSlide)
+      });
+
+      if (response.ok) {
+        await this.loadAllData();
+        this.renderHomepage();
+      } else {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        alert(`Failed to add slide: ${errorData.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error adding slide:', error);
+      alert(`Failed to add slide: ${error.message || 'Please check the console for details.'}`);
+    }
+  }
+
+  async deleteHomepageSlide(slideId) {
+    if (!confirm('Are you sure you want to delete this slide?')) return;
+
+    const api = this.getApiBase();
+    try {
+      const response = await fetch(`${api}/api/homepage-slides/${slideId}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        await this.loadAllData();
+        this.renderHomepage();
+      } else {
+        alert('Failed to delete slide');
+      }
+    } catch (error) {
+      console.error('Error deleting slide:', error);
+      alert('Failed to delete slide. Please check the console for details.');
+    }
+  }
+
+  async handleImageUpload(slideIndex, fileInput) {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const api = this.getApiBase();
+    const statusDiv = document.getElementById(`upload-status-${slideIndex}`);
+    const imageInput = document.querySelector(`input[name="slide-image-${slideIndex}"]`);
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      statusDiv.textContent = 'Please select an image file';
+      statusDiv.style.color = 'var(--accent)';
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      statusDiv.textContent = 'File size must be less than 10MB';
+      statusDiv.style.color = 'var(--accent)';
+      return;
+    }
+
+    statusDiv.textContent = 'Uploading...';
+    statusDiv.style.color = 'var(--muted)';
+
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch(`${api}/api/upload`, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Upload failed' }));
+        throw new Error(errorData.error || `Upload failed with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      // Update the image URL input field
+      if (imageInput) {
+        imageInput.value = data.url;
+        
+        // Show/update preview
+        const slideRow = fileInput.closest('.slide-row');
+        const imageContainer = imageInput.parentElement;
+        
+        // Remove existing preview if any
+        const existingPreview = imageContainer.querySelector('.image-preview-container');
+        if (existingPreview) {
+          existingPreview.remove();
+        }
+        
+        // Add new preview
+        const previewDiv = document.createElement('div');
+        previewDiv.className = 'image-preview-container';
+        previewDiv.style.marginTop = '8px';
+        previewDiv.innerHTML = `<img src="${data.url}" alt="Preview" style="max-width: 200px; max-height: 100px; border-radius: 4px; border: 1px solid var(--border); object-fit: contain;" />`;
+        imageContainer.appendChild(previewDiv);
+      }
+
+      statusDiv.textContent = 'Upload successful!';
+      statusDiv.style.color = '#4caf50';
+      
+      // Clear status after 3 seconds
+      setTimeout(() => {
+        statusDiv.textContent = '';
+      }, 3000);
+    } catch (error) {
+      console.error('Upload error:', error);
+      let errorMessage = error.message;
+      if (error.message === 'Failed to fetch') {
+        errorMessage = 'Network error: Could not connect to server. Please check if the server is running and try again.';
+      }
+      statusDiv.textContent = `Upload failed: ${errorMessage}`;
+      statusDiv.style.color = 'var(--accent)';
     }
   }
 

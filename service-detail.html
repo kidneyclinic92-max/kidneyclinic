@@ -58,6 +58,7 @@
       border-radius: 14px;
       padding: 30px;
       transition: transform 0.3s, box-shadow 0.3s;
+      text-align: center;
     }
     .service-item:hover {
       transform: translateY(-5px);
@@ -68,10 +69,12 @@
       color: var(--accent);
       margin-bottom: 15px;
       font-size: 1.4rem;
+      text-align: center;
     }
     .service-item p {
       color: #cbd5e1;
       line-height: 1.8;
+      text-align: center;
     }
     .loading {
       text-align: center;
@@ -142,10 +145,7 @@
 
           <section class="service-details">
             <div class="container">
-              <h2 class="section-title">Our ${service.name}</h2>
-              <p class="section-sub" style="max-width: 800px; margin: 0 auto 40px;">
-                We offer comprehensive care with state-of-the-art technology and internationally trained specialists.
-              </p>
+              
 
               ${service.details && service.details.length > 0 ? `
                 <div class="service-list">
