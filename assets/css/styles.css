@@ -186,9 +186,11 @@ label{font-weight:600;font-size:14px;margin-bottom:4px;display:block;color:var(-
   .nav ul li{width:100%;margin-bottom:8px}
   .nav ul a{display:block;width:100%;padding:16px;text-align:left}
   .mobile-menu-toggle{display:block}
-  .nav{height:64px}
+  .nav{height:64px;justify-content:flex-start;gap:10px}
+  .nav nav{flex:0;width:0;overflow:hidden}
   .brand .name{font-size:1.2rem}
   .brand .logo{width:48px;height:48px}
+  .nav .cta{margin-left:auto;margin-right:0}
   .footer-top{grid-template-columns:1fr;gap:30px;text-align:center;padding:0 clamp(20px,8vw,48px)}
   .footer-brand{max-width:100%}
   .footer-logo{justify-content:center}
