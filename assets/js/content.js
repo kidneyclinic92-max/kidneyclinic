@@ -141,18 +141,33 @@ async function populateHomepageSlideshow() {
   try {
     slides = await loadFromAPI('/api/homepage-slides');
     if (!slides || slides.length === 0) {
-      slideshowContainer.style.display = 'none';
-      return;
+      // Use dummy slide when no slides are available
+      slides = [{
+        imageUrl: './assets/dummy_slide.avif',
+        description: '',
+        linkUrl: '',
+        linkText: ''
+      }];
     }
   } catch (error) {
     console.error('Failed to load homepage slides:', error);
-    slideshowContainer.style.display = 'none';
-    return;
+    // Use dummy slide when API fails
+    slides = [{
+      imageUrl: './assets/dummy_slide.avif',
+      description: '',
+      linkUrl: '',
+      linkText: ''
+    }];
   }
 
   if (slides.length === 0) {
-    slideshowContainer.style.display = 'none';
-    return;
+    // Use dummy slide as fallback
+    slides = [{
+      imageUrl: './assets/dummy_slide.avif',
+      description: '',
+      linkUrl: '',
+      linkText: ''
+    }];
   }
 
   let currentSlide = 0;
