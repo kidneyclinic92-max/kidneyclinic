@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel Diagnostic Tool</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .diagnostic-box {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 { color: #333; margin-bottom: 20px; }
+    h2 { color: #555; margin: 20px 0 10px 0; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
+    .status { 
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    .status.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .status.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .status.warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+    .status.info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    .check-item {
+      padding: 8px;
+      margin: 5px 0;
+      border-left: 4px solid #ddd;
+      padding-left: 15px;
+    }
+    .check-item.pass { border-left-color: #28a745; }
+    .check-item.fail { border-left-color: #dc3545; }
+    .check-item.warn { border-left-color: #ffc107; }
+    pre {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 15px;
+      border-radius: 4px;
+      overflow-x: auto;
+      font-size: 12px;
+      margin: 10px 0;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover { background: #0056b3; }
+    .log { 
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 15px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 Admin Panel Complete Diagnostic</h1>
+  
+  <div class="diagnostic-box">
+    <h2>Quick Status</h2>
+    <div id="quick-status"></div>
+    <button onclick="runFullDiagnostic()">Run Full Diagnostic</button>
+    <button onclick="clearLog()">Clear Log</button>
+  </div>
+
+  <div class="diagnostic-box">
+    <h2>1. File Loading Check</h2>
+    <div id="file-check"></div>
+  </div>
+
+  <div class="diagnostic-box">
+    <h2>2. Configuration Check</h2>
+    <div id="config-check"></div>
+  </div>
+
+  <div class="diagnostic-box">
+    <h2>3. API Connection Check</h2>
+    <div id="api-check"></div>
+  </div>
+
+  <div class="diagnostic-box">
+    <h2>4. JavaScript Errors</h2>
+    <div id="js-errors"></div>
+  </div>
+
+  <div class="diagnostic-box">
+    <h2>5. Browser Console Log</h2>
+    <div id="console-log" class="log"></div>
+  </div>
+
+  <div class="diagnostic-box">
+    <h2>6. Recommendations</h2>
+    <div id="recommendations"></div>
+  </div>
+
+  <script>
+    const logEl = document.getElementById('console-log');
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+
+    // Capture console output
+    console.log = function(...args) {
+      originalLog.apply(console, args);
+      logEl.textContent += '[LOG] ' + args.join(' ') + '\n';
+      logEl.scrollTop = logEl.scrollHeight;
+    };
+
+    console.error = function(...args) {
+      originalError.apply(console, args);
+      logEl.textContent += '[ERROR] ' + args.join(' ') + '\n';
+      logEl.scrollTop = logEl.scrollHeight;
+    };
+
+    console.warn = function(...args) {
+      originalWarn.apply(console, args);
+      logEl.textContent += '[WARN] ' + args.join(' ') + '\n';
+      logEl.scrollTop = logEl.scrollHeight;
+    };
+
+    function log(message) {
+      logEl.textContent += message + '\n';
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function clearLog() {
+      logEl.textContent = '';
+    }
+
+    function addCheck(containerId, message, status) {
+      const container = document.getElementById(containerId);
+      const div = document.createElement('div');
+      div.className = `check-item ${status}`;
+      div.textContent = `${status === 'pass' ? '✓' : status === 'fail' ? '✗' : '⚠'} ${message}`;
+      container.appendChild(div);
+    }
+
+    function clearChecks(containerId) {
+      document.getElementById(containerId).innerHTML = '';
+    }
+
+    async function checkFiles() {
+      clearChecks('file-check');
+      log('=== Checking File Loading ===');
+
+      const files = [
+        { url: '../config.js', name: 'config.js' },
+        { url: 'admin.js', name: 'admin.js' },
+        { url: 'admin.css', name: 'admin.css' },
+        { url: '../assets/css/styles.css', name: 'styles.css' },
+        { url: '../assets/js/layout.js', name: 'layout.js' }
+      ];
+
+      for (const file of files) {
+        try {
+          const response = await fetch(file.url, { method: 'HEAD' });
+          if (response.ok) {
+            addCheck('file-check', `${file.name} - Loads successfully (${response.status})`, 'pass');
+            log(`✓ ${file.name} - OK`);
+          } else {
+            addCheck('file-check', `${file.name} - Failed (${response.status})`, 'fail');
+            log(`✗ ${file.name} - Status: ${response.status}`);
+          }
+        } catch (error) {
+          addCheck('file-check', `${file.name} - Error: ${error.message}`, 'fail');
+          log(`✗ ${file.name} - Error: ${error.message}`);
+        }
+      }
+    }
+
+    function checkConfig() {
+      clearChecks('config-check');
+      log('=== Checking Configuration ===');
+
+      // Check window.__CONFIG__
+      if (typeof window.__CONFIG__ !== 'undefined') {
+        addCheck('config-check', 'window.__CONFIG__ exists', 'pass');
+        log('✓ window.__CONFIG__ exists');
+        
+        if (window.__CONFIG__.API_BASE_URL) {
+          addCheck('config-check', `API_BASE_URL: ${window.__CONFIG__.API_BASE_URL}`, 'pass');
+          log(`✓ API_BASE_URL: ${window.__CONFIG__.API_BASE_URL}`);
+        } else {
+          addCheck('config-check', 'API_BASE_URL not set in __CONFIG__', 'warn');
+          log('⚠ API_BASE_URL not set in __CONFIG__');
+        }
+      } else {
+        addCheck('config-check', 'window.__CONFIG__ not defined', 'warn');
+        log('⚠ window.__CONFIG__ not defined');
+      }
+
+      // Check localStorage
+      const storedApi = localStorage.getItem('api_base');
+      if (storedApi) {
+        if (storedApi.includes('localhost') || storedApi.includes('127.0.0.1')) {
+          addCheck('config-check', `localStorage has localhost URL: ${storedApi}`, 'warn');
+          log(`⚠ localStorage has localhost: ${storedApi}`);
+        } else {
+          addCheck('config-check', `localStorage API: ${storedApi}`, 'info');
+          log(`ℹ localStorage API: ${storedApi}`);
+        }
+      } else {
+        addCheck('config-check', 'No API URL in localStorage', 'info');
+        log('ℹ No API URL in localStorage');
+      }
+
+      // Check getApiBase function
+      const azureUrl = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+      addCheck('config-check', `Default Azure URL: ${azureUrl}`, 'info');
+      log(`ℹ Default Azure URL: ${azureUrl}`);
+    }
+
+    async function checkAPI() {
+      clearChecks('api-check');
+      log('=== Checking API Connection ===');
+
+      const azureUrl = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+      
+      // Determine which URL to use
+      let apiUrl = azureUrl;
+      if (window.__CONFIG__ && window.__CONFIG__.API_BASE_URL) {
+        apiUrl = window.__CONFIG__.API_BASE_URL;
+      } else if (localStorage.getItem('api_base')) {
+        const stored = localStorage.getItem('api_base');
+        if (!stored.includes('localhost') && !stored.includes('127.0.0.1')) {
+          apiUrl = stored;
+        }
+      }
+
+      addCheck('api-check', `Testing API: ${apiUrl}`, 'info');
+      log(`Testing API: ${apiUrl}`);
+
+      try {
+        const startTime = Date.now();
+        const response = await fetch(`${apiUrl}/health`, {
+          method: 'GET',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const endTime = Date.now();
+        const responseTime = endTime - startTime;
+
+        // Check CORS headers
+        const corsOrigin = response.headers.get('Access-Control-Allow-Origin');
+        const corsMethods = response.headers.get('Access-Control-Allow-Methods');
+
+        if (response.ok) {
+          const data = await response.json();
+          addCheck('api-check', `Health check: SUCCESS (${response.status}) - ${responseTime}ms`, 'pass');
+          addCheck('api-check', `Response: ${JSON.stringify(data)}`, 'info');
+          
+          if (corsOrigin) {
+            addCheck('api-check', `CORS Origin: ${corsOrigin}`, 'pass');
+          } else {
+            addCheck('api-check', 'CORS Origin header: Not set (may cause issues)', 'warn');
+          }
+          
+          if (corsMethods) {
+            addCheck('api-check', `CORS Methods: ${corsMethods}`, 'pass');
+          }
+
+          log(`✓ Health check successful: ${JSON.stringify(data)}`);
+        } else {
+          addCheck('api-check', `Health check: FAILED (${response.status} ${response.statusText})`, 'fail');
+          log(`✗ Health check failed: ${response.status}`);
+        }
+      } catch (error) {
+        addCheck('api-check', `API Error: ${error.message}`, 'fail');
+        log(`✗ API Error: ${error.message}`);
+        
+        if (error.message.includes('CORS') || error.message.includes('cross-origin')) {
+          addCheck('api-check', 'CORS Error Detected - Backend needs to allow this origin', 'fail');
+        }
+        if (error.message.includes('Failed to fetch')) {
+          addCheck('api-check', 'Network Error - Check if backend is running', 'fail');
+        }
+      }
+
+      // Test other endpoints
+      const endpoints = ['/api/doctors', '/api/services', '/api/home'];
+      for (const endpoint of endpoints) {
+        try {
+          const response = await fetch(`${apiUrl}${endpoint}`, { method: 'GET', mode: 'cors' });
+          if (response.ok) {
+            addCheck('api-check', `${endpoint}: OK (${response.status})`, 'pass');
+          } else {
+            addCheck('api-check', `${endpoint}: Failed (${response.status})`, 'warn');
+          }
+        } catch (error) {
+          addCheck('api-check', `${endpoint}: Error - ${error.message}`, 'fail');
+        }
+      }
+    }
+
+    function checkJSErrors() {
+      clearChecks('js-errors');
+      log('=== Checking JavaScript Errors ===');
+
+      // Try to load admin.js
+      try {
+        if (typeof AdminPanel !== 'undefined') {
+          addCheck('js-errors', 'AdminPanel class is defined', 'pass');
+          log('✓ AdminPanel class exists');
+        } else {
+          addCheck('js-errors', 'AdminPanel class not defined - admin.js may not be loaded', 'fail');
+          log('✗ AdminPanel class not found');
+        }
+      } catch (error) {
+        addCheck('js-errors', `Error checking AdminPanel: ${error.message}`, 'fail');
+        log(`✗ Error: ${error.message}`);
+      }
+
+      // Check if admin panel elements exist
+      const loginScreen = document.getElementById('login-screen');
+      const adminPanel = document.getElementById('admin-panel');
+      
+      if (loginScreen) {
+        addCheck('js-errors', 'Login screen element exists', 'pass');
+      } else {
+        addCheck('js-errors', 'Login screen element NOT found', 'fail');
+      }
+
+      if (adminPanel) {
+        addCheck('js-errors', 'Admin panel element exists', 'pass');
+      } else {
+        addCheck('js-errors', 'Admin panel element NOT found', 'fail');
+      }
+    }
+
+    function generateRecommendations() {
+      const recommendations = [];
+      const recEl = document.getElementById('recommendations');
+      recEl.innerHTML = '';
+
+      // Check what's wrong
+      const fileCheck = document.getElementById('file-check').innerHTML;
+      const configCheck = document.getElementById('config-check').innerHTML;
+      const apiCheck = document.getElementById('api-check').innerHTML;
+      const jsErrors = document.getElementById('js-errors').innerHTML;
+
+      if (fileCheck.includes('fail')) {
+        recommendations.push({
+          issue: 'File Loading Issues',
+          solution: 'Check file paths. Ensure all files are deployed correctly. Verify relative paths from admin folder.'
+        });
+      }
+
+      if (configCheck.includes('not defined') || configCheck.includes('not set')) {
+        recommendations.push({
+          issue: 'Configuration Not Loading',
+          solution: 'The inline fallback in admin/index.html should handle this. Check that the script tag is present before admin.js loads.'
+        });
+      }
+
+      if (apiCheck.includes('CORS')) {
+        recommendations.push({
+          issue: 'CORS Error',
+          solution: 'Update Azure backend CORS to allow your Render domain. Add your Render URL to the allowed origins in server/src/index.js'
+        });
+      }
+
+      if (apiCheck.includes('Network Error') || apiCheck.includes('Failed to fetch')) {
+        recommendations.push({
+          issue: 'API Connection Failed',
+          solution: 'Verify Azure backend is running. Test: https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net/health'
+        });
+      }
+
+      if (jsErrors.includes('AdminPanel class not defined')) {
+        recommendations.push({
+          issue: 'AdminPanel Not Loading',
+          solution: 'Check that admin.js is loading correctly. Verify the script tag in admin/index.html is correct.'
+        });
+      }
+
+      if (recommendations.length === 0) {
+        recEl.innerHTML = '<div class="status success">✓ All checks passed! Admin panel should be working.</div>';
+      } else {
+        recommendations.forEach(rec => {
+          const div = document.createElement('div');
+          div.className = 'status error';
+          div.innerHTML = `<strong>Issue:</strong> ${rec.issue}<br><strong>Solution:</strong> ${rec.solution}`;
+          recEl.appendChild(div);
+        });
+      }
+    }
+
+    function updateQuickStatus() {
+      const quickStatus = document.getElementById('quick-status');
+      quickStatus.innerHTML = '<div class="status info">Click "Run Full Diagnostic" to check all systems</div>';
+    }
+
+    async function runFullDiagnostic() {
+      log('=== Starting Full Diagnostic ===');
+      log(`Current URL: ${window.location.href}`);
+      log(`Origin: ${window.location.origin}`);
+      log('');
+
+      updateQuickStatus();
+      await checkFiles();
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      checkConfig();
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      await checkAPI();
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      checkJSErrors();
+      generateRecommendations();
+
+      log('');
+      log('=== Diagnostic Complete ===');
+      
+      // Update quick status
+      const fileCheck = document.getElementById('file-check').innerHTML;
+      const apiCheck = document.getElementById('api-check').innerHTML;
+      const hasErrors = fileCheck.includes('fail') || apiCheck.includes('fail');
+      
+      const quickStatus = document.getElementById('quick-status');
+      if (hasErrors) {
+        quickStatus.innerHTML = '<div class="status error">✗ Issues detected. See details below.</div>';
+      } else {
+        quickStatus.innerHTML = '<div class="status success">✓ All systems operational!</div>';
+      }
+    }
+
+    // Load config.js first
+    const configScript = document.createElement('script');
+    configScript.src = '../config.js';
+    configScript.onload = () => {
+      log('config.js loaded');
+      updateQuickStatus();
+    };
+    configScript.onerror = () => {
+      log('config.js failed to load - using inline fallback');
+      if (typeof window.__CONFIG__ === 'undefined') {
+        window.__CONFIG__ = {};
+      }
+      window.__CONFIG__.API_BASE_URL = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+      updateQuickStatus();
+    };
+    document.head.appendChild(configScript);
+
+    // Auto-run on load
+    window.addEventListener('load', () => {
+      setTimeout(runFullDiagnostic, 1000);
+    });
+  </script>
+</body>
+</html>
+
