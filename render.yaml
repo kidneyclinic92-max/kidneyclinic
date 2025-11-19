@@ -26,5 +26,8 @@ services:
     envVars:
       - key: API_BASE_URL
         value: https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net
+    # Note: Static sites on Render don't automatically inject env vars
+    # The config.js file contains the default API URL
+    # Users can override via localStorage in the admin panel
 
 
