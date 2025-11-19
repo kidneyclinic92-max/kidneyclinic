@@ -16,6 +16,13 @@ class AdminPanel {
   }
 
   async init() {
+    // Clear any old localhost URLs from localStorage on initialization
+    const storedApi = localStorage.getItem('api_base');
+    if (storedApi && (storedApi.includes('localhost') || storedApi.includes('127.0.0.1'))) {
+      localStorage.removeItem('api_base');
+      console.log('Cleared localhost API URL from localStorage. Using Azure URL.');
+    }
+    
     this.setupEventListeners();
     await this.checkAuth();
   }
@@ -147,16 +154,26 @@ class AdminPanel {
   }
 
   getApiBase() {
-    // Check localStorage first (user override)
-    if (localStorage.getItem('api_base')) {
-      return localStorage.getItem('api_base');
+    const azureUrl = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+    
+    // Check localStorage first (user override) - but ignore localhost URLs
+    const storedApi = localStorage.getItem('api_base');
+    if (storedApi && !storedApi.includes('localhost') && !storedApi.includes('127.0.0.1')) {
+      return storedApi;
     }
-    // Check window config (from Render environment variable)
+    
+    // Clear any localhost URLs from localStorage
+    if (storedApi && (storedApi.includes('localhost') || storedApi.includes('127.0.0.1'))) {
+      localStorage.removeItem('api_base');
+    }
+    
+    // Check window config (from config.js or Render environment variable)
     if (typeof window !== 'undefined' && window.__CONFIG__ && window.__CONFIG__.API_BASE_URL) {
       return window.__CONFIG__.API_BASE_URL;
     }
-    // Default to Azure URL
-    return 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+    
+    // Always default to Azure URL
+    return azureUrl;
   }
 
   async checkApiConnection() {
@@ -2527,7 +2544,7 @@ class AdminPanel {
       const isConnected = await this.checkApiConnection();
       if (!isConnected) {
         const defaultUrl = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
-        const useDefault = confirm(`Cannot connect to API at ${api}. The server may not be running.\n\nWould you like to try with the default URL (${defaultUrl})?`);
+        const useDefault = confirm(`Cannot connect to API at ${api}. The server may not be running.\n\nWould you like to try with the Azure URL (${defaultUrl})?`);
         if (useDefault) {
           localStorage.setItem('api_base', defaultUrl);
           // Retry with default URL
