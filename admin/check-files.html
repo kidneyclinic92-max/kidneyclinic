@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Check Admin Files</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+    .file-check { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; }
+    .success { color: green; }
+    .error { color: red; }
+    pre { background: #1e1e1e; color: #fff; padding: 10px; border-radius: 4px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>File Availability Check</h1>
+  <div id="results"></div>
+  
+  <script>
+    const results = document.getElementById('results');
+    const baseUrl = window.location.origin;
+    const currentPath = window.location.pathname;
+    const adminPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+    
+    const filesToCheck = [
+      { name: 'admin.js', paths: ['admin.js', './admin.js', 'admin/admin.js'] },
+      { name: 'admin.css', paths: ['admin.css', './admin.css'] },
+      { name: 'config.js', paths: ['../config.js', 'config.js'] },
+      { name: 'styles.css', paths: ['../assets/css/styles.css'] }
+    ];
+    
+    async function checkFile(fileName, paths) {
+      const fileDiv = document.createElement('div');
+      fileDiv.className = 'file-check';
+      fileDiv.innerHTML = `<h3>${fileName}</h3>`;
+      results.appendChild(fileDiv);
+      
+      for (const path of paths) {
+        try {
+          const fullUrl = new URL(path, window.location.href).href;
+          const response = await fetch(fullUrl, { method: 'HEAD' });
+          
+          const statusDiv = document.createElement('div');
+          if (response.ok) {
+            statusDiv.innerHTML = `<span class="success">✓</span> ${path} - <strong>FOUND</strong> (${response.status}) - <a href="${fullUrl}" target="_blank">Open</a>`;
+            fileDiv.appendChild(statusDiv);
+            break; // Found it, no need to check other paths
+          } else {
+            statusDiv.innerHTML = `<span class="error">✗</span> ${path} - Not found (${response.status})`;
+            fileDiv.appendChild(statusDiv);
+          }
+        } catch (error) {
+          const statusDiv = document.createElement('div');
+          statusDiv.innerHTML = `<span class="error">✗</span> ${path} - Error: ${error.message}`;
+          fileDiv.appendChild(statusDiv);
+        }
+      }
+    }
+    
+    async function checkAll() {
+      results.innerHTML = '<p>Checking files...</p>';
+      for (const file of filesToCheck) {
+        await checkFile(file.name, file.paths);
+        await new Promise(r => setTimeout(r, 200));
+      }
+      
+      // Show current location info
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'file-check';
+      infoDiv.innerHTML = `
+        <h3>Location Information</h3>
+        <pre>Current URL: ${window.location.href}
+Base URL: ${baseUrl}
+Current Path: ${currentPath}
+Admin Path: ${adminPath}
+Expected admin.js URL: ${new URL('admin.js', window.location.href).href}</pre>
+      `;
+      results.appendChild(infoDiv);
+    }
+    
+    checkAll();
+  </script>
+</body>
+</html>
+
