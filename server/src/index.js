@@ -570,6 +570,10 @@ const Home = mongoose.model('Home', new mongoose.Schema({
 // Health
 app.get('/health', async (_req, res) => {
   const state = mongoose.connection.readyState; // 1 connected
+  // Ensure CORS headers are sent
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.json({ ok: state === 1, state });
 });
 

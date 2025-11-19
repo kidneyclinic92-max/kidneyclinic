@@ -71,6 +71,16 @@
   </div>
 
   <script>
+    // Inline config fallback
+    if (typeof window.__CONFIG__ === 'undefined') {
+      window.__CONFIG__ = {};
+    }
+    if (!window.__CONFIG__.API_BASE_URL) {
+      window.__CONFIG__.API_BASE_URL = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+    }
+  </script>
+  <script src="../config.js"></script>
+  <script>
     // Display environment info
     document.getElementById('current-url').textContent = window.location.href;
     document.getElementById('origin').textContent = window.location.origin;
