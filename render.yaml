@@ -25,6 +25,6 @@ services:
     buildCommand: ""
     envVars:
       - key: API_BASE_URL
-        value: https://kidneyclinic-api.onrender.com
+        value: https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net
 
 

@@ -147,7 +147,16 @@ class AdminPanel {
   }
 
   getApiBase() {
-    return localStorage.getItem('api_base') || 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+    // Check localStorage first (user override)
+    if (localStorage.getItem('api_base')) {
+      return localStorage.getItem('api_base');
+    }
+    // Check window config (from Render environment variable)
+    if (typeof window !== 'undefined' && window.__CONFIG__ && window.__CONFIG__.API_BASE_URL) {
+      return window.__CONFIG__.API_BASE_URL;
+    }
+    // Default to Azure URL
+    return 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
   }
 
   async checkApiConnection() {
