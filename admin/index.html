@@ -181,29 +181,65 @@
   </script>
   <script src="../config.js" onerror="console.error('Failed to load config.js - using inline fallback')"></script>
   <script>
-    // Ensure AdminPanel initializes even if there are errors
+    // Capture all errors before admin.js loads
+    const errors = [];
     window.addEventListener('error', function(e) {
-      console.error('JavaScript error detected:', e.message, e.filename, e.lineno);
+      errors.push({
+        message: e.message,
+        filename: e.filename,
+        lineno: e.lineno,
+        colno: e.colno,
+        error: e.error?.stack
+      });
+      console.error('JavaScript error:', e.message, 'at', e.filename + ':' + e.lineno);
     });
     
-    // Verify AdminPanel loads
+    window.addEventListener('unhandledrejection', function(e) {
+      errors.push({
+        type: 'Unhandled Promise Rejection',
+        reason: e.reason
+      });
+      console.error('Unhandled promise rejection:', e.reason);
+    });
+  </script>
+  <script src="admin.js" 
+    onload="console.log('admin.js loaded successfully'); setTimeout(function(){ if(typeof AdminPanel === 'undefined') { console.error('AdminPanel still not defined after admin.js loaded'); } else { console.log('AdminPanel class is defined!'); } }, 100);"
+    onerror="console.error('Failed to load admin.js script file'); document.body.innerHTML += '<div style=\"padding:20px;background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;border-radius:4px;margin:20px;\"><h2>Error: admin.js Failed to Load</h2><p>The admin.js file could not be loaded. Check:</p><ul><li>File exists at: admin/admin.js</li><li>Network tab for 404 errors</li><li>File permissions</li></ul></div>';">
+  </script>
+  <script>
+    // Verify AdminPanel loads after a delay
     window.addEventListener('load', function() {
       setTimeout(function() {
         if (typeof AdminPanel === 'undefined') {
-          console.error('AdminPanel class not found! Check if admin.js loaded correctly.');
-          document.body.innerHTML += '<div style="padding:20px;background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;border-radius:4px;margin:20px;">' +
+          console.error('AdminPanel class not found after admin.js loaded');
+          let errorMsg = '<div style="padding:20px;background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;border-radius:4px;margin:20px;">' +
             '<h2>Error: Admin Panel Failed to Load</h2>' +
-            '<p>AdminPanel class not found. Please check:</p>' +
-            '<ul><li>Browser console for errors (F12)</li>' +
-            '<li>Network tab to verify admin.js loaded</li>' +
-            '<li>Visit <a href="diagnose.html">diagnose.html</a> for detailed diagnostics</li></ul>' +
-            '</div>';
+            '<p>AdminPanel class not found. This usually means there\'s a JavaScript error in admin.js.</p>' +
+            '<p><strong>Please check:</strong></p>' +
+            '<ul>' +
+            '<li>Open browser console (F12) and look for JavaScript errors</li>' +
+            '<li>Check Network tab to verify admin.js loaded (should be 200 OK)</li>' +
+            '<li>Visit <a href="diagnose.html" style="color:#721c24;text-decoration:underline;">diagnose.html</a> for detailed diagnostics</li>' +
+            '<li>Visit <a href="test-admin.js.html" style="color:#721c24;text-decoration:underline;">test-admin.js.html</a> to test admin.js loading</li>' +
+            '</ul>';
+          
+          if (errors.length > 0) {
+            errorMsg += '<p><strong>JavaScript Errors Found:</strong></p><pre style="background:#fff;padding:10px;border-radius:4px;overflow:auto;max-height:200px;">' + 
+              JSON.stringify(errors, null, 2) + '</pre>';
+          }
+          
+          errorMsg += '</div>';
+          
+          // Only show error if login screen exists (to avoid duplicate errors)
+          const existingError = document.querySelector('[style*="background:#f8d7da"]');
+          if (!existingError) {
+            document.body.insertAdjacentHTML('afterbegin', errorMsg);
+          }
         } else {
-          console.log('AdminPanel class loaded successfully');
+          console.log('✓ AdminPanel class loaded successfully');
         }
-      }, 1000);
+      }, 2000); // Increased timeout to 2 seconds
     });
   </script>
-  <script src="admin.js" onerror="console.error('Failed to load admin.js')"></script>
 </body>
 </html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Admin Test</title>
+</head>
+<body>
+  <h1>Admin.js Simple Test</h1>
+  <div id="result"></div>
+  <script>
+    const result = document.getElementById('result');
+    
+    // Load config
+    const configScript = document.createElement('script');
+    configScript.src = '../config.js';
+    configScript.onload = () => {
+      result.innerHTML += '<p>✓ config.js loaded</p>';
+      loadAdmin();
+    };
+    configScript.onerror = () => {
+      result.innerHTML += '<p>⚠ config.js failed, using fallback</p>';
+      window.__CONFIG__ = { API_BASE_URL: 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net' };
+      loadAdmin();
+    };
+    document.head.appendChild(configScript);
+    
+    function loadAdmin() {
+      result.innerHTML += '<p>Loading admin.js...</p>';
+      
+      const adminScript = document.createElement('script');
+      adminScript.src = 'admin.js';
+      
+      adminScript.onload = () => {
+        result.innerHTML += '<p>✓ admin.js script tag loaded</p>';
+        
+        setTimeout(() => {
+          if (typeof AdminPanel !== 'undefined') {
+            result.innerHTML += '<p style="color:green;font-weight:bold;">✓✓✓ AdminPanel class is DEFINED!</p>';
+            result.innerHTML += '<p>Type: ' + typeof AdminPanel + '</p>';
+            try {
+              const test = new AdminPanel();
+              result.innerHTML += '<p style="color:green;">✓✓✓ AdminPanel can be instantiated!</p>';
+            } catch (e) {
+              result.innerHTML += '<p style="color:red;">✗ Error instantiating: ' + e.message + '</p>';
+              result.innerHTML += '<pre>' + e.stack + '</pre>';
+            }
+          } else {
+            result.innerHTML += '<p style="color:red;font-weight:bold;">✗✗✗ AdminPanel class is NOT defined</p>';
+            result.innerHTML += '<p>This means there is a JavaScript error in admin.js preventing the class from being defined.</p>';
+            result.innerHTML += '<p>Check browser console (F12) for errors.</p>';
+          }
+        }, 500);
+      };
+      
+      adminScript.onerror = (e) => {
+        result.innerHTML += '<p style="color:red;">✗ Failed to load admin.js file</p>';
+        result.innerHTML += '<p>Error: ' + (e.message || 'Unknown') + '</p>';
+      };
+      
+      // Capture errors
+      window.addEventListener('error', (e) => {
+        if (e.filename && e.filename.includes('admin.js')) {
+          result.innerHTML += '<p style="color:red;">JavaScript Error in admin.js:</p>';
+          result.innerHTML += '<pre>' + e.message + '\n' + e.filename + ':' + e.lineno + ':' + e.colno + '</pre>';
+        }
+      });
+      
+      document.body.appendChild(adminScript);
+    }
+  </script>
+</body>
+</html>
+

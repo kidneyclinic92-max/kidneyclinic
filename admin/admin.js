@@ -1,4 +1,6 @@
 // Simple Admin Panel for JSON Content Management
+// Wrap in try-catch to ensure class is defined even if there are errors
+try {
 class AdminPanel {
   constructor() {
     this.currentUser = null;
@@ -2887,6 +2889,21 @@ class AdminPanel {
   filterAppointments() {
     this.renderAppointments();
   }
+} // End of AdminPanel class
+
+} catch (error) {
+  console.error('CRITICAL ERROR: Failed to define AdminPanel class:', error);
+  console.error('Error details:', {
+    message: error.message,
+    stack: error.stack,
+    name: error.name
+  });
+  // Define a minimal AdminPanel to prevent further errors
+  window.AdminPanel = class AdminPanel {
+    constructor() {
+      console.error('AdminPanel class definition failed. Using fallback.');
+    }
+  };
 }
 
 // Global functions for onclick handlers
@@ -2924,22 +2941,32 @@ function forceLogout() {
 }
 
 // Initialize admin panel when DOM is ready
-let admin;
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
+// Only initialize if AdminPanel class is defined (prevents errors if class definition failed)
+(function() {
+  'use strict';
+  
+  function initAdminPanel() {
+    if (typeof AdminPanel === 'undefined') {
+      console.error('AdminPanel class is not defined. Check for JavaScript errors above.');
+      console.error('This usually means there is a syntax error or runtime error in admin.js');
+      return;
+    }
+    
+    let admin;
     try {
       admin = new AdminPanel();
       window.admin = admin; // Make it globally available
+      console.log('AdminPanel initialized successfully');
     } catch (error) {
       console.error('Failed to initialize AdminPanel:', error);
+      console.error('Error stack:', error.stack);
     }
-  });
-} else {
-  // DOM is already ready
-  try {
-    admin = new AdminPanel();
-    window.admin = admin; // Make it globally available
-  } catch (error) {
-    console.error('Failed to initialize AdminPanel:', error);
   }
-}
+  
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAdminPanel);
+  } else {
+    // DOM is already ready
+    initAdminPanel();
+  }
+})();
