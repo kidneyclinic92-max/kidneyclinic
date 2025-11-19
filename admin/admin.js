@@ -28,25 +28,42 @@ class AdminPanel {
   }
 
   setupEventListeners() {
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => this.setupEventListeners());
+      return;
+    }
+
     // Login form
-    document.getElementById('login-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      this.handleLogin();
-    });
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.handleLogin();
+      });
+    } else {
+      console.warn('Login form not found - admin panel may not be fully loaded');
+    }
 
     // Logout button
-    document.getElementById('logout-btn').addEventListener('click', () => {
-      this.handleLogout();
-    });
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        this.handleLogout();
+      });
+    }
 
     // Navigation
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const section = link.getAttribute('href').substring(1);
-        this.showSection(section);
+    const navLinks = document.querySelectorAll('.nav-link');
+    if (navLinks.length > 0) {
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const section = link.getAttribute('href').substring(1);
+          this.showSection(section);
+        });
       });
-    });
+    }
   }
 
   async checkAuth() {
@@ -64,8 +81,16 @@ class AdminPanel {
   }
 
   async handleLogin() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const usernameEl = document.getElementById('username');
+    const passwordEl = document.getElementById('password');
+    
+    if (!usernameEl || !passwordEl) {
+      console.error('Login form elements not found');
+      return;
+    }
+    
+    const username = usernameEl.value;
+    const password = passwordEl.value;
     
     // Simple authentication (in production, use proper auth)
     if (username === 'admin' && password === 'admin123') {
@@ -86,13 +111,17 @@ class AdminPanel {
   }
 
   showLoginScreen() {
-    document.getElementById('login-screen').style.display = 'flex';
-    document.getElementById('admin-panel').style.display = 'none';
+    const loginScreen = document.getElementById('login-screen');
+    const adminPanel = document.getElementById('admin-panel');
+    if (loginScreen) loginScreen.style.display = 'flex';
+    if (adminPanel) adminPanel.style.display = 'none';
   }
 
   showAdminPanel() {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('admin-panel').style.display = 'block';
+    const loginScreen = document.getElementById('login-screen');
+    const adminPanel = document.getElementById('admin-panel');
+    if (loginScreen) loginScreen.style.display = 'none';
+    if (adminPanel) adminPanel.style.display = 'block';
     // Show dashboard by default
     this.showSection('dashboard');
   }
@@ -2894,5 +2923,23 @@ function forceLogout() {
   admin.forceLogout();
 }
 
-// Initialize admin panel
-const admin = new AdminPanel();
+// Initialize admin panel when DOM is ready
+let admin;
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    try {
+      admin = new AdminPanel();
+      window.admin = admin; // Make it globally available
+    } catch (error) {
+      console.error('Failed to initialize AdminPanel:', error);
+    }
+  });
+} else {
+  // DOM is already ready
+  try {
+    admin = new AdminPanel();
+    window.admin = admin; // Make it globally available
+  } catch (error) {
+    console.error('Failed to initialize AdminPanel:', error);
+  }
+}

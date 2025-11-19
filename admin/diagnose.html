@@ -313,39 +313,48 @@
       }
     }
 
-    function checkJSErrors() {
+    async function checkJSErrors() {
       clearChecks('js-errors');
       log('=== Checking JavaScript Errors ===');
 
-      // Try to load admin.js
-      try {
-        if (typeof AdminPanel !== 'undefined') {
-          addCheck('js-errors', 'AdminPanel class is defined', 'pass');
-          log('✓ AdminPanel class exists');
-        } else {
-          addCheck('js-errors', 'AdminPanel class not defined - admin.js may not be loaded', 'fail');
-          log('✗ AdminPanel class not found');
-        }
-      } catch (error) {
-        addCheck('js-errors', `Error checking AdminPanel: ${error.message}`, 'fail');
-        log(`✗ Error: ${error.message}`);
-      }
-
-      // Check if admin panel elements exist
-      const loginScreen = document.getElementById('login-screen');
-      const adminPanel = document.getElementById('admin-panel');
-      
-      if (loginScreen) {
-        addCheck('js-errors', 'Login screen element exists', 'pass');
-      } else {
-        addCheck('js-errors', 'Login screen element NOT found', 'fail');
-      }
-
-      if (adminPanel) {
-        addCheck('js-errors', 'Admin panel element exists', 'pass');
-      } else {
-        addCheck('js-errors', 'Admin panel element NOT found', 'fail');
-      }
+      // Try to load admin.js to test if it has errors
+      return new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.src = 'admin.js';
+        script.onload = () => {
+          log('admin.js loaded successfully');
+          setTimeout(() => {
+            try {
+              if (typeof AdminPanel !== 'undefined') {
+                addCheck('js-errors', 'AdminPanel class is defined', 'pass');
+                log('✓ AdminPanel class exists');
+                
+                // Try to instantiate (but don't actually create it)
+                try {
+                  const testClass = AdminPanel;
+                  addCheck('js-errors', 'AdminPanel class can be referenced', 'pass');
+                } catch (error) {
+                  addCheck('js-errors', `Error with AdminPanel class: ${error.message}`, 'fail');
+                }
+              } else {
+                addCheck('js-errors', 'AdminPanel class not defined - check for JavaScript errors in admin.js', 'fail');
+                log('✗ AdminPanel class not found after loading admin.js');
+                addCheck('js-errors', 'Check browser console (F12) for JavaScript errors in admin.js', 'warn');
+              }
+            } catch (error) {
+              addCheck('js-errors', `Error checking AdminPanel: ${error.message}`, 'fail');
+              log(`✗ Error: ${error.message}`);
+            }
+            resolve();
+          }, 500);
+        };
+        script.onerror = (error) => {
+          addCheck('js-errors', 'Failed to load admin.js - check file path and deployment', 'fail');
+          log('✗ Failed to load admin.js');
+          resolve();
+        };
+        document.head.appendChild(script);
+      });
     }
 
     function generateRecommendations() {
