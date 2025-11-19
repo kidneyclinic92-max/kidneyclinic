@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Azure API Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test-container {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    .endpoint {
+      margin: 15px 0;
+      padding: 15px;
+      background: #f9f9f9;
+      border-left: 4px solid #007bff;
+      border-radius: 4px;
+    }
+    .endpoint-name {
+      font-weight: bold;
+      color: #007bff;
+      margin-bottom: 5px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px 5px 5px 0;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 10px;
+      padding: 10px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+    .success {
+      border-left: 4px solid #28a745;
+      background: #d4edda;
+    }
+    .error {
+      border-left: 4px solid #dc3545;
+      background: #f8d7da;
+    }
+    .loading {
+      color: #007bff;
+    }
+    .status {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .status.success { background: #28a745; color: white; }
+    .status.error { background: #dc3545; color: white; }
+    .status.loading { background: #ffc107; color: #000; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Azure API Connection Test</h1>
+  
+  <div class="test-container">
+    <h2>API Base URL</h2>
+    <input type="text" id="apiBase" value="https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net" style="width: 100%; padding: 10px; font-size: 14px; margin-bottom: 10px;" />
+    <button onclick="testAll()">Test All Endpoints</button>
+    <button onclick="testHealth()">Test Health Only</button>
+  </div>
+
+  <div class="test-container">
+    <h2>Test Results</h2>
+    
+    <div class="endpoint">
+      <div class="endpoint-name">GET /health <span id="health-status" class="status"></span></div>
+      <button onclick="testHealth()">Test</button>
+      <div id="health-result" class="result"></div>
+    </div>
+
+    <div class="endpoint">
+      <div class="endpoint-name">GET /api/home <span id="home-status" class="status"></span></div>
+      <button onclick="testEndpoint('/api/home', 'home')">Test</button>
+      <div id="home-result" class="result"></div>
+    </div>
+
+    <div class="endpoint">
+      <div class="endpoint-name">GET /api/doctors <span id="doctors-status" class="status"></span></div>
+      <button onclick="testEndpoint('/api/doctors', 'doctors')">Test</button>
+      <div id="doctors-result" class="result"></div>
+    </div>
+
+    <div class="endpoint">
+      <div class="endpoint-name">GET /api/services <span id="services-status" class="status"></span></div>
+      <button onclick="testEndpoint('/api/services', 'services')">Test</button>
+      <div id="services-result" class="result"></div>
+    </div>
+
+    <div class="endpoint">
+      <div class="endpoint-name">GET /api/reviews <span id="reviews-status" class="status"></span></div>
+      <button onclick="testEndpoint('/api/reviews', 'reviews')">Test</button>
+      <div id="reviews-result" class="result"></div>
+    </div>
+
+    <div class="endpoint">
+      <div class="endpoint-name">GET /api/homepage-slides <span id="slides-status" class="status"></span></div>
+      <button onclick="testEndpoint('/api/homepage-slides', 'slides')">Test</button>
+      <div id="slides-result" class="result"></div>
+    </div>
+
+    <div class="endpoint">
+      <div class="endpoint-name">GET /api/kidney <span id="kidney-status" class="status"></span></div>
+      <button onclick="testEndpoint('/api/kidney', 'kidney')">Test</button>
+      <div id="kidney-result" class="result"></div>
+    </div>
+
+    <div class="endpoint">
+      <div class="endpoint-name">GET /api/medical-tourism <span id="tourism-status" class="status"></span></div>
+      <button onclick="testEndpoint('/api/medical-tourism', 'tourism')">Test</button>
+      <div id="tourism-result" class="result"></div>
+    </div>
+  </div>
+
+  <script>
+    function getApiBase() {
+      return document.getElementById('apiBase').value.trim();
+    }
+
+    function setStatus(endpoint, status, text) {
+      const statusEl = document.getElementById(`${endpoint}-status`);
+      statusEl.className = `status ${status}`;
+      statusEl.textContent = text;
+    }
+
+    function setResult(endpoint, data, isError = false) {
+      const resultEl = document.getElementById(`${endpoint}-result`);
+      resultEl.className = `result ${isError ? 'error' : 'success'}`;
+      resultEl.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+    }
+
+    async function testHealth() {
+      const apiBase = getApiBase();
+      setStatus('health', 'loading', 'Testing...');
+      setResult('health', 'Testing...', false);
+
+      try {
+        const startTime = Date.now();
+        const response = await fetch(`${apiBase}/health`);
+        const endTime = Date.now();
+        const responseTime = endTime - startTime;
+
+        if (response.ok) {
+          const data = await response.json();
+          setStatus('health', 'success', `✓ ${response.status} (${responseTime}ms)`);
+          setResult('health', {
+            status: response.status,
+            statusText: response.statusText,
+            responseTime: `${responseTime}ms`,
+            data: data
+          });
+        } else {
+          setStatus('health', 'error', `✗ ${response.status}`);
+          setResult('health', {
+            status: response.status,
+            statusText: response.statusText,
+            error: 'Health check failed'
+          }, true);
+        }
+      } catch (error) {
+        setStatus('health', 'error', '✗ Error');
+        setResult('health', {
+          error: error.message,
+          details: 'Cannot connect to server. Check CORS, network, or server status.'
+        }, true);
+      }
+    }
+
+    async function testEndpoint(endpoint, name) {
+      const apiBase = getApiBase();
+      setStatus(name, 'loading', 'Testing...');
+      setResult(name, 'Testing...', false);
+
+      try {
+        const startTime = Date.now();
+        const response = await fetch(`${apiBase}${endpoint}`);
+        const endTime = Date.now();
+        const responseTime = endTime - startTime;
+
+        if (response.ok) {
+          const data = await response.json();
+          setStatus(name, 'success', `✓ ${response.status} (${responseTime}ms)`);
+          setResult(name, {
+            status: response.status,
+            statusText: response.statusText,
+            responseTime: `${responseTime}ms`,
+            dataLength: Array.isArray(data) ? `${data.length} items` : 'Object',
+            data: data
+          });
+        } else {
+          const errorText = await response.text();
+          setStatus(name, 'error', `✗ ${response.status}`);
+          setResult(name, {
+            status: response.status,
+            statusText: response.statusText,
+            error: errorText
+          }, true);
+        }
+      } catch (error) {
+        setStatus(name, 'error', '✗ Error');
+        setResult(name, {
+          error: error.message,
+          details: 'Cannot connect to server. Check CORS, network, or server status.'
+        }, true);
+      }
+    }
+
+    async function testAll() {
+      await testHealth();
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const endpoints = [
+        { path: '/api/home', name: 'home' },
+        { path: '/api/doctors', name: 'doctors' },
+        { path: '/api/services', name: 'services' },
+        { path: '/api/reviews', name: 'reviews' },
+        { path: '/api/homepage-slides', name: 'slides' },
+        { path: '/api/kidney', name: 'kidney' },
+        { path: '/api/medical-tourism', name: 'tourism' }
+      ];
+
+      for (const endpoint of endpoints) {
+        await testEndpoint(endpoint.path, endpoint.name);
+        await new Promise(resolve => setTimeout(resolve, 300));
+      }
+    }
+
+    // Auto-test health on load
+    window.addEventListener('load', () => {
+      setTimeout(testHealth, 500);
+    });
+  </script>
+</body>
+</html>
+

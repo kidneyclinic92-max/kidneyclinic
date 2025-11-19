@@ -147,7 +147,7 @@ class AdminPanel {
   }
 
   getApiBase() {
-    return localStorage.getItem('api_base') || 'http://localhost:3001';
+    return localStorage.getItem('api_base') || 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
   }
 
   async checkApiConnection() {
@@ -1966,7 +1966,8 @@ class AdminPanel {
         `;
       }
       
-      const response = await fetch('http://localhost:3001/api/upload', {
+      const api = this.getApiBase();
+      const response = await fetch(`${api}/api/upload`, {
         method: 'POST',
         body: formData
       });
@@ -2516,9 +2517,10 @@ class AdminPanel {
       // Check API connection before saving
       const isConnected = await this.checkApiConnection();
       if (!isConnected) {
-        const useDefault = confirm(`Cannot connect to API at ${api}. The server may not be running.\n\nWould you like to try with the default URL (http://localhost:3001)?`);
+        const defaultUrl = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+        const useDefault = confirm(`Cannot connect to API at ${api}. The server may not be running.\n\nWould you like to try with the default URL (${defaultUrl})?`);
         if (useDefault) {
-          localStorage.setItem('api_base', 'http://localhost:3001');
+          localStorage.setItem('api_base', defaultUrl);
           // Retry with default URL
           return this.saveHomepage();
         } else {

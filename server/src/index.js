@@ -16,7 +16,13 @@ const projectRoot = path.resolve(__dirname, '..', '..');
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.use(cors());
+// CORS configuration - allow all origins including localhost
+app.use(cors({
+  origin: '*', // Allow all origins (you can restrict this in production)
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: false
+}));
 app.use(express.json());
 
 const mongoUri = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/clinic_local';

@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:3001';
+const API_BASE = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
 
 let currentDate = new Date();
 let selectedDate = null;
