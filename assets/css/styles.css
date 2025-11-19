@@ -1,9 +1,15 @@
+/* CSS Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 /* Theme variables - cyan blue medical theme + darker maroon palette */
 :root{
   --bg:#E0F7FA;--bg-2:#E8F5F9;--text:#0d3d4d;--muted:#4a6572;--accent:#8B2E2E;--accent-2:#A63939;--card:#F0F9FF;--border:#A5D8DD
 }
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;height:100%}
+html,body{height:100%}
 body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#E0F7FA !important;color:#0d3d4d;line-height:1.6;display:flex;flex-direction:column;min-height:100vh}
 main{flex:1}
 a{color:inherit;text-decoration:none}
