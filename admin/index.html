@@ -184,12 +184,13 @@
     // Capture all errors before admin.js loads
     const errors = [];
     window.addEventListener('error', function(e) {
+      const stack = e && e.error && e.error.stack ? e.error.stack : null;
       errors.push({
         message: e.message,
         filename: e.filename,
         lineno: e.lineno,
         colno: e.colno,
-        error: e.error?.stack
+        error: stack
       });
       console.error('JavaScript error:', e.message, 'at', e.filename + ':' + e.lineno);
     });
