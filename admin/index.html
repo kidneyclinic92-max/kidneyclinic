@@ -203,67 +203,9 @@
       console.error('Unhandled promise rejection:', e.reason);
     });
   </script>
-  <script>
-    // Determine base path for /admin even if URL is /admin (no trailing slash)
-    const adminBasePath = (function() {
-      const { pathname } = window.location;
-      if (pathname.endsWith('/')) return pathname;
-      const lastSlash = pathname.lastIndexOf('/');
-      return lastSlash === -1 ? '/' : pathname.slice(0, lastSlash + 1);
-    })();
-
-    console.log('Admin base path detected as:', adminBasePath);
-
-    // Try multiple paths to find admin.js
-    const adminJsPaths = [
-      adminBasePath + 'admin.js',
-      '/admin/admin.js',
-      './admin.js',
-      'admin.js'
-    ];
-    
-    let adminJsLoaded = false;
-    
-    function tryLoadAdminJs(pathIndex) {
-      if (pathIndex >= adminJsPaths.length) {
-        console.error('Failed to load admin.js from all attempted paths');
-        document.body.innerHTML += '<div style="padding:20px;background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;border-radius:4px;margin:20px;position:fixed;top:20px;left:20px;right:20px;z-index:10000;">' +
-          '<h2>Error: admin.js Failed to Load</h2>' +
-          '<p>The admin.js file could not be loaded from any of these paths:</p>' +
-          '<ul>' + adminJsPaths.map(p => '<li>' + p + '</li>').join('') + '</ul>' +
-          '<p><strong>Possible issues:</strong></p>' +
-          '<ul>' +
-          '<li>File not deployed to Render</li>' +
-          '<li>File path is incorrect</li>' +
-          '<li>Case sensitivity issue (Admin.js vs admin.js)</li>' +
-          '<li>Check Render deployment logs</li>' +
-          '</ul>' +
-          '<p>Current URL: ' + window.location.href + '</p>' +
-          '</div>';
-        return;
-      }
-      
-      const script = document.createElement('script');
-      script.src = adminJsPaths[pathIndex];
-      script.onload = () => {
-        console.log('✓ admin.js loaded successfully from: ' + adminJsPaths[pathIndex]);
-        adminJsLoaded = true;
-        setTimeout(() => {
-          if (typeof AdminPanel === 'undefined') {
-            console.error('AdminPanel still not defined after admin.js loaded');
-          } else {
-            console.log('✓ AdminPanel class is defined!');
-          }
-        }, 100);
-      };
-      script.onerror = () => {
-        console.warn('Failed to load from: ' + adminJsPaths[pathIndex]);
-        tryLoadAdminJs(pathIndex + 1);
-      };
-      document.body.appendChild(script);
-    }
-    
-    tryLoadAdminJs(0);
+  <script defer src="/admin/admin.js"
+    onload="setTimeout(function(){ if(typeof AdminPanel === 'undefined'){ console.error('AdminPanel still not defined after /admin/admin.js loaded'); } else { console.log('✓ AdminPanel class is defined from /admin/admin.js'); }}, 50);"
+    onerror="console.error('Failed to load /admin/admin.js'); document.body.insertAdjacentHTML('beforeend','<div style=&quot;padding:20px;background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;border-radius:4px;margin:20px;&quot;><h2>Error: admin.js Failed to Load</h2><p>Requested URL: /admin/admin.js</p><p>Check that the file exists in the deployment.</p></div>');">
   </script>
   <script>
     // Verify AdminPanel loads after a delay
