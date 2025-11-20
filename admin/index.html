@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/css/styles.css" />
-  <link rel="stylesheet" href="admin.css" />
+  <link rel="stylesheet" href="/admin/admin.css" />
 </head>
 <body>
   <div id="login-screen" class="login-screen">
@@ -204,12 +204,22 @@
     });
   </script>
   <script>
+    // Determine base path for /admin even if URL is /admin (no trailing slash)
+    const adminBasePath = (function() {
+      const { pathname } = window.location;
+      if (pathname.endsWith('/')) return pathname;
+      const lastSlash = pathname.lastIndexOf('/');
+      return lastSlash === -1 ? '/' : pathname.slice(0, lastSlash + 1);
+    })();
+
+    console.log('Admin base path detected as:', adminBasePath);
+
     // Try multiple paths to find admin.js
     const adminJsPaths = [
-      'admin.js',
+      adminBasePath + 'admin.js',
+      '/admin/admin.js',
       './admin.js',
-      'admin/admin.js',
-      '../admin/admin.js'
+      'admin.js'
     ];
     
     let adminJsLoaded = false;
