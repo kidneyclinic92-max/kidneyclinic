@@ -2891,6 +2891,9 @@ class AdminPanel {
   }
 } // End of AdminPanel class
 
+// Make the class globally accessible even though it's defined inside the try block
+window.AdminPanel = AdminPanel;
+
 } catch (error) {
   console.error('CRITICAL ERROR: Failed to define AdminPanel class:', error);
   console.error('Error details:', {
