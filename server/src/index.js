@@ -355,6 +355,7 @@ const Service = mongoose.model('Service', new mongoose.Schema({
   summary: { type: String },
   image: { type: String },
   details: [{ type: String }],
+  detailTexts: [{ type: String }],
   detailVideos: [{ type: String }]
 }, { timestamps: true, toJSON }));
 
@@ -496,6 +497,7 @@ const MedicalTourism = mongoose.model('MedicalTourism', new mongoose.Schema({
   // Map Section
   map_title: { type: String },
   map_description: { type: String },
+  map_image_url: { type: String },
   map_locations: [{ 
     name: { type: String },
     icon: { type: String },
@@ -891,6 +893,10 @@ app.get('/api/medical-tourism', async (_req, res) => {
   }
   // Convert to frontend format
   const data = doc.toJSON ? doc.toJSON() : doc;
+  console.log('📤 Returning medical tourism data:', {
+    map_image_url: data.map_image_url,
+    map_title: data.map_title
+  });
   res.json({
     healthGateways: {
       badge: data.healthGateways_badge,
@@ -917,12 +923,18 @@ app.get('/api/medical-tourism', async (_req, res) => {
     map: {
       title: data.map_title,
       description: data.map_description,
+      imageUrl: data.map_image_url || null,
       locations: data.map_locations || []
     }
   });
 });
 
 app.put('/api/medical-tourism', async (req, res) => {
+  console.log('📥 Received medical tourism update:', {
+    mapImageUrl: req.body.mapImageUrl,
+    mapTitle: req.body.mapTitle
+  });
+  
   const update = {
     // Health Gateways Section
     healthGateways_badge: req.body.healthGatewaysBadge ?? null,
@@ -947,9 +959,14 @@ app.put('/api/medical-tourism', async (req, res) => {
     // Map Section
     map_title: req.body.mapTitle ?? null,
     map_description: req.body.mapDescription ?? null,
+    map_image_url: (req.body.mapImageUrl !== undefined && req.body.mapImageUrl !== null && req.body.mapImageUrl !== '') ? req.body.mapImageUrl : null,
     map_locations: req.body.mapLocations ?? []
   };
-  await MedicalTourism.findOneAndUpdate({}, update, { upsert: true });
+  const result = await MedicalTourism.findOneAndUpdate({}, update, { upsert: true, new: true });
+  console.log('💾 Saved medical tourism data:', {
+    map_image_url: result?.map_image_url,
+    map_title: result?.map_title
+  });
   res.json({ ok: true });
 });
 

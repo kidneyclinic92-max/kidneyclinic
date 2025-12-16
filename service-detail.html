@@ -105,7 +105,7 @@
   <script src="./assets/js/layout.js" defer></script>
   <script src="./assets/js/animation.js" defer></script>
   <script>
-    const API_BASE = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+    const API_BASE = 'https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net';
     
     async function loadServiceDetails() {
       try {
@@ -196,7 +196,7 @@
                           }
                         </div>
                       ` : ''}
-                      <p>Professional ${detail.toLowerCase()} services with expert care and advanced medical technology.</p>
+                      <p>${service.detailTexts && service.detailTexts[idx] ? service.detailTexts[idx] : `Professional ${detail.toLowerCase()} services with expert care and advanced medical technology.`}</p>
                     </div>
                   `;
                   }).join('')}

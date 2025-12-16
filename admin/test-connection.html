@@ -76,7 +76,7 @@
       window.__CONFIG__ = {};
     }
     if (!window.__CONFIG__.API_BASE_URL) {
-      window.__CONFIG__.API_BASE_URL = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+      window.__CONFIG__.API_BASE_URL = 'https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net';
     }
   </script>
   <script src="../config.js"></script>
@@ -86,7 +86,7 @@
     document.getElementById('origin').textContent = window.location.origin;
     document.getElementById('api-localstorage').textContent = localStorage.getItem('api_base') || 'Not set';
     document.getElementById('api-config').textContent = (window.__CONFIG__ && window.__CONFIG__.API_BASE_URL) || 'Not set';
-    document.getElementById('api-default').textContent = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+    document.getElementById('api-default').textContent = 'https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net';
 
     function log(message, type = 'info') {
       const logEl = document.getElementById('log');
@@ -102,7 +102,7 @@
       if (window.__CONFIG__ && window.__CONFIG__.API_BASE_URL) {
         return window.__CONFIG__.API_BASE_URL;
       }
-      return 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+      return 'https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net';
     }
 
     async function testConnection() {
@@ -158,7 +158,7 @@
     }
 
     function testWithAzure() {
-      localStorage.setItem('api_base', 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net');
+      localStorage.setItem('api_base', 'https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net');
       document.getElementById('api-localstorage').textContent = localStorage.getItem('api_base');
       testConnection();
     }

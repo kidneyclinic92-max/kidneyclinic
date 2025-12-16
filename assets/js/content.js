@@ -3,7 +3,7 @@ async function loadJSON(path){
 }
 
 // API base URL
-const DEFAULT_PRODUCTION_API = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net'; // Azure deployment
+const DEFAULT_PRODUCTION_API = 'https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net'; // Azure deployment
 const API_BASE = (typeof window !== 'undefined' && window.__CONFIG__ && window.__CONFIG__.API_BASE_URL) 
   ? window.__CONFIG__.API_BASE_URL 
   : DEFAULT_PRODUCTION_API;
@@ -444,6 +444,7 @@ async function populateMedicalTourism(){
         map: {
           title: "Our International Patients",
           description: "We welcome patients from across the globe for world-class kidney transplant services.",
+          imageUrl: "",
           locations: []
         }
       };
@@ -566,7 +567,7 @@ async function populateMedicalTourism(){
         </div>
         
         <div style="display: flex; justify-content: center; margin-bottom: 40px;">
-          <img src="./assets/map.png" alt="Patient Locations Map" style="width: 40%; height: auto; display: block;" />
+          <img src="${(data.map?.imageUrl && data.map.imageUrl.trim()) ? data.map.imageUrl : './assets/map.png'}" alt="Patient Locations Map" style="width: 40%; height: auto; display: block;" />
         </div>
       </div>
     </section>
@@ -648,7 +649,6 @@ async function populateKidney(){
         <p style="margin:0 auto 32px;max-width:820px;font-size:1.15rem;line-height:1.9;color:#d0e2ff;">${hero.subtitle||'Comprehensive transplant care from evaluation to lifelong follow-up.'}</p>
         <div style="display:flex;justify-content:center;gap:18px;flex-wrap:wrap;">
           <a href="./contact.html" class="btn primary" style="padding:16px 36px;font-size:1.05rem;">Refer a Patient</a>
-          <a href="#kidney-symptoms" class="btn" style="padding:16px 32px;border-color:rgba(255,255,255,0.45);color:#ffffff;">Check Symptoms</a>
     </div>
       </div>
       <div style="position:absolute;inset:0;background:radial-gradient(circle at 20% 20%, rgba(0,188,212,0.25), transparent 55%),radial-gradient(circle at 80% 30%, rgba(191,78,78,0.25), transparent 50%);mix-blend-mode:screen;z-index:1;"></div>

@@ -226,7 +226,7 @@
       }
 
       // Check getApiBase function
-      const azureUrl = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+      const azureUrl = 'https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net';
       addCheck('config-check', `Default Azure URL: ${azureUrl}`, 'info');
       log(`ℹ Default Azure URL: ${azureUrl}`);
     }
@@ -235,7 +235,7 @@
       clearChecks('api-check');
       log('=== Checking API Connection ===');
 
-      const azureUrl = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+      const azureUrl = 'https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net';
       
       // Determine which URL to use
       let apiUrl = azureUrl;
@@ -392,7 +392,7 @@
       if (apiCheck.includes('Network Error') || apiCheck.includes('Failed to fetch')) {
         recommendations.push({
           issue: 'API Connection Failed',
-          solution: 'Verify Azure backend is running. Test: https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net/health'
+          solution: 'Verify backend is running. Test: https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net/health'
         });
       }
 
@@ -467,7 +467,7 @@
       if (typeof window.__CONFIG__ === 'undefined') {
         window.__CONFIG__ = {};
       }
-      window.__CONFIG__.API_BASE_URL = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+      window.__CONFIG__.API_BASE_URL = 'https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net';
       updateQuickStatus();
     };
     document.head.appendChild(configScript);

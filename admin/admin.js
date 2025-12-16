@@ -18,13 +18,6 @@ class AdminPanel {
   }
 
   async init() {
-    // Clear any old localhost URLs from localStorage on initialization
-    const storedApi = localStorage.getItem('api_base');
-    if (storedApi && (storedApi.includes('localhost') || storedApi.includes('127.0.0.1'))) {
-      localStorage.removeItem('api_base');
-      console.log('Cleared localhost API URL from localStorage. Using Azure URL.');
-    }
-    
     this.setupEventListeners();
     await this.checkAuth();
   }
@@ -185,17 +178,12 @@ class AdminPanel {
   }
 
   getApiBase() {
-    const azureUrl = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
+    const defaultUrl = 'https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net';
     
-    // Check localStorage first (user override) - but ignore localhost URLs
+    // Check localStorage first (user override)
     const storedApi = localStorage.getItem('api_base');
-    if (storedApi && !storedApi.includes('localhost') && !storedApi.includes('127.0.0.1')) {
+    if (storedApi) {
       return storedApi;
-    }
-    
-    // Clear any localhost URLs from localStorage
-    if (storedApi && (storedApi.includes('localhost') || storedApi.includes('127.0.0.1'))) {
-      localStorage.removeItem('api_base');
     }
     
     // Check window config (from config.js or Render environment variable)
@@ -203,8 +191,8 @@ class AdminPanel {
       return window.__CONFIG__.API_BASE_URL;
     }
     
-    // Always default to Azure URL
-    return azureUrl;
+    // Default to Azure URL
+    return defaultUrl;
   }
 
   async checkApiConnection() {
@@ -505,6 +493,22 @@ class AdminPanel {
           <div class="form-group">
             <label>Section Description</label>
             <textarea id="map-description" rows="2" placeholder="Description of international patients...">${get('map.description', 'We welcome patients from across the globe for world-class kidney transplant services.')}</textarea>
+          </div>
+          
+          <div class="form-group" style="margin-top: 20px;">
+            <label style="font-weight: 600; margin-bottom: 10px; display: block;">Map Image</label>
+            <div style="border: 1px solid var(--border); padding: 15px; border-radius: 8px; background: rgba(0,188,212,0.05);">
+              <label style="color: var(--text); font-weight: 600; margin-bottom: 8px; display: block;">📤 Upload Image File</label>
+              <input type="file" id="map-image-file" accept="image/*" onchange="admin.previewMapImage(this)" style="display: block; margin-bottom: 10px; width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; background: var(--card);" />
+              <div id="map-image-preview" style="margin-top: 10px;">
+                ${get('map.imageUrl', '') ? `<img src="${get('map.imageUrl', '')}" alt="Map Preview" style="max-width: 300px; max-height: 200px; border-radius: 4px; border: 1px solid var(--border); object-fit: contain;" />` : ''}
+              </div>
+            </div>
+            <div style="border: 1px solid var(--border); padding: 15px; border-radius: 8px; background: rgba(255,255,255,0.6); margin-top: 15px;">
+              <label style="color: var(--muted); font-weight: 600; margin-bottom: 8px; display: block;">🔗 Or Enter Image URL</label>
+              <input type="url" id="map-image-url" value="${get('map.imageUrl', '')}" placeholder="https://example.com/map.png or ./assets/map.png" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; background: var(--card);" />
+              <small style="color: var(--muted); display: block; margin-top: 5px;">Enter a full URL (e.g., https://example.com/map.png) or a relative path (e.g., ./assets/map.png). Used if no file is uploaded above.</small>
+            </div>
           </div>
           
           <h4 style="margin-top: 20px; color: #1a2a44; font-weight: 600;">Patient Locations</h4>
@@ -1829,6 +1833,7 @@ class AdminPanel {
       itemData = this.editingItem !== null ? services.find(s => s.id === this.editingItem) || {} : {};
       
       const detailsData = itemData.details && Array.isArray(itemData.details) ? itemData.details : [];
+      const detailTextsData = itemData.detailTexts && Array.isArray(itemData.detailTexts) ? itemData.detailTexts : [];
       const videosData = itemData.detailVideos && Array.isArray(itemData.detailVideos) ? itemData.detailVideos : [];
       
       formHTML = `
@@ -1858,6 +1863,11 @@ class AdminPanel {
                     <input type="text" name="detail-${idx}" value="${detail || ''}" placeholder="e.g., Diagnostic Procedures" required style="width: 100%;" />
                   </div>
                   <button type="button" onclick="admin.removeDetailRow(${idx})" class="btn btn-small btn-danger" style="padding: 6px 12px; margin-top: 22px;">Remove</button>
+                </div>
+                <div style="margin-top: 10px;">
+                  <label style="font-size: 0.85rem; color: #1a2a44; display: block; margin-bottom: 5px; font-weight: 600;">Detail Description/Text</label>
+                  <textarea name="detail-text-${idx}" rows="3" placeholder="Enter a detailed description for this sub-service..." style="width: 100%; resize: vertical;">${detailTextsData[idx] || ''}</textarea>
+                  <small style="color: var(--muted); font-size: 0.75rem;">This text will be displayed below the detail title on the service detail page.</small>
                 </div>
                 <div style="margin-top: 10px;">
                   <label style="font-size: 0.85rem; color: #1a2a44; display: block; margin-bottom: 5px; font-weight: 600;">Video URL (Optional)</label>
@@ -1937,6 +1947,17 @@ class AdminPanel {
     }
   }
 
+  previewMapImage(input) {
+    const preview = document.getElementById('map-image-preview');
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.innerHTML = `<img src="${e.target.result}" alt="Map Preview" style="max-width: 300px; max-height: 200px; border-radius: 4px; border: 1px solid var(--border); object-fit: contain;" />`;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
   // Add detail row to service form
   addDetailRow() {
     const container = document.getElementById('service-details-list');
@@ -1958,6 +1979,11 @@ class AdminPanel {
             <input type="text" name="detail-${newIndex}" placeholder="e.g., Diagnostic Procedures" required style="width: 100%;" />
           </div>
           <button type="button" onclick="admin.removeDetailRow(${newIndex})" class="btn btn-small btn-danger" style="padding: 6px 12px; margin-top: 22px;">Remove</button>
+        </div>
+        <div style="margin-top: 10px;">
+          <label style="font-size: 0.85rem; color: #1a2a44; display: block; margin-bottom: 5px; font-weight: 600;">Detail Description/Text</label>
+          <textarea name="detail-text-${newIndex}" rows="3" placeholder="Enter a detailed description for this sub-service..." style="width: 100%; resize: vertical;"></textarea>
+          <small style="color: var(--muted); font-size: 0.75rem;">This text will be displayed below the detail title on the service detail page.</small>
         </div>
         <div style="margin-top: 10px;">
           <label style="font-size: 0.85rem; color: #1a2a44; display: block; margin-bottom: 5px; font-weight: 600;">Video URL (Optional)</label>
@@ -2007,13 +2033,13 @@ class AdminPanel {
   }
 
   // Upload image file
-  async uploadImage(file) {
+  async uploadImage(file, previewId = 'photoPreview') {
     const formData = new FormData();
     formData.append('image', file);
     
     try {
       // Show uploading feedback
-      const preview = document.getElementById('photoPreview');
+      const preview = document.getElementById(previewId);
       if (preview) {
         preview.innerHTML = `
           <div style="padding:20px;text-align:center;color:var(--accent)">
@@ -2038,14 +2064,26 @@ class AdminPanel {
       
       // Show success feedback
       if (preview) {
+        const isMapPreview = previewId === 'map-image-preview';
+        const imgStyle = isMapPreview 
+          ? 'max-width: 300px; max-height: 200px; border-radius: 4px; border: 1px solid var(--border); object-fit: contain;'
+          : 'max-width:200px;border-radius:8px;margin-top:10px';
         preview.innerHTML = `
           <div style="padding:20px;background:rgba(0,255,0,0.1);border-radius:8px;margin-top:10px">
             <div style="font-size:24px;margin-bottom:10px">✅</div>
             <div style="color:#00ff00;font-weight:600">Uploaded to Azure Storage!</div>
-            <img src="${result.url}" style="max-width:200px;border-radius:8px;margin-top:10px" />
+            <img src="${result.url}" style="${imgStyle}" />
             <div style="font-size:12px;color:var(--muted);margin-top:8px;word-break:break-all">${result.url}</div>
           </div>
         `;
+      }
+      
+      // Update URL input field if it exists (for map image)
+      if (previewId === 'map-image-preview') {
+        const urlInput = document.getElementById('map-image-url');
+        if (urlInput) {
+          urlInput.value = result.url;
+        }
       }
       
       return result.url;
@@ -2053,7 +2091,7 @@ class AdminPanel {
       console.error('Upload error:', error);
       
       // Show error feedback
-      const preview = document.getElementById('photoPreview');
+      const preview = document.getElementById(previewId);
       if (preview) {
         preview.innerHTML = `
           <div style="padding:20px;background:rgba(255,0,0,0.1);border-radius:8px;margin-top:10px">
@@ -2064,7 +2102,10 @@ class AdminPanel {
         `;
       }
       
-      alert('Failed to upload image to Azure Storage.\n\nError: ' + error.message + '\n\nPlease check:\n1. Backend server is running\n2. Azure connection is configured\n3. Internet connection is stable\n\nYou can use the URL field as a fallback.');
+      const errorMsg = previewId === 'map-image-preview' 
+        ? 'Failed to upload map image to Azure Storage.\n\nError: ' + error.message + '\n\nPlease check:\n1. Backend server is running\n2. Azure connection is configured\n3. Internet connection is stable\n\nYou can use the URL field as a fallback.'
+        : 'Failed to upload image to Azure Storage.\n\nError: ' + error.message + '\n\nPlease check:\n1. Backend server is running\n2. Azure connection is configured\n3. Internet connection is stable\n\nYou can use the URL field as a fallback.';
+      alert(errorMsg);
       return null;
     }
   }
@@ -2131,26 +2172,30 @@ class AdminPanel {
         await fetch(`${api}/api/doctors`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       }
     } else if (type === 'services') {
-      // Parse details and videos from dynamic form
+      // Parse details, detail texts, and videos from dynamic form
       const detailsArray = [];
+      const detailTextsArray = [];
       const videosArray = [];
       const detailCount = parseInt(document.getElementById('detail-count')?.value || 0);
       
       for (let i = 0; i < detailCount; i++) {
         const detailTitle = data[`detail-${i}`];
+        const detailText = data[`detail-text-${i}`];
         const videoUrl = data[`video-${i}`];
         
         if (detailTitle && detailTitle.trim()) {
           detailsArray.push(detailTitle.trim());
+          detailTextsArray.push(detailText && detailText.trim() ? detailText.trim() : '');
           videosArray.push(videoUrl && videoUrl.trim() ? videoUrl.trim() : '');
         }
       }
       
       const payload = { 
-        name: data.name, 
+        name: data.name,
         summary: data.summary,
         image: data.image || null,
         details: detailsArray,
+        detailTexts: detailTextsArray,
         detailVideos: videosArray
       };
       if (id !== null) {
@@ -2421,6 +2466,7 @@ class AdminPanel {
 
   async saveMedicalTourism() {
     const api = this.getApiBase();
+    console.log('🌐 Using API base URL:', api);
     
     // Collect Health Gateways data
     const healthGatewaysBadge = document.getElementById('hg-badge')?.value || '';
@@ -2468,6 +2514,40 @@ class AdminPanel {
     // Collect Map data
     const mapTitle = document.getElementById('map-title')?.value || '';
     const mapDescription = document.getElementById('map-description')?.value || '';
+    
+    // Handle map image upload or URL
+    let mapImageUrl = '';
+    const mapImageFile = document.getElementById('map-image-file');
+    const mapImageUrlInput = document.getElementById('map-image-url');
+    
+    // Priority 1: File Upload
+    if (mapImageFile && mapImageFile.files && mapImageFile.files[0]) {
+      try {
+        const uploadedUrl = await this.uploadImage(mapImageFile.files[0], 'map-image-preview');
+        if (uploadedUrl) {
+          mapImageUrl = uploadedUrl;
+          console.log('✅ Map image uploaded:', uploadedUrl);
+        } else {
+          console.warn('⚠️ Map image upload failed, falling back to URL');
+        }
+      } catch (error) {
+        console.error('❌ Map image upload error:', error);
+        alert('Failed to upload map image: ' + error.message + '\n\nYou can use the URL field instead.');
+      }
+    }
+    
+    // Priority 2: Manual URL (fallback or if no file uploaded)
+    if (!mapImageUrl && mapImageUrlInput) {
+      const urlValue = mapImageUrlInput.value ? mapImageUrlInput.value.trim() : '';
+      if (urlValue) {
+        mapImageUrl = urlValue;
+        console.log('🔗 Using map image URL:', mapImageUrl);
+      } else {
+        // Allow empty string to clear the image
+        mapImageUrl = '';
+      }
+    }
+    
     const mapLocations = [];
     const locationCount = parseInt(document.getElementById('location-count')?.value || 0);
     for (let i = 0; i < locationCount; i++) {
@@ -2501,8 +2581,11 @@ class AdminPanel {
       ctaButtonLink,
       mapTitle,
       mapDescription,
+      mapImageUrl: mapImageUrl || null, // Send null if empty string
       mapLocations
     };
+    
+    console.log('📤 Saving medical tourism data:', { mapImageUrl: payload.mapImageUrl });
     
     try {
       const response = await fetch(`${api}/api/medical-tourism`, {
@@ -2516,12 +2599,20 @@ class AdminPanel {
         await this.loadAllData();
         this.renderMedicalTourism();
       } else {
-        const error = await response.json();
-        alert('❌ Failed to save: ' + (error.error || 'Unknown error'));
+        let errorMessage = 'Unknown error';
+        try {
+          const error = await response.json();
+          errorMessage = error.error || error.message || JSON.stringify(error);
+        } catch (e) {
+          errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        }
+        console.error('❌ Save failed:', errorMessage);
+        alert('❌ Failed to save: ' + errorMessage + '\n\nCheck console for details.');
       }
     } catch (error) {
-      console.error('Error saving medical tourism:', error);
-      alert('❌ Failed to save. Please try again.');
+      console.error('❌ Error saving medical tourism:', error);
+      const errorMsg = error.message || 'Network error or server not responding';
+      alert('❌ Failed to save: ' + errorMsg + '\n\nPlease check:\n1. Backend server is running on ' + api + '\n2. Check browser console for details');
     }
   }
 
@@ -2574,8 +2665,8 @@ class AdminPanel {
       // Check API connection before saving
       const isConnected = await this.checkApiConnection();
       if (!isConnected) {
-        const defaultUrl = 'https://kidney-clinic-e2f6c7fnf0cxg5dy.eastus-01.azurewebsites.net';
-        const useDefault = confirm(`Cannot connect to API at ${api}. The server may not be running.\n\nWould you like to try with the Azure URL (${defaultUrl})?`);
+        const defaultUrl = 'https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net';
+        const useDefault = confirm(`Cannot connect to API at ${api}. The server may not be running.\n\nWould you like to try with the default URL (${defaultUrl})?`);
         if (useDefault) {
           localStorage.setItem('api_base', defaultUrl);
           // Retry with default URL
