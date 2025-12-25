@@ -19,7 +19,7 @@
     };
     configScript.onerror = () => {
       result.innerHTML += '<p>⚠ config.js failed, using fallback</p>';
-      window.__CONFIG__ = { API_BASE_URL: 'https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net' };
+      window.__CONFIG__ = { API_BASE_URL: 'http://localhost:3001' };
       loadAdmin();
     };
     document.head.appendChild(configScript);

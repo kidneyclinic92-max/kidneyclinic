@@ -246,6 +246,9 @@ class AdminPanel {
       case 'kidney':
         this.renderKidney();
         break;
+      case 'about':
+        this.renderAbout();
+        break;
       case 'appointments':
         this.renderAppointments();
         break;
@@ -661,7 +664,7 @@ class AdminPanel {
         <div style="display:grid;grid-template-columns:80px repeat(2,minmax(0,1fr)) auto;gap:12px;align-items:start;">
           <div class="form-group" style="margin:0">
             <label style="font-size:0.85rem;">Icon</label>
-            <input type="text" name="kidney-pillar-icon-${index}" value="${pillar.icon || ''}" placeholder="🍎" />
+            <input type="text" name="kidney-pillar-icon-${index}" value="${pillar.icon || ''}" placeholder="Icon (emoji or text)" />
           </div>
           <div class="form-group" style="margin:0">
             <label style="font-size:0.85rem;">Title</label>
@@ -1220,15 +1223,18 @@ class AdminPanel {
       pillars: [],
       resources: []
     };
-    const pillarCount = parseInt(document.getElementById('kidney-support-pillars-count')?.value || 0);
-    for (let i = 0; i < pillarCount; i++) {
-      const icon = document.querySelector(`[name="kidney-pillar-icon-${i}"]`)?.value || '';
-      const title = document.querySelector(`[name="kidney-pillar-title-${i}"]`)?.value || '';
-      const description = document.querySelector(`[name="kidney-pillar-description-${i}"]`)?.value || '';
+    const pillarRows = document.querySelectorAll('.kidney-support-pillar');
+    pillarRows.forEach(row => {
+      const iconInput = row.querySelector('[name^="kidney-pillar-icon-"]');
+      const titleInput = row.querySelector('[name^="kidney-pillar-title-"]');
+      const descriptionInput = row.querySelector('[name^="kidney-pillar-description-"]');
+      const icon = iconInput?.value || '';
+      const title = titleInput?.value || '';
+      const description = descriptionInput?.value || '';
       if (icon || title || description) {
         support.pillars.push({ icon, title, description });
       }
-    }
+    });
     const resourceCount = parseInt(document.getElementById('kidney-support-resources-count')?.value || 0);
     for (let i = 0; i < resourceCount; i++) {
       const title = document.querySelector(`[name="kidney-resource-title-${i}"]`)?.value || '';
@@ -1263,6 +1269,335 @@ class AdminPanel {
     } catch (error) {
       console.error('Error saving kidney page:', error);
       alert('Failed to save Kidney Department page. Please try again.');
+    }
+  }
+
+  async renderAbout() {
+    const container = document.getElementById('about-editor');
+    if (!container) return;
+    
+    try {
+      const api = this.getApiBase();
+      const response = await fetch(`${api}/api/about`);
+      const data = await response.ok ? await response.json() : {};
+      
+      const get = (key, def = '') => data[key] || def;
+      
+      container.innerHTML = `
+        <div style="max-width: 1200px; margin: 0 auto;">
+          <h2 style="color: #1a2a44; margin-bottom: 30px;">About Us Page Editor</h2>
+          
+          <!-- Hero Section -->
+          <div class="form-section">
+            <h3 style="color: #1a2a44; margin-bottom: 20px; font-weight: 700;">Hero Section</h3>
+            <div class="form-group">
+              <label>Hero Title</label>
+              <input type="text" id="about-hero-title" value="${get('hero_title', 'About The Kidney Clinic')}" />
+            </div>
+            <div class="form-group">
+              <label>Hero Subtitle</label>
+              <textarea id="about-hero-subtitle" rows="3">${get('hero_subtitle', 'Empowering patients worldwide with world-class kidney care and innovative transplant solutions since our establishment.')}</textarea>
+            </div>
+            <div class="form-group">
+              <label>Hero Background Image URL</label>
+              <input type="url" id="about-hero-background-image" value="${get('hero_background_image', 'https://images.pexels.com/photos/8460157/pexels-photo-8460157.jpeg?auto=compress&cs=tinysrgb&w=1200')}" placeholder="https://example.com/image.jpg" />
+            </div>
+          </div>
+          
+          <!-- Impact Section -->
+          <div class="form-section">
+            <h3 style="color: #1a2a44; margin-bottom: 20px; font-weight: 700;">Our Impact Section</h3>
+            <div class="form-group">
+              <label>Section Title</label>
+              <input type="text" id="about-impact-title" value="${get('impact_title', 'Our Impact')}" />
+            </div>
+            <div id="about-impact-stats">
+              ${((Array.isArray(data.impact_stats) && data.impact_stats.length > 0) ? data.impact_stats : [
+                { icon: '👨‍⚕️', value: '50+', label: 'Expert Specialists' },
+                { icon: '🏥', value: '500+', label: 'Successful Transplants' },
+                { icon: '✅', value: '98%', label: 'Success Rate' },
+                { icon: '🌍', value: '30+', label: 'Countries Served' }
+              ]).map((stat, idx) => `
+                <div class="about-stat-row" data-stat-index="${idx}" style="background: #F0F9FF; padding: 16px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border);">
+                  <div style="display: grid; grid-template-columns: 80px repeat(2, minmax(0, 1fr)) auto; gap: 12px; align-items: start;">
+                    <div class="form-group" style="margin: 0;">
+                      <label style="font-size: 0.85rem;">Icon</label>
+                      <input type="text" name="about-stat-icon-${idx}" value="${stat.icon || ''}" placeholder="Icon (emoji or text)" />
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                      <label style="font-size: 0.85rem;">Value</label>
+                      <input type="text" name="about-stat-value-${idx}" value="${stat.value || ''}" placeholder="50+" />
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                      <label style="font-size: 0.85rem;">Label</label>
+                      <input type="text" name="about-stat-label-${idx}" value="${stat.label || ''}" placeholder="Expert Specialists" />
+                    </div>
+                    <button type="button" onclick="admin.removeAboutStat(${idx})" class="btn btn-small btn-danger" style="height: fit-content; margin-top: 22px;">Remove</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <input type="hidden" id="about-impact-stats-count" value="${((Array.isArray(data.impact_stats) && data.impact_stats.length > 0) ? data.impact_stats : [
+                { icon: '👨‍⚕️', value: '50+', label: 'Expert Specialists' },
+                { icon: '🏥', value: '500+', label: 'Successful Transplants' },
+                { icon: '✅', value: '98%', label: 'Success Rate' },
+                { icon: '🌍', value: '30+', label: 'Countries Served' }
+              ]).length}" />
+            <button type="button" onclick="admin.addAboutStat()" class="btn" style="margin-top: 10px;">+ Add Stat</button>
+          </div>
+          
+          <!-- Values Section -->
+          <div class="form-section">
+            <h3 style="color: #1a2a44; margin-bottom: 20px; font-weight: 700;">Our Values Section</h3>
+            <div class="form-group">
+              <label>Section Title</label>
+              <input type="text" id="about-values-title" value="${get('values_title', 'Our Values')}" />
+            </div>
+            <div id="about-values-list">
+              ${((Array.isArray(data.values) && data.values.length > 0) ? data.values : [
+                { icon: '🚀', title: 'Innovation First', description: 'We stay at the forefront of medical technology, constantly exploring new treatments and procedures to provide the best possible care for our patients.' },
+                { icon: '❤️', title: 'Patient Success', description: 'Your health and recovery are our success. We build lasting relationships based on trust, exceptional care, and outstanding medical outcomes.' },
+                { icon: '🛡️', title: 'Safety & Reliability', description: 'Medical-grade safety protocols and 99.9% operational reliability ensure that every patient receives the highest standard of care and support.' },
+                { icon: '👥', title: 'Expert Team', description: '50+ certified specialists with deep expertise in nephrology, transplantation, and critical care, dedicated to your well-being.' }
+              ]).map((value, idx) => `
+                <div class="about-value-row" data-value-index="${idx}" style="background: #F0F9FF; padding: 16px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border);">
+                  <div style="display: grid; grid-template-columns: 80px 1fr auto; gap: 12px; align-items: start;">
+                    <div class="form-group" style="margin: 0;">
+                      <label style="font-size: 0.85rem;">Icon</label>
+                      <input type="text" name="about-value-icon-${idx}" value="${value.icon || ''}" placeholder="Icon (emoji or text)" />
+                    </div>
+                    <div style="flex: 1;">
+                      <div class="form-group" style="margin: 0 0 10px 0;">
+                        <label style="font-size: 0.85rem;">Title</label>
+                        <input type="text" name="about-value-title-${idx}" value="${value.title || ''}" placeholder="Innovation First" />
+                      </div>
+                      <div class="form-group" style="margin: 0;">
+                        <label style="font-size: 0.85rem;">Description</label>
+                        <textarea name="about-value-description-${idx}" rows="2" placeholder="Description...">${value.description || ''}</textarea>
+                      </div>
+                    </div>
+                    <button type="button" onclick="admin.removeAboutValue(${idx})" class="btn btn-small btn-danger" style="height: fit-content; margin-top: 22px;">Remove</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <input type="hidden" id="about-values-count" value="${((Array.isArray(data.values) && data.values.length > 0) ? data.values : [
+                { icon: '🚀', title: 'Innovation First', description: 'We stay at the forefront of medical technology, constantly exploring new treatments and procedures to provide the best possible care for our patients.' },
+                { icon: '❤️', title: 'Patient Success', description: 'Your health and recovery are our success. We build lasting relationships based on trust, exceptional care, and outstanding medical outcomes.' },
+                { icon: '🛡️', title: 'Safety & Reliability', description: 'Medical-grade safety protocols and 99.9% operational reliability ensure that every patient receives the highest standard of care and support.' },
+                { icon: '👥', title: 'Expert Team', description: '50+ certified specialists with deep expertise in nephrology, transplantation, and critical care, dedicated to your well-being.' }
+              ]).length}" />
+            <button type="button" onclick="admin.addAboutValue()" class="btn" style="margin-top: 10px;">+ Add Value</button>
+          </div>
+          
+          <!-- Location Section -->
+          <div class="form-section">
+            <h3 style="color: #1a2a44; margin-bottom: 20px; font-weight: 700;">Location Section</h3>
+            <div class="form-group">
+              <label>Section Title</label>
+              <input type="text" id="about-location-title" value="${get('location_title', '📍 Our Location')}" />
+            </div>
+            <div class="form-group">
+              <label>Section Description</label>
+              <input type="text" id="about-location-description" value="${get('location_description', 'Visit us at our state-of-the-art facility')}" />
+            </div>
+            <div class="form-group">
+              <label>Google Maps Embed URL</label>
+              <input type="url" id="about-location-map-embed" value="${get('location_map_embed_url', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3614.2451271923155!2d73.106847!3d33.573121799999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfed2cd8fd7fc9%3A0x67e31c3aceed5639!2sThe%20Kidney%20Clinic!5e1!3m2!1sen!2s!4v1761664752414!5m2!1sen!2s')}" placeholder="Google Maps embed URL" />
+            </div>
+            <div class="form-group">
+              <label>Google Maps Link</label>
+              <input type="url" id="about-location-map-link" value="${get('location_map_link', 'https://www.google.com/maps/place/The+Kidney+Clinic/@33.573121799999996,73.106847,15z')}" placeholder="Google Maps link" />
+            </div>
+          </div>
+          
+          <button class="btn primary" onclick="admin.saveAbout()" style="width: 100%; padding: 16px; font-size: 1.1rem; margin-top: 30px;">Save About Page</button>
+        </div>
+      `;
+    } catch (error) {
+      console.error('Error loading about page:', error);
+      container.innerHTML = '<p style="color: var(--danger);">Failed to load About page data. Please refresh and try again.</p>';
+    }
+  }
+
+  addAboutStat() {
+    const container = document.getElementById('about-impact-stats');
+    const countInput = document.getElementById('about-impact-stats-count');
+    if (!container || !countInput) return;
+    const index = parseInt(countInput.value || 0);
+    const newStat = document.createElement('div');
+    newStat.className = 'about-stat-row';
+    newStat.setAttribute('data-stat-index', index);
+    newStat.style.cssText = 'background: #F0F9FF; padding: 16px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border);';
+    newStat.innerHTML = `
+      <div style="display: grid; grid-template-columns: 80px repeat(2, minmax(0, 1fr)) auto; gap: 12px; align-items: start;">
+        <div class="form-group" style="margin: 0;">
+          <label style="font-size: 0.85rem;">Icon</label>
+          <input type="text" name="about-stat-icon-${index}" value="" placeholder="Icon (emoji or text)" />
+        </div>
+        <div class="form-group" style="margin: 0;">
+          <label style="font-size: 0.85rem;">Value</label>
+          <input type="text" name="about-stat-value-${index}" value="" placeholder="50+" />
+        </div>
+        <div class="form-group" style="margin: 0;">
+          <label style="font-size: 0.85rem;">Label</label>
+          <input type="text" name="about-stat-label-${index}" value="" placeholder="Expert Specialists" />
+        </div>
+        <button type="button" onclick="admin.removeAboutStat(${index})" class="btn btn-small btn-danger" style="height: fit-content; margin-top: 22px;">Remove</button>
+      </div>
+    `;
+    container.appendChild(newStat);
+    countInput.value = index + 1;
+  }
+
+  removeAboutStat(index) {
+    const container = document.getElementById('about-impact-stats');
+    const row = container?.querySelector(`[data-stat-index="${index}"]`);
+    if (row) row.remove();
+    this.updateAboutStatIndices();
+  }
+
+  updateAboutStatIndices() {
+    const container = document.getElementById('about-impact-stats');
+    const countInput = document.getElementById('about-impact-stats-count');
+    if (!container || !countInput) return;
+    const rows = container.querySelectorAll('.about-stat-row');
+    rows.forEach((row, idx) => {
+      row.setAttribute('data-stat-index', idx);
+      const inputs = row.querySelectorAll('input');
+      inputs.forEach(input => {
+        const name = input.name || '';
+        const newName = name.replace(/-\d+$/, `-${idx}`);
+        input.name = newName;
+      });
+      const btn = row.querySelector('button[onclick*="removeAboutStat"]');
+      if (btn) btn.setAttribute('onclick', `admin.removeAboutStat(${idx})`);
+    });
+    countInput.value = rows.length;
+  }
+
+  addAboutValue() {
+    const container = document.getElementById('about-values-list');
+    const countInput = document.getElementById('about-values-count');
+    if (!container || !countInput) return;
+    const index = parseInt(countInput.value || 0);
+    const newValue = document.createElement('div');
+    newValue.className = 'about-value-row';
+    newValue.setAttribute('data-value-index', index);
+    newValue.style.cssText = 'background: #F0F9FF; padding: 16px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border);';
+    newValue.innerHTML = `
+      <div style="display: grid; grid-template-columns: 80px 1fr auto; gap: 12px; align-items: start;">
+        <div class="form-group" style="margin: 0;">
+          <label style="font-size: 0.85rem;">Icon</label>
+          <input type="text" name="about-value-icon-${index}" value="" placeholder="Icon (emoji or text)" />
+        </div>
+        <div style="flex: 1;">
+          <div class="form-group" style="margin: 0 0 10px 0;">
+            <label style="font-size: 0.85rem;">Title</label>
+            <input type="text" name="about-value-title-${index}" value="" placeholder="Innovation First" />
+          </div>
+          <div class="form-group" style="margin: 0;">
+            <label style="font-size: 0.85rem;">Description</label>
+            <textarea name="about-value-description-${index}" rows="2" placeholder="Description..."></textarea>
+          </div>
+        </div>
+        <button type="button" onclick="admin.removeAboutValue(${index})" class="btn btn-small btn-danger" style="height: fit-content; margin-top: 22px;">Remove</button>
+      </div>
+    `;
+    container.appendChild(newValue);
+    countInput.value = index + 1;
+  }
+
+  removeAboutValue(index) {
+    const container = document.getElementById('about-values-list');
+    const row = container?.querySelector(`[data-value-index="${index}"]`);
+    if (row) row.remove();
+    this.updateAboutValueIndices();
+  }
+
+  updateAboutValueIndices() {
+    const container = document.getElementById('about-values-list');
+    const countInput = document.getElementById('about-values-count');
+    if (!container || !countInput) return;
+    const rows = container.querySelectorAll('.about-value-row');
+    rows.forEach((row, idx) => {
+      row.setAttribute('data-value-index', idx);
+      const inputs = row.querySelectorAll('input, textarea');
+      inputs.forEach(input => {
+        const name = input.name || '';
+        const newName = name.replace(/-\d+$/, `-${idx}`);
+        input.name = newName;
+      });
+      const btn = row.querySelector('button[onclick*="removeAboutValue"]');
+      if (btn) btn.setAttribute('onclick', `admin.removeAboutValue(${idx})`);
+    });
+    countInput.value = rows.length;
+  }
+
+  async saveAbout() {
+    try {
+      const api = this.getApiBase();
+      this.setStatus('Saving About page...');
+      
+      // Collect impact stats
+      const statRows = document.querySelectorAll('.about-stat-row');
+      const impactStats = [];
+      statRows.forEach(row => {
+        const iconInput = row.querySelector('[name^="about-stat-icon-"]');
+        const valueInput = row.querySelector('[name^="about-stat-value-"]');
+        const labelInput = row.querySelector('[name^="about-stat-label-"]');
+        const icon = iconInput?.value || '';
+        const value = valueInput?.value || '';
+        const label = labelInput?.value || '';
+        if (icon || value || label) {
+          impactStats.push({ icon, value, label });
+        }
+      });
+      
+      // Collect values
+      const valueRows = document.querySelectorAll('.about-value-row');
+      const values = [];
+      valueRows.forEach(row => {
+        const iconInput = row.querySelector('[name^="about-value-icon-"]');
+        const titleInput = row.querySelector('[name^="about-value-title-"]');
+        const descInput = row.querySelector('[name^="about-value-description-"]');
+        const icon = iconInput?.value || '';
+        const title = titleInput?.value || '';
+        const description = descInput?.value || '';
+        if (icon || title || description) {
+          values.push({ icon, title, description });
+        }
+      });
+      
+      const payload = {
+        hero_title: document.getElementById('about-hero-title')?.value || '',
+        hero_subtitle: document.getElementById('about-hero-subtitle')?.value || '',
+        hero_background_image: document.getElementById('about-hero-background-image')?.value || '',
+        impact_title: document.getElementById('about-impact-title')?.value || '',
+        impact_stats: impactStats,
+        values_title: document.getElementById('about-values-title')?.value || '',
+        values: values,
+        location_title: document.getElementById('about-location-title')?.value || '',
+        location_description: document.getElementById('about-location-description')?.value || '',
+        location_map_embed_url: document.getElementById('about-location-map-embed')?.value || '',
+        location_map_link: document.getElementById('about-location-map-link')?.value || ''
+      };
+      
+      const response = await fetch(`${api}/api/about`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+      }
+      
+      this.setStatus('✅ About page saved successfully!');
+      setTimeout(() => this.setStatus(''), 3000);
+    } catch (error) {
+      console.error('Error saving about page:', error);
+      alert('Failed to save About page. Please try again.');
     }
   }
 
@@ -2191,7 +2526,7 @@ class AdminPanel {
       }
       
       const payload = { 
-        name: data.name,
+        name: data.name, 
         summary: data.summary,
         image: data.image || null,
         details: detailsArray,
@@ -2601,7 +2936,7 @@ class AdminPanel {
       } else {
         let errorMessage = 'Unknown error';
         try {
-          const error = await response.json();
+        const error = await response.json();
           errorMessage = error.error || error.message || JSON.stringify(error);
         } catch (e) {
           errorMessage = `HTTP ${response.status}: ${response.statusText}`;

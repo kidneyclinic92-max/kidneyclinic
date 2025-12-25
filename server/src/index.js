@@ -7,6 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { upload, uploadToAzure, isAzureConfigured } from './azure-storage.js';
 import { sendAppointmentConfirmation, sendAppointmentCancellation, sendAppointmentCompleted, testEmailConnection } from './email-service.js';
+import { sendAppointmentConfirmationWhatsApp, sendAppointmentCancellationWhatsApp, testWhatsAppConnection } from './whatsapp-service.js';
 import { getCachedGoogleReviews } from './google-reviews-service.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -43,6 +44,16 @@ if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
 } else {
   console.log('⚠️  Email not configured - Set EMAIL_USER and EMAIL_PASS in .env file');
   console.log('   Current EMAIL_USER:', process.env.EMAIL_USER || 'NOT SET');
+}
+
+// Check WhatsApp configuration
+console.log('\n📱 WhatsApp Configuration Check:');
+if (process.env.WHATSAPP_ACCESS_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID) {
+  console.log('✅ WhatsApp configured with Phone Number ID:', process.env.WHATSAPP_PHONE_NUMBER_ID);
+  console.log('✅ WhatsApp service ready to send notifications');
+} else {
+  console.log('⚠️  WhatsApp not configured - Set WHATSAPP_ACCESS_TOKEN and WHATSAPP_PHONE_NUMBER_ID in .env file');
+  console.log('   Current WHATSAPP_PHONE_NUMBER_ID:', process.env.WHATSAPP_PHONE_NUMBER_ID || 'NOT SET');
 }
 
 const toJSON = {
@@ -569,6 +580,49 @@ const Home = mongoose.model('Home', new mongoose.Schema({
   showcase_subtitle: { type: String }
 }, { timestamps: true, toJSON }));
 
+const About = mongoose.model('About', new mongoose.Schema({
+  // Hero Section
+  hero_title: { type: String },
+  hero_subtitle: { type: String },
+  hero_background_image: { type: String },
+  
+  // Impact Section
+  impact_title: { type: String },
+  impact_stats: [{
+    icon: { type: String },
+    value: { type: String },
+    label: { type: String }
+  }],
+  
+  // Values Section
+  values_title: { type: String },
+  values: [{
+    icon: { type: String },
+    title: { type: String },
+    description: { type: String }
+  }],
+  
+  // Mission/Vision Section (optional)
+  mission_title: { type: String },
+  mission_text: { type: String },
+  vision_title: { type: String },
+  vision_text: { type: String },
+  
+  // Location Section
+  location_title: { type: String },
+  location_description: { type: String },
+  location_map_embed_url: { type: String },
+  location_map_link: { type: String },
+  location_address: { type: String },
+  
+  // Links Section
+  links: [{
+    title: { type: String },
+    text: { type: String },
+    href: { type: String }
+  }]
+}, { timestamps: true, toJSON }));
+
 // Health
 app.get('/health', async (_req, res) => {
   const state = mongoose.connection.readyState; // 1 connected
@@ -603,6 +657,29 @@ app.get('/api/test-email', async (_req, res) => {
       error: error.message,
       configured: false
     });
+  }
+});
+
+// --- WhatsApp Test Endpoint ---
+app.get('/api/test-whatsapp', async (_req, res) => {
+  try {
+    const result = await testWhatsAppConnection();
+    if (result.success) {
+      res.json({
+        success: true,
+        message: 'WhatsApp connection verified successfully! ✅',
+        details: result
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'WhatsApp not configured. Set WHATSAPP_ACCESS_TOKEN and WHATSAPP_PHONE_NUMBER_ID in .env file.',
+        error: result.error,
+        errorDetails: result.errorDetails
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
@@ -978,6 +1055,84 @@ app.get('/api/kidney', async (_req, res) => {
   res.json(formatKidney(doc));
 });
 
+app.get('/api/about', async (_req, res) => {
+  try {
+    let doc = await About.findOne();
+    if (!doc) {
+      doc = new About({});
+      await doc.save();
+    }
+    res.json(doc.toJSON());
+  } catch (error) {
+    console.error('Error fetching about:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/about', async (req, res) => {
+  try {
+    let doc = await About.findOne();
+    if (!doc) {
+      doc = new About({});
+    }
+    
+    const body = req.body || {};
+    
+    // Hero Section
+    if (body.hero_title !== undefined) doc.hero_title = toStringSafe(body.hero_title);
+    if (body.hero_subtitle !== undefined) doc.hero_subtitle = toStringSafe(body.hero_subtitle);
+    if (body.hero_background_image !== undefined) doc.hero_background_image = toStringSafe(body.hero_background_image);
+    
+    // Impact Section
+    if (body.impact_title !== undefined) doc.impact_title = toStringSafe(body.impact_title);
+    if (Array.isArray(body.impact_stats)) {
+      doc.impact_stats = body.impact_stats.map(stat => ({
+        icon: toStringSafe(stat?.icon),
+        value: toStringSafe(stat?.value),
+        label: toStringSafe(stat?.label)
+      }));
+    }
+    
+    // Values Section
+    if (body.values_title !== undefined) doc.values_title = toStringSafe(body.values_title);
+    if (Array.isArray(body.values)) {
+      doc.values = body.values.map(value => ({
+        icon: toStringSafe(value?.icon),
+        title: toStringSafe(value?.title),
+        description: toStringSafe(value?.description)
+      }));
+    }
+    
+    // Mission/Vision Section
+    if (body.mission_title !== undefined) doc.mission_title = toStringSafe(body.mission_title);
+    if (body.mission_text !== undefined) doc.mission_text = toStringSafe(body.mission_text);
+    if (body.vision_title !== undefined) doc.vision_title = toStringSafe(body.vision_title);
+    if (body.vision_text !== undefined) doc.vision_text = toStringSafe(body.vision_text);
+    
+    // Location Section
+    if (body.location_title !== undefined) doc.location_title = toStringSafe(body.location_title);
+    if (body.location_description !== undefined) doc.location_description = toStringSafe(body.location_description);
+    if (body.location_map_embed_url !== undefined) doc.location_map_embed_url = toStringSafe(body.location_map_embed_url);
+    if (body.location_map_link !== undefined) doc.location_map_link = toStringSafe(body.location_map_link);
+    if (body.location_address !== undefined) doc.location_address = toStringSafe(body.location_address);
+    
+    // Links Section
+    if (Array.isArray(body.links)) {
+      doc.links = body.links.map(link => ({
+        title: toStringSafe(link?.title),
+        text: toStringSafe(link?.text),
+        href: toStringSafe(link?.href)
+      }));
+    }
+    
+    await doc.save();
+    res.json(doc.toJSON());
+  } catch (error) {
+    console.error('Error updating about:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.put('/api/kidney', async (req, res) => {
   const update = sanitizeKidneyPayload(req.body || {});
   await KidneyPage.findOneAndUpdate({}, update, { upsert: true });
@@ -1072,6 +1227,25 @@ app.get('/api/appointments/:id', async (req, res) => {
 app.post('/api/appointments', async (req, res) => {
   try {
     const created = await Appointment.create(req.body);
+    
+    // Convert to plain object for notifications
+    const appointmentData = created.toJSON ? created.toJSON() : created;
+    
+    // Send WhatsApp notification immediately on booking (if phone number provided)
+    if (appointmentData.patientPhone) {
+      try {
+        const whatsappResult = await sendAppointmentConfirmationWhatsApp(appointmentData);
+        if (whatsappResult.success) {
+          console.log('✅ WhatsApp confirmation sent to:', appointmentData.patientPhone);
+        } else {
+          console.log('⚠️  WhatsApp notification skipped:', whatsappResult.reason || whatsappResult.error);
+        }
+      } catch (error) {
+        console.error('❌ Error sending WhatsApp notification:', error);
+        // Don't fail the appointment creation if WhatsApp fails
+      }
+    }
+    
     res.status(201).json({ id: created.id, message: 'Appointment request submitted successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -1103,10 +1277,13 @@ app.put('/api/appointments/:id', async (req, res) => {
       // Convert appointment to plain object for email
       const appointmentData = updatedAppointment.toJSON ? updatedAppointment.toJSON() : updatedAppointment;
       
-      // Send appropriate email based on new status
+      // Send appropriate email and WhatsApp based on new status
       try {
         let emailResult = null;
+        let whatsappResult = null;
+        
         if (newStatus === 'confirmed') {
+          // Send email confirmation
           emailResult = await sendAppointmentConfirmation(appointmentData, doctor);
           if (emailResult.success) {
             console.log('✅ Confirmation email sent successfully to:', appointmentData.patientEmail);
@@ -1114,13 +1291,34 @@ app.put('/api/appointments/:id', async (req, res) => {
             console.error('❌ Failed to send confirmation email:', emailResult.reason || emailResult.error);
             console.log('   Appointment was still updated successfully.');
           }
+          
+          // Send WhatsApp confirmation
+          if (appointmentData.patientPhone) {
+            whatsappResult = await sendAppointmentConfirmationWhatsApp(appointmentData, doctor);
+            if (whatsappResult.success) {
+              console.log('✅ WhatsApp confirmation sent successfully to:', appointmentData.patientPhone);
+            } else {
+              console.log('⚠️  WhatsApp notification skipped:', whatsappResult.reason || whatsappResult.error);
+            }
+          }
         } else if (newStatus === 'cancelled') {
+          // Send email cancellation
           emailResult = await sendAppointmentCancellation(appointmentData, doctor);
           if (emailResult.success) {
             console.log('✅ Cancellation email sent successfully to:', appointmentData.patientEmail);
           } else {
             console.error('❌ Failed to send cancellation email:', emailResult.reason || emailResult.error);
             console.log('   Appointment was still updated successfully.');
+          }
+          
+          // Send WhatsApp cancellation
+          if (appointmentData.patientPhone) {
+            whatsappResult = await sendAppointmentCancellationWhatsApp(appointmentData, doctor);
+            if (whatsappResult.success) {
+              console.log('✅ WhatsApp cancellation sent successfully to:', appointmentData.patientPhone);
+            } else {
+              console.log('⚠️  WhatsApp notification skipped:', whatsappResult.reason || whatsappResult.error);
+            }
           }
         } else if (newStatus === 'completed') {
           emailResult = await sendAppointmentCompleted(appointmentData, doctor);

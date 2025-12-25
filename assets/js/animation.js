@@ -1,30 +1,14 @@
 // Background removed - ECG pulse line only
 
 // GSAP 3D Heartbeat Pulse Animations for Cards
-document.addEventListener('DOMContentLoaded', () => {
-  if (typeof gsap !== 'undefined') {
-    gsap.registerPlugin(ScrollTrigger);
+function initCardAnimations() {
+  if (typeof gsap === 'undefined') return;
+  
+  // 3D Heartbeat Pulse Animation for Cards
+  const cards = gsap.utils.toArray('.card');
+  if (cards.length === 0) return; // Exit if no cards found
     
-    // Parallax for sections
-    gsap.utils.toArray('.parallax-section').forEach(section => {
-      gsap.fromTo(section, 
-        { y: 50, opacity: 0.8 }, 
-        {
-          y: -50,
-          opacity: 1,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: section,
-            scrub: true,
-            start: 'top bottom',
-            end: 'bottom top'
-          }
-        }
-      );
-    });
-    
-    // 3D Heartbeat Pulse Animation for Cards
-    gsap.utils.toArray('.card').forEach((card, index) => {
+    cards.forEach((card, index) => {
       // Set 3D perspective
       gsap.set(card, { transformPerspective: 1000, transformStyle: "preserve-3d" });
       
@@ -119,19 +103,57 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
     
-    // Fade in cards on load with 3D effect
-    gsap.from('.card', { 
-      opacity: 0, 
-      y: 100,
-      z: -200,
-      rotationX: 90,
-      stagger: 0.15, 
-      duration: 1,
-      ease: "back.out(1.7)",
-      delay: 0.3
+    // Fade in cards on load with 3D effect (only if cards exist)
+    if (cards.length > 0) {
+      gsap.from('.card', { 
+        opacity: 0, 
+        y: 100,
+        z: -200,
+        rotationX: 90,
+        stagger: 0.15, 
+        duration: 1,
+        ease: "back.out(1.7)",
+        delay: 0.3
+      });
+    }
+}
+
+// Initialize on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof gsap !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+    
+    // Parallax for sections
+    gsap.utils.toArray('.parallax-section').forEach(section => {
+      gsap.fromTo(section, 
+        { y: 50, opacity: 0.8 }, 
+        {
+          y: -50,
+          opacity: 1,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: section,
+            scrub: true,
+            start: 'top bottom',
+            end: 'bottom top'
+          }
+        }
+      );
     });
+    
+    // Try to initialize card animations immediately
+    initCardAnimations();
+    
+    // Also try after a short delay (for dynamically loaded content)
+    setTimeout(initCardAnimations, 500);
+    setTimeout(initCardAnimations, 1500);
   }
 });
+
+// Make function available globally for content.js to call after loading
+if (typeof window !== 'undefined') {
+  window.initCardAnimations = initCardAnimations;
+}
 
 
 

@@ -3,7 +3,7 @@ async function loadJSON(path){
 }
 
 // API base URL
-const DEFAULT_PRODUCTION_API = 'https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net'; // Azure deployment
+const DEFAULT_PRODUCTION_API = 'https://kidneyclinicappservice-a3esbebthzb2g8fn.eastus-01.azurewebsites.net';
 const API_BASE = (typeof window !== 'undefined' && window.__CONFIG__ && window.__CONFIG__.API_BASE_URL) 
   ? window.__CONFIG__.API_BASE_URL 
   : DEFAULT_PRODUCTION_API;
@@ -46,8 +46,8 @@ async function populateHome(){
   };
   
   // Update Hero Section
-  updateText('#home-title', data.hero_title);
-  updateText('#home-subtitle', data.hero_subtitle);
+  updateText('#home-title', data.hero_title || 'Precision Urology, Compassionate care');
+  updateText('#home-subtitle', data.hero_subtitle || 'Advanced kidney transplants, minimally invasive procedures, and compassionate care.');
   const heroCtaPrimary = document.querySelector('[data-edit="hero_cta_primary"]');
   if (heroCtaPrimary && data.hero_cta_primary_text) {
     heroCtaPrimary.textContent = data.hero_cta_primary_text;
@@ -475,53 +475,53 @@ async function populateMedicalTourism(){
   
   mount.innerHTML=`
     <!-- Health Gateways Partnership Section -->
-    <section style="padding: 80px 20px; background: linear-gradient(135deg, #1a2a44, #0d3d4d); color: #ffffff; margin: 60px 0;">
+    <section style="padding: clamp(40px, 8vw, 80px) clamp(15px, 4vw, 20px); background: linear-gradient(135deg, #1a2a44, #0d3d4d); color: #ffffff; margin: clamp(30px, 6vw, 60px) 0;">
       <div class="container">
-        <div style="text-align: center; margin-bottom: 50px;">
+        <div style="text-align: center; margin-bottom: clamp(30px, 5vw, 50px);">
           ${data.healthGateways?.badge ? `
-          <div style="display: inline-block; padding: 8px 20px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; margin-bottom: 20px;">
+          <div style="display: inline-block; padding: 8px clamp(15px, 3vw, 20px); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50px; margin-bottom: 20px;">
             <span style="color: #00BCD4; font-weight: 600; font-size: 0.9rem; letter-spacing: 2px;">${data.healthGateways.badge}</span>
           </div>
           ` : ''}
-          <h2 class="section-title" style="color: #ffffff; font-size: 2.5rem; margin: 20px 0; font-weight: 700;">
+          <h2 class="section-title" style="color: #ffffff; font-size: clamp(1.5rem, 5vw, 2.5rem); margin: 20px 0; font-weight: 700;">
             ${data.healthGateways?.title || 'Our Tourism Partner: Health Gateways'}
           </h2>
-          <p style="font-size: 1.2rem; color: #b0c4de; max-width: 800px; margin: 0 auto; line-height: 1.8;">
+          <p style="font-size: clamp(1rem, 3.5vw, 1.2rem); color: #b0c4de; max-width: min(800px, 95%); margin: 0 auto; line-height: 1.8;">
             ${data.healthGateways?.description || 'Health Gateways is our trusted medical tourism partner, dedicated to making your healthcare journey seamless and stress-free. They provide comprehensive support services to ensure international patients receive the best possible care and experience.'}
           </p>
         </div>
 
         ${data.healthGateways?.services && data.healthGateways.services.length > 0 ? `
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 60px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: clamp(20px, 4vw, 30px); margin-top: clamp(30px, 6vw, 60px);">
           ${data.healthGateways.services.map((service, idx) => `
-            <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 30px; backdrop-filter: blur(10px); transition: all 0.3s;">
-              ${service.icon ? `<div style="font-size: 2.5rem; margin-bottom: 15px;">${service.icon}</div>` : ''}
-              <h3 style="color: #ffffff; font-size: 1.3rem; margin: 0 0 15px 0; font-weight: 700;">${service.title}</h3>
+            <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: clamp(20px, 4vw, 30px); backdrop-filter: blur(10px); transition: all 0.3s;">
+              ${service.icon ? `<div style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 15px;">${service.icon}</div>` : ''}
+              <h3 style="color: #ffffff; font-size: clamp(1.1rem, 4vw, 1.3rem); margin: 0 0 15px 0; font-weight: 700;">${service.title}</h3>
               <p style="color: #b0c4de; margin: 0; line-height: 1.7;">${service.description}</p>
             </div>
           `).join('')}
         </div>
         ` : `
         <!-- Default Services -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 60px;">
-          <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 30px; backdrop-filter: blur(10px);">
-            <div style="font-size: 2.5rem; margin-bottom: 15px;">✈️</div>
-            <h3 style="color: #ffffff; font-size: 1.3rem; margin: 0 0 15px 0; font-weight: 700;">Travel Coordination</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: clamp(20px, 4vw, 30px); margin-top: clamp(30px, 6vw, 60px);">
+          <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: clamp(20px, 4vw, 30px); backdrop-filter: blur(10px);">
+            <div style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 15px;">✈️</div>
+            <h3 style="color: #ffffff; font-size: clamp(1.1rem, 4vw, 1.3rem); margin: 0 0 15px 0; font-weight: 700;">Travel Coordination</h3>
             <p style="color: #b0c4de; margin: 0; line-height: 1.7;">Comprehensive travel arrangements including flights, accommodation, and local transportation.</p>
           </div>
-          <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 30px; backdrop-filter: blur(10px);">
-            <div style="font-size: 2.5rem; margin-bottom: 15px;">📋</div>
-            <h3 style="color: #ffffff; font-size: 1.3rem; margin: 0 0 15px 0; font-weight: 700;">Visa & Documentation</h3>
+          <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: clamp(20px, 4vw, 30px); backdrop-filter: blur(10px);">
+            <div style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 15px;">📋</div>
+            <h3 style="color: #ffffff; font-size: clamp(1.1rem, 4vw, 1.3rem); margin: 0 0 15px 0; font-weight: 700;">Visa & Documentation</h3>
             <p style="color: #b0c4de; margin: 0; line-height: 1.7;">Expert assistance with visa applications, medical documentation, and all required paperwork.</p>
           </div>
-          <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 30px; backdrop-filter: blur(10px);">
-            <div style="font-size: 2.5rem; margin-bottom: 15px;">🏥</div>
-            <h3 style="color: #ffffff; font-size: 1.3rem; margin: 0 0 15px 0; font-weight: 700;">Medical Coordination</h3>
+          <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: clamp(20px, 4vw, 30px); backdrop-filter: blur(10px);">
+            <div style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 15px;">🏥</div>
+            <h3 style="color: #ffffff; font-size: clamp(1.1rem, 4vw, 1.3rem); margin: 0 0 15px 0; font-weight: 700;">Medical Coordination</h3>
             <p style="color: #b0c4de; margin: 0; line-height: 1.7;">Seamless coordination between your home country and our clinic for all medical needs.</p>
           </div>
-          <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 30px; backdrop-filter: blur(10px);">
-            <div style="font-size: 2.5rem; margin-bottom: 15px;">💬</div>
-            <h3 style="color: #ffffff; font-size: 1.3rem; margin: 0 0 15px 0; font-weight: 700;">24/7 Support</h3>
+          <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: clamp(20px, 4vw, 30px); backdrop-filter: blur(10px);">
+            <div style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 15px;">💬</div>
+            <h3 style="color: #ffffff; font-size: clamp(1.1rem, 4vw, 1.3rem); margin: 0 0 15px 0; font-weight: 700;">24/7 Support</h3>
             <p style="color: #b0c4de; margin: 0; line-height: 1.7;">Round-the-clock support in multiple languages to assist you throughout your journey.</p>
           </div>
         </div>
@@ -641,14 +641,14 @@ async function populateKidney(){
   const heroGradient='linear-gradient(180deg, rgba(10,25,47,0.88) 0%, rgba(10,25,47,0.55) 50%, rgba(10,25,47,0.94) 100%)';
   const heroImageLayer=hero.backgroundImage?`<div style="position:absolute;inset:0;background:url('${hero.backgroundImage}') center/cover no-repeat;opacity:0.10;z-index:0;"></div>`:'';
   const heroSection=`
-    <section style="position:relative;padding:140px 20px 120px;color:#ffffff;overflow:hidden;background:${heroGradient};">
+    <section style="position:relative;padding:clamp(80px,12vw,140px) clamp(15px,4vw,20px) clamp(60px,10vw,120px);color:#ffffff;overflow:hidden;background:${heroGradient};">
       ${heroImageLayer}
-      <div class="container" style="max-width:1100px;margin:0 auto;text-align:center;position:relative;z-index:2;">
-        ${hero.badge?`<span style="display:inline-block;padding:10px 24px;border:1px solid rgba(255,255,255,0.3);border-radius:999px;background:rgba(0,188,212,0.2);color:#00e5ff;font-weight:600;letter-spacing:2px;text-transform:uppercase;font-size:0.85rem;">${hero.badge}</span>`:''}
-        <h1 style="margin:28px 0 18px;font-size:clamp(2.5rem,4vw,3.8rem);font-weight:800;letter-spacing:-1px;line-height:1.15;">${hero.title||'Kidney Transplant Department'}</h1>
-        <p style="margin:0 auto 32px;max-width:820px;font-size:1.15rem;line-height:1.9;color:#d0e2ff;">${hero.subtitle||'Comprehensive transplant care from evaluation to lifelong follow-up.'}</p>
+      <div class="container" style="max-width:min(1100px,95%);margin:0 auto;text-align:center;position:relative;z-index:2;padding:0 clamp(15px,4vw,20px);">
+        ${hero.badge?`<span style="display:inline-block;padding:10px clamp(18px,3vw,24px);border:1px solid rgba(255,255,255,0.3);border-radius:999px;background:rgba(0,188,212,0.2);color:#00e5ff;font-weight:600;letter-spacing:2px;text-transform:uppercase;font-size:0.85rem;">${hero.badge}</span>`:''}
+        <h1 style="margin:clamp(20px,4vw,28px) 0 clamp(12px,2.5vw,18px);font-size:clamp(2.5rem,4vw,3.8rem);font-weight:800;letter-spacing:-1px;line-height:1.15;">${hero.title||'Kidney Transplant Department'}</h1>
+        <p style="margin:0 auto clamp(24px,4vw,32px);max-width:min(820px,95%);font-size:clamp(1rem,3vw,1.15rem);line-height:1.9;color:#d0e2ff;">${hero.subtitle||'Comprehensive transplant care from evaluation to lifelong follow-up.'}</p>
         <div style="display:flex;justify-content:center;gap:18px;flex-wrap:wrap;">
-          <a href="./contact.html" class="btn primary" style="padding:16px 36px;font-size:1.05rem;">Refer a Patient</a>
+          <a href="./contact.html" class="btn primary" style="padding:clamp(12px,2vw,16px) clamp(28px,4vw,36px);font-size:clamp(0.95rem,2vw,1.05rem);">Refer a Patient</a>
     </div>
       </div>
       <div style="position:absolute;inset:0;background:radial-gradient(circle at 20% 20%, rgba(0,188,212,0.25), transparent 55%),radial-gradient(circle at 80% 30%, rgba(191,78,78,0.25), transparent 50%);mix-blend-mode:screen;z-index:1;"></div>
@@ -656,15 +656,15 @@ async function populateKidney(){
   `;
   
   const statsSection=stats.length?`
-    <section style="padding:80px 20px;background:#ffffff;">
-      <div class="container" style="max-width:1200px;margin:0 auto;">
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;">
+    <section style="padding:clamp(40px,8vw,80px) clamp(15px,4vw,20px);background:#ffffff;">
+      <div class="container" style="max-width:min(1200px,95%);margin:0 auto;padding:0 clamp(15px,4vw,20px);">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:clamp(16px,3vw,24px);">
           ${stats.map(stat=>`
-            <div style="background:linear-gradient(145deg,#F0F9FF,#ffffff);border:1px solid rgba(0,188,212,0.25);border-radius:20px;padding:32px;box-shadow:0 18px 60px rgba(0,188,212,0.15);text-align:center;transition:all 0.3s;" onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 24px 70px rgba(0,188,212,0.22)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 18px 60px rgba(0,188,212,0.15)'">
-              ${stat.icon?`<div style="font-size:2rem;margin-bottom:16px;">${stat.icon}</div>`:''}
-              <div style="font-size:2.3rem;font-weight:800;color:#1a2a44;">${stat.value||''}</div>
-              <div style="font-size:1.05rem;font-weight:600;color:#4a6572;margin:10px 0 12px;">${stat.label||''}</div>
-              ${stat.description?`<p style="margin:0;color:#607d8b;font-size:0.95rem;line-height:1.6;">${stat.description}</p>`:''}
+            <div style="background:linear-gradient(145deg,#F0F9FF,#ffffff);border:1px solid rgba(0,188,212,0.25);border-radius:20px;padding:clamp(24px,4vw,32px);box-shadow:0 18px 60px rgba(0,188,212,0.15);text-align:center;transition:all 0.3s;" onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 24px 70px rgba(0,188,212,0.22)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 18px 60px rgba(0,188,212,0.15)'">
+              ${stat.icon?`<div style="font-size:clamp(1.5rem,3.5vw,2rem);margin-bottom:16px;">${stat.icon}</div>`:''}
+              <div style="font-size:clamp(1.8rem,4vw,2.3rem);font-weight:800;color:#1a2a44;">${stat.value||''}</div>
+              <div style="font-size:clamp(0.95rem,2.5vw,1.05rem);font-weight:600;color:#4a6572;margin:10px 0 12px;">${stat.label||''}</div>
+              ${stat.description?`<p style="margin:0;color:#607d8b;font-size:clamp(0.85rem,2vw,0.95rem);line-height:1.6;">${stat.description}</p>`:''}
             </div>
           `).join('')}
         </div>
@@ -673,18 +673,18 @@ async function populateKidney(){
   `:'';
   
   const proceduresSection=(procedures.items||[]).length?`
-    <section style="padding:90px 20px;background:#E0F7FA;">
-      <div class="container" style="max-width:1200px;margin:0 auto;">
-        <div style="text-align:center;margin-bottom:60px;">
+    <section style="padding:clamp(50px,9vw,90px) clamp(15px,4vw,20px);background:#E0F7FA;">
+      <div class="container" style="max-width:min(1200px,95%);margin:0 auto;padding:0 clamp(15px,4vw,20px);">
+        <div style="text-align:center;margin-bottom:clamp(30px,6vw,60px);">
           <h2 class="section-title" style="margin-bottom:18px;">${procedures.title||'Kidney Transplant Procedures'}</h2>
-          ${procedures.subtitle?`<p class="section-sub" style="max-width:780px;margin:0 auto;color:#4a6572;">${procedures.subtitle}</p>`:''}
+          ${procedures.subtitle?`<p class="section-sub" style="max-width:min(780px,95%);margin:0 auto;color:#4a6572;">${procedures.subtitle}</p>`:''}
         </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:clamp(18px,3.5vw,28px);">
           ${(procedures.items||[]).map(item=>`
-            <article style="background:#ffffff;border:1px solid rgba(0,188,212,0.3);border-radius:22px;padding:32px;box-shadow:0 20px 70px rgba(0,188,212,0.18);display:flex;flex-direction:column;height:100%;transition:transform 0.3s, box-shadow 0.3s;" onmouseover="this.style.transform='translateY(-10px)';this.style.boxShadow='0 26px 90px rgba(0,188,212,0.28)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 20px 70px rgba(0,188,212,0.18)'">
-              ${item.icon?`<div style="font-size:2.5rem;margin-bottom:16px;">${item.icon}</div>`:''}
-              <h3 style="font-size:1.4rem;font-weight:700;color:#1a2a44;margin:0 0 12px;">${item.name||''}</h3>
-              <p style="margin:0 0 18px;color:#546e7a;font-size:1rem;line-height:1.7;flex:0;">${item.description||''}</p>
+            <article style="background:#ffffff;border:1px solid rgba(0,188,212,0.3);border-radius:22px;padding:clamp(24px,4vw,32px);box-shadow:0 20px 70px rgba(0,188,212,0.18);display:flex;flex-direction:column;height:100%;transition:transform 0.3s, box-shadow 0.3s;" onmouseover="this.style.transform='translateY(-10px)';this.style.boxShadow='0 26px 90px rgba(0,188,212,0.28)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 20px 70px rgba(0,188,212,0.18)'">
+              ${item.icon?`<div style="font-size:clamp(1.8rem,4vw,2.5rem);margin-bottom:16px;">${item.icon}</div>`:''}
+              <h3 style="font-size:clamp(1.1rem,3.5vw,1.4rem);font-weight:700;color:#1a2a44;margin:0 0 12px;">${item.name||''}</h3>
+              <p style="margin:0 0 18px;color:#546e7a;font-size:clamp(0.9rem,2.5vw,1rem);line-height:1.7;flex:0;">${item.description||''}</p>
               ${(item.focusPoints||[]).length?`
                 <div style="margin-top:auto;">
                   <h4 style="margin:0 0 12px;font-size:0.95rem;color:#0097a7;letter-spacing:1px;text-transform:uppercase;">Focus Areas</h4>
@@ -702,53 +702,53 @@ async function populateKidney(){
   `:'';
   
   const journeySection=(journey.steps||[]).length?`
-    <section style="padding:90px 20px;background:#ffffff;">
-      <div class="container" style="max-width:1100px;margin:0 auto;">
-        <div style="text-align:center;margin-bottom:60px;">
+    <section style="padding:clamp(50px,9vw,90px) clamp(15px,4vw,20px);background:#ffffff;">
+      <div class="container" style="max-width:min(1100px,95%);margin:0 auto;padding:0 clamp(15px,4vw,20px);">
+        <div style="text-align:center;margin-bottom:clamp(30px,6vw,60px);">
           <h2 class="section-title" style="margin-bottom:18px;">${journey.title||'Your Kidney Transplant Journey'}</h2>
-          ${journey.subtitle?`<p class="section-sub" style="margin:0 auto;max-width:720px;color:#4a6572;">${journey.subtitle}</p>`:''}
+          ${journey.subtitle?`<p class="section-sub" style="margin:0 auto;max-width:min(720px,95%);color:#4a6572;">${journey.subtitle}</p>`:''}
         </div>
         <div style="position:relative;padding-left:0;">
-          <div style="display:grid;gap:32px;">
+          <div style="display:grid;gap:clamp(20px,4vw,32px);">
             ${(journey.steps||[]).map((step,idx)=>`
-              <div style="display:flex;gap:24px;align-items:flex-start;">
-                <div style="min-width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#00BCD4,#0097A7);display:flex;align-items:center;justify-content:center;color:#ffffff;font-weight:700;box-shadow:0 12px 40px rgba(0,188,212,0.3);font-size:1.2rem;">
+              <div style="display:flex;gap:clamp(16px,3vw,24px);align-items:flex-start;">
+                <div style="min-width:clamp(50px,8vw,60px);height:clamp(50px,8vw,60px);border-radius:50%;background:linear-gradient(135deg,#00BCD4,#0097A7);display:flex;align-items:center;justify-content:center;color:#ffffff;font-weight:700;box-shadow:0 12px 40px rgba(0,188,212,0.3);font-size:clamp(1rem,2.5vw,1.2rem);">
                   ${idx+1}
                 </div>
-                <div style="flex:1;background:#F0F9FF;border:1px solid rgba(0,188,212,0.2);border-radius:18px;padding:24px 28px;box-shadow:0 14px 45px rgba(0,188,212,0.12);">
-                  <h3 style="margin:0 0 12px;font-size:1.25rem;color:#1a2a44;font-weight:700;">${step.title||''}</h3>
-                  <p style="margin:0;color:#455a64;line-height:1.75;font-size:1rem;">${step.description||''}</p>
+                <div style="flex:1;background:#F0F9FF;border:1px solid rgba(0,188,212,0.2);border-radius:18px;padding:clamp(20px,3.5vw,24px) clamp(22px,4vw,28px);box-shadow:0 14px 45px rgba(0,188,212,0.12);">
+                  <h3 style="margin:0 0 12px;font-size:clamp(1.1rem,3vw,1.25rem);color:#1a2a44;font-weight:700;">${step.title||''}</h3>
+                  <p style="margin:0;color:#455a64;line-height:1.75;font-size:clamp(0.9rem,2.5vw,1rem);">${step.description||''}</p>
                 </div>
               </div>
             `).join('')}
           </div>
           <div style="position:absolute;left:47px;top:30px;bottom:30px;width:2px;background:linear-gradient(180deg,rgba(0,188,212,0.1)0%,rgba(0,188,212,0.6)50%,rgba(0,188,212,0.1)100%);"></div>
         </div>
-        ${journey.note?`<p style="margin:48px auto 0;max-width:820px;text-align:center;color:#4a6572;font-size:0.95rem;line-height:1.7;">${journey.note}</p>`:''}
+        ${journey.note?`<p style="margin:clamp(30px,5vw,48px) auto 0;max-width:min(820px,95%);text-align:center;color:#4a6572;font-size:clamp(0.85rem,2vw,0.95rem);line-height:1.7;">${journey.note}</p>`:''}
       </div>
     </section>
   `:'';
   
   const symptomsSection=(symptoms.categories||[]).length?`
-    <section id="kidney-symptoms" style="padding:90px 20px;background:#0d3d4d;color:#ffffff;">
-      <div class="container" style="max-width:1100px;margin:0 auto;">
-        <div style="text-align:center;margin-bottom:50px;">
+    <section id="kidney-symptoms" style="padding:clamp(50px,9vw,90px) clamp(15px,4vw,20px);background:#0d3d4d;color:#ffffff;">
+      <div class="container" style="max-width:min(1100px,95%);margin:0 auto;padding:0 clamp(15px,4vw,20px);">
+        <div style="text-align:center;margin-bottom:clamp(30px,5vw,50px);">
           <h2 class="section-title" style="color:#ffffff;margin-bottom:16px;">${symptoms.title||'When to See a Kidney Specialist'}</h2>
-          ${symptoms.subtitle?`<p class="section-sub" style="color:#cfd8dc;max-width:760px;margin:0 auto;">${symptoms.subtitle}</p>`:''}
+          ${symptoms.subtitle?`<p class="section-sub" style="color:#cfd8dc;max-width:min(760px,95%);margin:0 auto;">${symptoms.subtitle}</p>`:''}
         </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:clamp(18px,3vw,24px);">
           ${(symptoms.categories||[]).map(category=>`
-            <details style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.2);border-radius:18px;padding:24px;box-shadow:0 18px 40px rgba(0,0,0,0.25);transition:all 0.3s;">
-              <summary style="cursor:pointer;font-size:1.2rem;font-weight:700;color:#00e5ff;margin-bottom:12px;outline:none;">${category.title||''}</summary>
-              <ul style="padding-left:18px;margin:10px 0 0;display:grid;gap:10px;color:#e0f7fa;font-size:0.98rem;line-height:1.7;">
+            <details style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.2);border-radius:18px;padding:clamp(20px,3vw,24px);box-shadow:0 18px 40px rgba(0,0,0,0.25);transition:all 0.3s;">
+              <summary style="cursor:pointer;font-size:clamp(1rem,3vw,1.2rem);font-weight:700;color:#00e5ff;margin-bottom:12px;outline:none;">${category.title||''}</summary>
+              <ul style="padding-left:18px;margin:10px 0 0;display:grid;gap:10px;color:#e0f7fa;font-size:clamp(0.9rem,2vw,0.98rem);line-height:1.7;">
                 ${(category.items||[]).map(item=>`<li>${item}</li>`).join('')}
               </ul>
             </details>
           `).join('')}
         </div>
         ${symptoms.cta?.text?`
-          <div style="text-align:center;margin-top:48px;">
-            <a href="${symptoms.cta.link||'./contact.html'}" class="btn primary" style="padding:18px 40px;font-size:1.05rem;">${symptoms.cta.text}</a>
+          <div style="text-align:center;margin-top:clamp(30px,5vw,48px);">
+            <a href="${symptoms.cta.link||'./contact.html'}" class="btn primary" style="padding:clamp(14px,2.5vw,18px) clamp(32px,4vw,40px);font-size:clamp(0.95rem,2vw,1.05rem);">${symptoms.cta.text}</a>
           </div>
         `:''}
       </div>
@@ -756,31 +756,31 @@ async function populateKidney(){
   `:'';
   
   const supportSection=((support.pillars||[]).length||(support.resources||[]).length)?`
-    <section style="padding:90px 20px;background:#ffffff;">
-      <div class="container" style="max-width:1180px;margin:0 auto;">
-        <div style="text-align:center;margin-bottom:50px;">
+    <section style="padding:clamp(50px,9vw,90px) clamp(15px,4vw,20px);background:#ffffff;">
+      <div class="container" style="max-width:min(1180px,95%);margin:0 auto;padding:0 clamp(15px,4vw,20px);">
+        <div style="text-align:center;margin-bottom:clamp(30px,5vw,50px);">
           <h2 class="section-title">${support.title||'Comprehensive Support Services'}</h2>
         </div>
         ${(support.pillars||[]).length?`
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-bottom:50px;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:clamp(18px,3vw,24px);margin-bottom:clamp(30px,5vw,50px);">
             ${support.pillars.map(pillar=>`
-              <div style="background:#F0F9FF;border:1px solid rgba(0,188,212,0.2);border-radius:18px;padding:28px;text-align:center;box-shadow:0 18px 60px rgba(0,188,212,0.12);">
-                ${pillar.icon?`<div style="font-size:2.2rem;margin-bottom:12px;">${pillar.icon}</div>`:''}
-                <h3 style="margin:0 0 12px;font-size:1.25rem;color:#1a2a44;font-weight:700;">${pillar.title||''}</h3>
-                <p style="margin:0;color:#4a6572;line-height:1.7;font-size:0.98rem;">${pillar.description||''}</p>
+              <div style="background:#F0F9FF;border:1px solid rgba(0,188,212,0.2);border-radius:18px;padding:clamp(22px,3.5vw,28px);text-align:center;box-shadow:0 18px 60px rgba(0,188,212,0.12);">
+                ${pillar.icon?`<div style="font-size:clamp(1.8rem,3.5vw,2.2rem);margin-bottom:12px;">${pillar.icon}</div>`:''}
+                <h3 style="margin:0 0 12px;font-size:clamp(1.1rem,3vw,1.25rem);color:#1a2a44;font-weight:700;">${pillar.title||''}</h3>
+                <p style="margin:0;color:#4a6572;line-height:1.7;font-size:clamp(0.9rem,2vw,0.98rem);">${pillar.description||''}</p>
               </div>
             `).join('')}
           </div>
         `:''}
         ${(support.resources||[]).length?`
-          <div style="background:linear-gradient(135deg,rgba(0,188,212,0.08),rgba(191,78,78,0.12));border:1px solid rgba(0,188,212,0.25);border-radius:22px;padding:40px;">
-            <h3 style="margin:0 0 20px;font-size:1.35rem;color:#1a2a44;font-weight:700;text-align:center;">Patient Resources</h3>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;">
+          <div style="background:linear-gradient(135deg,rgba(0,188,212,0.08),rgba(191,78,78,0.12));border:1px solid rgba(0,188,212,0.25);border-radius:22px;padding:clamp(30px,5vw,40px);">
+            <h3 style="margin:0 0 20px;font-size:clamp(1.2rem,3vw,1.35rem);color:#1a2a44;font-weight:700;text-align:center;">Patient Resources</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:clamp(18px,3vw,22px);">
               ${support.resources.map(resource=>`
-                <a href="${resource.link||'#'}" style="background:#ffffff;border:1px solid rgba(0,188,212,0.25);border-radius:16px;padding:22px;text-decoration:none;color:#1a2a44;box-shadow:0 14px 45px rgba(0,188,212,0.15);display:flex;flex-direction:column;gap:12px;transition:transform 0.3s, box-shadow 0.3s;" onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 22px 70px rgba(0,188,212,0.25)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 14px 45px rgba(0,188,212,0.15)'">
-                  <strong style="font-size:1.05rem;">${resource.title||''}</strong>
-                  <span style="color:#546e7a;font-size:0.95rem;line-height:1.6;">${resource.description||''}</span>
-                  <span style="margin-top:auto;font-size:0.9rem;color:#0097a7;font-weight:600;">Learn more →</span>
+                <a href="${resource.link||'#'}" style="background:#ffffff;border:1px solid rgba(0,188,212,0.25);border-radius:16px;padding:clamp(18px,3vw,22px);text-decoration:none;color:#1a2a44;box-shadow:0 14px 45px rgba(0,188,212,0.15);display:flex;flex-direction:column;gap:12px;transition:transform 0.3s, box-shadow 0.3s;" onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 22px 70px rgba(0,188,212,0.25)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 14px 45px rgba(0,188,212,0.15)'">
+                  <strong style="font-size:clamp(0.95rem,2.5vw,1.05rem);">${resource.title||''}</strong>
+                  <span style="color:#546e7a;font-size:clamp(0.85rem,2vw,0.95rem);line-height:1.6;">${resource.description||''}</span>
+                  <span style="margin-top:auto;font-size:clamp(0.8rem,2vw,0.9rem);color:#0097a7;font-weight:600;">Learn more →</span>
                 </a>
               `).join('')}
             </div>
@@ -791,11 +791,11 @@ async function populateKidney(){
   `:'';
   
   const ctaSection=(cta.heading||cta.description)?`
-    <section style="padding:90px 20px;background:linear-gradient(135deg,rgba(191,78,78,0.15),rgba(0,188,212,0.15));text-align:center;">
-      <div class="container" style="max-width:780px;margin:0 auto;">
-        ${cta.heading?`<h2 style="font-size:2.4rem;color:#1a2a44;margin-bottom:18px;font-weight:700;">${cta.heading}</h2>`:''}
-        ${cta.description?`<p style="font-size:1.15rem;color:#4a6572;line-height:1.8;margin:0 0 32px;">${cta.description}</p>`:''}
-        ${cta.buttonText?`<a href="${cta.buttonLink||'./contact.html'}" class="btn primary" style="padding:18px 42px;font-size:1.1rem;">${cta.buttonText}</a>`:''}
+    <section style="padding:clamp(50px,9vw,90px) clamp(15px,4vw,20px);background:linear-gradient(135deg,rgba(191,78,78,0.15),rgba(0,188,212,0.15));text-align:center;">
+      <div class="container" style="max-width:min(780px,95%);margin:0 auto;padding:0 clamp(15px,4vw,20px);">
+        ${cta.heading?`<h2 style="font-size:clamp(1.8rem,4vw,2.4rem);color:#1a2a44;margin-bottom:18px;font-weight:700;">${cta.heading}</h2>`:''}
+        ${cta.description?`<p style="font-size:clamp(1rem,3vw,1.15rem);color:#4a6572;line-height:1.8;margin:0 0 32px;">${cta.description}</p>`:''}
+        ${cta.buttonText?`<a href="${cta.buttonLink||'./contact.html'}" class="btn primary" style="padding:clamp(14px,2.5vw,18px) clamp(34px,4vw,42px);font-size:clamp(1rem,2.5vw,1.1rem);">${cta.buttonText}</a>`:''}
       </div>
     </section>
   `:'';
@@ -814,53 +814,84 @@ async function populateKidney(){
 async function populateAbout(){
   const mount=document.getElementById('about');
   if(!mount) return;
-  const data=await loadJSON('./data/about.json');
+  
+  // Try to load from API first, fallback to JSON
+  let data;
+  try {
+    data = await loadFromAPI('/api/about');
+    // If API returns empty, fallback to JSON
+    if (!data || Object.keys(data).length === 0) {
+      data = await loadJSON('./data/about.json');
+    }
+  } catch (error) {
+    data = await loadJSON('./data/about.json');
+  }
+  
+  // Default values
+  const hero = {
+    title: data.hero_title || 'About The Kidney Clinic',
+    subtitle: data.hero_subtitle || 'Empowering patients worldwide with world-class kidney care and innovative transplant solutions since our establishment.',
+    backgroundImage: data.hero_background_image || 'https://images.pexels.com/photos/8460157/pexels-photo-8460157.jpeg?auto=compress&cs=tinysrgb&w=1200'
+  };
+  
+  // Default impact stats
+  const defaultImpactStats = [
+    { icon: '👨‍⚕️', value: '50+', label: 'Expert Specialists' },
+    { icon: '🏥', value: '500+', label: 'Successful Transplants' },
+    { icon: '✅', value: '98%', label: 'Success Rate' },
+    { icon: '🌍', value: '30+', label: 'Countries Served' }
+  ];
+  
+  // Default values
+  const defaultValues = [
+    { icon: '🚀', title: 'Innovation First', description: 'We stay at the forefront of medical technology, constantly exploring new treatments and procedures to provide the best possible care for our patients.' },
+    { icon: '❤️', title: 'Patient Success', description: 'Your health and recovery are our success. We build lasting relationships based on trust, exceptional care, and outstanding medical outcomes.' },
+    { icon: '🛡️', title: 'Safety & Reliability', description: 'Medical-grade safety protocols and 99.9% operational reliability ensure that every patient receives the highest standard of care and support.' },
+    { icon: '👥', title: 'Expert Team', description: '50+ certified specialists with deep expertise in nephrology, transplantation, and critical care, dedicated to your well-being.' }
+  ];
+  
+  const impact = {
+    title: data.impact_title || 'Our Impact',
+    stats: (Array.isArray(data.impact_stats) && data.impact_stats.length > 0) ? data.impact_stats : defaultImpactStats
+  };
+  
+  const values = {
+    title: data.values_title || 'Our Values',
+    items: (Array.isArray(data.values) && data.values.length > 0) ? data.values : defaultValues
+  };
+  
+  const location = {
+    title: data.location_title || '📍 Our Location',
+    description: data.location_description || 'Visit us at our state-of-the-art facility',
+    mapEmbedUrl: data.location_map_embed_url || 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3614.2451271923155!2d73.106847!3d33.573121799999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfed2cd8fd7fc9%3A0x67e31c3aceed5639!2sThe%20Kidney%20Clinic!5e1!3m2!1sen!2s!4v1761664752414!5m2!1sen!2s',
+    mapLink: data.location_map_link || 'https://www.google.com/maps/place/The+Kidney+Clinic/@33.573121799999996,73.106847,15z',
+    address: data.location_address || ''
+  };
+  
   mount.innerHTML=`
     <!-- Hero Section -->
     <section style="background: linear-gradient(135deg, #1a2a44 0%, #0d3d4d 100%); color: #ffffff; padding: clamp(80px, 15vw, 120px) 20px clamp(60px, 12vw, 100px); text-align: center; position: relative; overflow: hidden;">
-      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('https://images.pexels.com/photos/8460157/pexels-photo-8460157.jpeg?auto=compress&cs=tinysrgb&w=1200') center/cover; opacity: 0.12; filter: blur(3px);"></div>
+      <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('${hero.backgroundImage}') center/cover; opacity: 0.12; filter: blur(3px);"></div>
       <div class="container" style="position: relative; z-index: 2; max-width: 1000px; margin: 0 auto;">
-        <h1 style="font-size: clamp(2rem, 8vw, 4rem); font-weight: 800; margin-bottom: 24px; letter-spacing: -2px; line-height: 1.1; text-align: center;">About The Kidney Clinic</h1>
-        <p style="font-size: clamp(1rem, 3vw, 1.5rem); color: #b0c4de; line-height: 1.8; max-width: 900px; margin: 0 auto; font-weight: 400; text-align: center;">Empowering patients worldwide with world-class kidney care and innovative transplant solutions since our establishment.</p>
+        <h1 data-edit="hero_title" style="font-size: clamp(2rem, 8vw, 4rem); font-weight: 800; margin-bottom: 24px; letter-spacing: -2px; line-height: 1.1; text-align: center;">${hero.title}</h1>
+        <p data-edit="hero_subtitle" style="font-size: clamp(1rem, 3vw, 1.5rem); color: #b0c4de; line-height: 1.8; max-width: 900px; margin: 0 auto; font-weight: 400; text-align: center;">${hero.subtitle}</p>
       </div>
     </section>
 
     <!-- Our Impact Section -->
     <section style="padding: clamp(60px, 12vw, 100px) 20px; background: #ffffff;">
       <div class="container" style="max-width: 1200px; margin: 0 auto;">
-        <h2 style="color: #1a2a44; font-size: clamp(1.75rem, 6vw, 2.8rem); margin-bottom: 60px; text-align: center; font-weight: 700;">Our Impact</h2>
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; align-items: start;" class="about-impact-grid">
+        <h2 data-edit="impact_title" style="color: #1a2a44; font-size: clamp(1.75rem, 6vw, 2.8rem); margin-bottom: 60px; text-align: center; font-weight: 700;">${impact.title}</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; align-items: start;" class="about-impact-grid">
+          ${impact.stats.map((stat, idx) => `
           <div class="about-impact-card" style="background: linear-gradient(145deg, #F0F9FF, #ffffff); border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; text-align: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1);" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
-            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #00BCD4, #0097A7); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(0,188,212,0.3);">
-              <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, ${idx % 2 === 0 ? '#00BCD4, #0097A7' : '#BF4E4E, #8B3636'}); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(${idx % 2 === 0 ? '0,188,212' : '191,78,78'},0.3); font-size: 32px;">
+              ${stat.icon || '📊'}
             </div>
-            <div style="font-size: clamp(2rem, 8vw, 3rem); font-weight: 800; color: #1a2a44; margin-bottom: 10px;">50+</div>
-            <div style="color: #4a6572; font-size: clamp(0.95rem, 2.5vw, 1.1rem); font-weight: 600;">Expert Specialists</div>
+            <div data-edit="impact_stat_value_${idx}" style="font-size: clamp(2rem, 8vw, 3rem); font-weight: 800; color: #1a2a44; margin-bottom: 10px;">${stat.value || ''}</div>
+            <div data-edit="impact_stat_label_${idx}" style="color: #4a6572; font-size: clamp(0.95rem, 2.5vw, 1.1rem); font-weight: 600;">${stat.label || ''}</div>
           </div>
-          
-          <div class="about-impact-card" style="background: linear-gradient(145deg, #F0F9FF, #ffffff); border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; text-align: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1);" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
-            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #BF4E4E, #8B3636); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(191,78,78,0.3);">
-              <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
-            </div>
-            <div style="font-size: clamp(2rem, 8vw, 3rem); font-weight: 800; color: #1a2a44; margin-bottom: 10px;">500+</div>
-            <div style="color: #4a6572; font-size: clamp(0.95rem, 2.5vw, 1.1rem); font-weight: 600;">Successful Transplants</div>
-          </div>
-          
-          <div class="about-impact-card" style="background: linear-gradient(145deg, #F0F9FF, #ffffff); border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; text-align: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1);" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
-            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #00BCD4, #0097A7); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(0,188,212,0.3);">
-              <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-            </div>
-            <div style="font-size: clamp(2rem, 8vw, 3rem); font-weight: 800; color: #1a2a44; margin-bottom: 10px;">98%</div>
-            <div style="color: #4a6572; font-size: clamp(0.95rem, 2.5vw, 1.1rem); font-weight: 600;">Success Rate</div>
-          </div>
-          
-          <div class="about-impact-card" style="background: linear-gradient(145deg, #F0F9FF, #ffffff); border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; text-align: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1);" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
-            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #BF4E4E, #8B3636); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(191,78,78,0.3);">
-              <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"/></svg>
-            </div>
-            <div style="font-size: clamp(2rem, 8vw, 3rem); font-weight: 800; color: #1a2a44; margin-bottom: 10px;">30+</div>
-            <div style="color: #4a6572; font-size: clamp(0.95rem, 2.5vw, 1.1rem); font-weight: 600;">Countries Served</div>
-          </div>
+          `).join('')}
         </div>
       </div>
     </section>
@@ -868,39 +899,17 @@ async function populateAbout(){
     <!-- Our Values Section -->
     <section style="padding: clamp(60px, 12vw, 100px) 20px; background: #E0F7FA;">
       <div class="container" style="max-width: 1200px; margin: 0 auto;">
-        <h2 style="color: #1a2a44; font-size: clamp(1.75rem, 6vw, 2.8rem); margin-bottom: 60px; text-align: center; font-weight: 700;">Our Values</h2>
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; justify-items: center;" class="about-values-grid">
+        <h2 data-edit="values_title" style="color: #1a2a44; font-size: clamp(1.75rem, 6vw, 2.8rem); margin-bottom: 60px; text-align: center; font-weight: 700;">${values.title}</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; justify-items: center;" class="about-values-grid">
+          ${values.items.map((value, idx) => `
           <div style="background: #ffffff; border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1); text-align: center; max-width: 500px;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
-            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #00BCD4, #0097A7); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(0,188,212,0.3);">
-              <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
+            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, ${idx % 2 === 0 ? '#00BCD4, #0097A7' : '#BF4E4E, #8B3636'}); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(${idx % 2 === 0 ? '0,188,212' : '191,78,78'},0.3); font-size: 32px;">
+              ${value.icon || '💡'}
             </div>
-            <h3 style="color: #1a2a44; font-size: clamp(1.2rem, 4vw, 1.5rem); margin-bottom: 15px; font-weight: 700;">Innovation First</h3>
-            <p style="color: #4a6572; line-height: 1.8; font-size: clamp(0.95rem, 2.5vw, 1rem); text-align: center;">We stay at the forefront of medical technology, constantly exploring new treatments and procedures to provide the best possible care for our patients.</p>
+            <h3 data-edit="value_title_${idx}" style="color: #1a2a44; font-size: clamp(1.2rem, 4vw, 1.5rem); margin-bottom: 15px; font-weight: 700;">${value.title || ''}</h3>
+            <p data-edit="value_description_${idx}" style="color: #4a6572; line-height: 1.8; font-size: clamp(0.95rem, 2.5vw, 1rem); text-align: center;">${value.description || ''}</p>
           </div>
-          
-          <div style="background: #ffffff; border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1); text-align: center; max-width: 500px;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
-            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #BF4E4E, #8B3636); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(191,78,78,0.3);">
-              <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
-            </div>
-            <h3 style="color: #1a2a44; font-size: clamp(1.2rem, 4vw, 1.5rem); margin-bottom: 15px; font-weight: 700;">Patient Success</h3>
-            <p style="color: #4a6572; line-height: 1.8; font-size: clamp(0.95rem, 2.5vw, 1rem); text-align: center;">Your health and recovery are our success. We build lasting relationships based on trust, exceptional care, and outstanding medical outcomes.</p>
-          </div>
-          
-          <div style="background: #ffffff; border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1); text-align: center; max-width: 500px;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
-            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #00BCD4, #0097A7); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(0,188,212,0.3);">
-              <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
-            </div>
-            <h3 style="color: #1a2a44; font-size: clamp(1.2rem, 4vw, 1.5rem); margin-bottom: 15px; font-weight: 700;">Safety & Reliability</h3>
-            <p style="color: #4a6572; line-height: 1.8; font-size: clamp(0.95rem, 2.5vw, 1rem); text-align: center;">Medical-grade safety protocols and 99.9% operational reliability ensure that every patient receives the highest standard of care and support.</p>
-          </div>
-          
-          <div style="background: #ffffff; border: 2px solid #A5D8DD; border-radius: 20px; padding: 40px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1); text-align: center; max-width: 500px;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
-            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #BF4E4E, #8B3636); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 6px 20px rgba(191,78,78,0.3);">
-              <svg width="32" height="32" fill="white" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
-            </div>
-            <h3 style="color: #1a2a44; font-size: clamp(1.2rem, 4vw, 1.5rem); margin-bottom: 15px; font-weight: 700;">Expert Team</h3>
-            <p style="color: #4a6572; line-height: 1.8; font-size: clamp(0.95rem, 2.5vw, 1rem); text-align: center;">50+ certified specialists with deep expertise in nephrology, transplantation, and critical care, dedicated to your well-being.</p>
-          </div>
+          `).join('')}
         </div>
       </div>
     </section>
@@ -909,12 +918,12 @@ async function populateAbout(){
     <section style="padding: clamp(60px, 12vw, 100px) 20px; background: #ffffff;">
       <div class="container" style="max-width: 1000px; margin: 0 auto;">
         <div style="text-align: center; margin-bottom: 50px;">
-          <h2 style="color: #1a2a44; font-size: clamp(1.75rem, 6vw, 2.8rem); margin-bottom: 20px; font-weight: 700;">📍 Our Location</h2>
-          <p style="color: #4a6572; font-size: clamp(1rem, 3vw, 1.2rem); max-width: 700px; margin: 0 auto;">Visit us at our state-of-the-art facility</p>
+          <h2 data-edit="location_title" style="color: #1a2a44; font-size: clamp(1.75rem, 6vw, 2.8rem); margin-bottom: 20px; font-weight: 700;">${location.title}</h2>
+          <p data-edit="location_description" style="color: #4a6572; font-size: clamp(1rem, 3vw, 1.2rem); max-width: 700px; margin: 0 auto;">${location.description}</p>
         </div>
         <div style="background: #F0F9FF; padding: 40px; border-radius: 24px; box-shadow: 0 10px 40px rgba(0,188,212,0.2); border: 2px solid #A5D8DD;">
           <div style="width: 100%; height: clamp(200px, 50vw, 350px); border-radius: 16px; overflow: hidden; border: 2px solid rgba(191, 78, 78, 0.2); margin-bottom: 25px;">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3614.2451271923155!2d73.106847!3d33.573121799999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfed2cd8fd7fc9%3A0x67e31c3aceed5639!2sThe%20Kidney%20Clinic!5e1!3m2!1sen!2s!4v1761664752414!5m2!1sen!2s" 
+            <iframe src="${location.mapEmbedUrl}" 
               style="width: 100%; height: 100%; border: none;" 
               allowfullscreen="" 
               loading="lazy" 
@@ -922,7 +931,7 @@ async function populateAbout(){
             </iframe>
           </div>
           <div style="text-align: center;">
-            <a href="https://www.google.com/maps/place/The+Kidney+Clinic/@33.573121799999996,73.106847,15z" 
+            <a href="${location.mapLink}" 
                class="btn primary" 
                target="_blank"
                style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 30px; background: linear-gradient(135deg, #BF4E4E, #8B3636); color: white; border-radius: 50px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 15px rgba(191,78,78,0.3); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(191,78,78,0.5)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(191,78,78,0.3)'">
