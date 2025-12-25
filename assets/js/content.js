@@ -569,6 +569,24 @@ async function populateMedicalTourism(){
         <div style="display: flex; justify-content: center; margin-bottom: 40px;">
           <img src="${(data.map?.imageUrl && data.map.imageUrl.trim()) ? data.map.imageUrl : './assets/map.png'}" alt="Patient Locations Map" style="width: 40%; height: auto; display: block;" />
         </div>
+        
+        ${data.map?.locations && data.map.locations.length > 0 ? `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: clamp(20px, 4vw, 30px); margin-top: 50px;">
+          ${data.map.locations.map((location, idx) => `
+            <div style="background: #ffffff; border: 2px solid #A5D8DD; border-radius: 16px; padding: clamp(20px, 4vw, 30px); text-align: center; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0,188,212,0.1);" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 12px 30px rgba(0,188,212,0.2)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(0,188,212,0.1)'">
+              ${location.icon ? `<div style="font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 15px;">${location.icon}</div>` : ''}
+              <h3 style="color: #1a2a44; font-size: clamp(1.2rem, 4vw, 1.5rem); margin-bottom: 12px; font-weight: 700;">${location.name || ''}</h3>
+              ${location.description ? `<p style="color: #4a6572; line-height: 1.7; font-size: clamp(0.95rem, 2.5vw, 1rem); margin: 0;">${location.description}</p>` : ''}
+              ${location.stat && location.statLabel ? `
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(0,188,212,0.2);">
+                  <div style="font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 800; color: #BF4E4E; margin-bottom: 5px;">${location.stat}</div>
+                  <div style="color: #4a6572; font-size: clamp(0.85rem, 2vw, 0.95rem); font-weight: 600;">${location.statLabel}</div>
+                </div>
+              ` : ''}
+            </div>
+          `).join('')}
+        </div>
+        ` : ''}
       </div>
     </section>
 

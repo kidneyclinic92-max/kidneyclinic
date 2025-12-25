@@ -526,8 +526,9 @@ class AdminPanel {
                         <input type="text" name="location-name-${idx}" value="${loc.name || ''}" placeholder="e.g., Qatar" style="width: 100%;" />
                       </div>
                       <div>
-                        <label style="font-size: 0.85rem; color: var(--text); display: block; margin-bottom: 5px;">Icon (Emoji)</label>
-                        <input type="text" name="location-icon-${idx}" value="${loc.icon || ''}" placeholder="🇶🇦" style="width: 100%;" />
+                        <label style="font-size: 0.85rem; color: var(--text); display: block; margin-bottom: 5px;">Icon (Emoji or Text)</label>
+                        <input type="text" name="location-icon-${idx}" value="${loc.icon || ''}" placeholder="Icon (emoji or text)" style="width: 100%; font-size: 1.2rem; padding: 8px;" />
+                        <small style="color: var(--muted); font-size: 0.75rem; display: block; margin-top: 4px;">You can paste emojis directly (e.g., 🇶🇦 🌍 🏥)</small>
                       </div>
                     </div>
                     <div style="margin-bottom: 10px;">
@@ -2726,8 +2727,9 @@ class AdminPanel {
               <input type="text" name="location-name-${newIndex}" value="" placeholder="e.g., Qatar" style="width: 100%;" />
             </div>
             <div>
-              <label style="font-size: 0.85rem; color: var(--text); display: block; margin-bottom: 5px;">Icon (Emoji)</label>
-              <input type="text" name="location-icon-${newIndex}" value="" placeholder="🇶🇦" style="width: 100%;" />
+              <label style="font-size: 0.85rem; color: var(--text); display: block; margin-bottom: 5px;">Icon (Emoji or Text)</label>
+              <input type="text" name="location-icon-${newIndex}" value="" placeholder="Icon (emoji or text)" style="width: 100%; font-size: 1.2rem; padding: 8px;" />
+              <small style="color: var(--muted); font-size: 0.75rem; display: block; margin-top: 4px;">You can paste emojis directly (e.g., 🇶🇦 🌍 🏥)</small>
             </div>
           </div>
           <div style="margin-bottom: 10px;">
